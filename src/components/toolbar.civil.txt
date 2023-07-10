@@ -1,0 +1,25 @@
+'
+.toolbar {
+ border-bottom: 1px solid #a0a0a0;
+ box-sizing: border-box;
+ height: 39px;
+}
+
+.toolbar > button {
+ border: none;
+ border-right: 1px solid #a0a0a0;
+ height: 38px;
+ vertical-align: top;
+}
+
+.toolbar > button:first-child:after {
+ content: \'Home\';
+}
+' @ addStyle !
+
+.. $--  Object ! >> control
+.. div @ -- document createElement ! >> control container
+.. toolbar @ control container classList add !
+.. $control
+<<
+

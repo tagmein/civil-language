@@ -1,0 +1,46 @@
+style @ document createElement ! >> globalStyle
+$globalStyle @ document head appendChild !
+
+'
+ html, body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 0;
+ }
+
+ body, input, select, textarea, button {
+  color: #ffffff;
+  font-family: Monospace, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+ }
+
+ input, select, textarea, button {
+  background-color: #606060;
+  border: 1px solid #ffffff;
+  padding: 7px 12px 9px;
+ }
+ 
+ button, select {
+  cursor: pointer;
+ }
+ 
+ button:hover {
+  background-color: #808080;
+ }
+ 
+ button:active {
+  background-color: #404040;
+ }
+
+ *::selection {
+  background-color: #ffffff;
+  color: #000000;
+ }
+ 
+ h1, h2, h3, h4, h5, h6, p {
+  margin: 0 0 10px;
+ }
+
+' >> globalStyle textContent
+

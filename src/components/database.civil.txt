@@ -1,0 +1,17 @@
+.. $name , 1 @ -- indexedDB open ! >> civilDatabaseRequest 
+.. .. .. $-- -- civilDatabaseRequest result @ -- resolve !
+.. .. << >> -- civilDatabaseRequest onsuccess
+.. .. 
+.. .. .. $error @ -- reject !
+.. .. << error >> -- civilDatabaseRequest onerror
+.. .. 
+.. .. .. $-- -- -- Object ! >> documentsStoreConfig
+.. .. .. id >> documentsStoreConfig keyPath
+.. .. .. documents , $documentsStoreConfig @ -- -- civilDatabaseRequest result createObjectStore !
+.. .. .. >> documentsStore
+.. .. .. dirIndex , dir @ documentsStore createIndex !
+.. .. .. $-- -- civilDatabaseRequest result @ -- resolve !
+.. .. << >> -- civilDatabaseRequest onupgradeneeded
+.. << resolve reject @ -- promise !
+<< name
+

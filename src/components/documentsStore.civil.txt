@@ -1,0 +1,32 @@
+.. $-- Object ! >> control
+.. .. documents , readwrite @ -- database transaction ! >> transaction
+.. .. documents @ transaction objectStore ! >> store
+.. .. $value @ store put ! >> operation
+.. .. .. .. $error @ -- reject !
+.. .. .. << error >> -- operation onerror
+.. .. .. .. $event target result @ -- resolve !
+.. .. .. << event >> -- operation onsuccess
+.. .. << resolve reject @ -- -- promise !
+.. << value >> control put
+.. 
+.. .. documents , readonly @ -- database transaction ! >> transaction
+.. .. documents @ transaction objectStore ! >> store
+.. .. dirIndex @ store index ! >> dirIndex
+.. .. $-- -- Array ! >> searchResults
+.. .. .. $-- dir @ -- dirIndex openCursor ! >> getByDirRequest
+.. .. .. .. $-- getByDirRequest result >> searchCursor
+.. .. .. .. .. $-- searchCursor value @ -- -- -- searchResults push !
+.. .. .. .. .. $-- searchCursor continue !
+.. .. .. .. $searchCursor ?
+.. .. .. .. .. $-- -- resolve !
+.. .. .. .. $searchCursor ~ ?
+.. .. .. << >> getByDirRequest onsuccess
+.. .. .. .. $-- reject !
+.. .. .. << >> getByDirRequest onerror
+.. .. << resolve reject @ -- -- promise !
+.. .. $searchResults
+.. << dir >> control getByDir
+.. $control
+<< database
+
+

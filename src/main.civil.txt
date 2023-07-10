@@ -1,0 +1,50 @@
+# addStyle helper
+.. style @ -- document createElement ! >> styleTag
+.. $styleTag @ -- document head appendChild !
+.. $styles >> styleTag textContent
+<< styles >> addStyle
+
+# load global styles
+./src/globalStyle.civil.txt @ load !
+
+# load all components
+$Object ! >> components
+.. './src/components/$name .civil.txt' @ -- load !
+.. >> -- components $name
+<< name : button database documentsStore documentToolbar toolbar !
+
+# create main toolbar
+Components , $components @ console log !
+$components toolbar ! >> mainToolbar
+mainToolbar , $mainToolbar @ console log !
+$mainToolbar container @ document body appendChild !
+
+# connect to documents store
+Civil @ components database ! >> civilDatabase
+civilDatabase , $civilDatabase @ console log !
+$civilDatabase @ components documentsStore ! >> Documents
+Documents , $Documents @ console log !
+
+# function to save a document
+.. $-- Object ! >> documentObject
+.. '$dir /$name' >> documentObject id
+.. $name >> documentObject name
+.. $dir >> documentObject dir
+.. $value >> documentObject value
+.. $documentObject @ -- Documents put ! >> saveResult
+.. 'Saved document' , $saveResult @ -- console log !
+<< dir name value >> saveDocument
+
+# function to open a document
+.. $dir , $-- mainToolbar , $-- Documents @ -- components documentToolbar !
+<< dir >> openDocument
+
+# test create document
+# '' , '' , 'test document' @ saveDocument !
+
+# open document on hash navigation event
+.. 1 @ -- location hash substring ! @ -- openDocument !
+<< >> route
+hashchange , $route @ addEventListener !
+$route !
+

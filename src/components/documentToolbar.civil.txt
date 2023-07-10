@@ -1,0 +1,44 @@
+'
+ .toolbarDirectory {
+  background-color: #404040;
+  border: 1px solid #a0a0a0;
+  bottom: 1px;
+  box-sizing: border-box;
+  min-width: 240px;
+  overflow: auto;
+  position: absolute;
+  top: 38px;
+  width: auto;
+ }
+' @ addStyle !
+
+div @ document createElement ! >> directoryContainer
+toolbarDirectory @ directoryContainer classList add !
+
+.. $-- directoryContainer @ -- document body appendChild !
+.. $segmentButton getBoundingClientRect ! >> buttonRect
+.. '$buttonRect\ left\ -1 px' >> -- directoryContainer style left
+<< dir segmentButton >> openToolbarDirectory
+
+.. $-- directoryContainer @ -- document body removeChild !
+<< >> closeToolbarDirectory
+
+.. $dir @ Documents getByDir ! >> docs
+.. 'Docs in \'$dir \'' , $docs @ -- console log !
+.. '' >> toolbar container innerHTML
+.. / @ dir split ! >> dirSegments
+.. $-- Array ! >> linkSegments
+.. .. $segment @ -- -- components button ! >> segmentButton
+.. .. $segment @ -- linkSegments push !
+.. .. / @ -- linkSegments join ! >> segmentFullPath
+.. .. $segmentButton @ -- toolbar container appendChild !
+.. .. .. $-- segmentFullPath >> -- -- -- location hash
+.. .. << >> segmentLinkButtonClick
+.. .. .. $-- dir , $-- segmentButton @ -- -- -- openToolbarDirectory !
+.. .. << >> segmentLinkButtonHover
+.. .. click , $segmentLinkButtonClick @ segmentButton addEventListener !
+.. .. mouseenter , $segmentLinkButtonHover @ segmentButton addEventListener !
+.. .. mouseleave , $-- -- closeToolbarDirectory @ segmentButton addEventListener !
+.. << segment :: dirSegments !
+<< dir toolbar Documents
+

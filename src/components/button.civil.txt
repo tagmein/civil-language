@@ -1,0 +1,5 @@
+.. button @ -- document createElement ! >> container
+.. $label >> container textContent
+.. $container
+<< label
+

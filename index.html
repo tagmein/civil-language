@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+ <head>
+  <title>civil</title>
+  <script src="./civil.js"></script>
+  <style>body { background-color: black; }</style>
+ </head>
+ <body>
+  <script>
+   globalThis.promise = x => new Promise(x)
+   globalThis.main = civil.scope(globalThis)
+   globalThis.main.run`
+    # civil script loader
+    .. $path @ -- fetch ! >> response
+    .. .. 'Load "$--\\ path " was successful: HTTP $--\\ response\\ status' @ -- -- console log !
+    .. .. $-- response text ! @ -- -- main thread ! >> -- output
+    .. $response ok ?
+    .. .. 'Load "$--\\ path " failed: HTTP $--\\ response\\ status' @ -- -- console log !
+    .. $response ok ~ ?
+    .. $output
+    << path >> load
+
+    # load main
+    ./src/main.civil.txt @ load !
+   `
+  </script>
+ </body>
+</html>
