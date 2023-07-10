@@ -11,7 +11,7 @@
 $Object ! >> components
 .. './src/components/$name .civil.txt' @ -- load !
 .. >> -- components $name
-<< name : button database documentsStore documentToolbar toolbar !
+<< name : button database documentsList documentsStore documentToolbar toolbar !
 
 # create main toolbar
 Components , $components @ console log !
@@ -36,11 +36,16 @@ Documents , $Documents @ console log !
 << dir name value >> saveDocument
 
 # function to open a document
-.. $dir , $-- mainToolbar , $-- Documents @ -- components documentToolbar !
+.. $dir , $-- mainToolbar , $-- Documents , $-- components \
+   @ -- components documentToolbar !
 << dir >> openDocument
 
 # test create document
-# '' , '' , 'test document' @ saveDocument !
+'' , '' , 'test document' @ saveDocument !
+'' , 'foo' , 'test document 2' @ saveDocument !
+'/foo' , 'bar' , 'test document 3' @ saveDocument !
+'/foo/bar' , 'bat' , 'test document 3' @ saveDocument !
+'/foo/bar/bat' , 'baz' , 'test document 3' @ saveDocument !
 
 # open document on hash navigation event
 .. 1 @ -- location hash substring ! @ -- openDocument !

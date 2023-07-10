@@ -1,0 +1,22 @@
+'
+ .document {
+  background-color: #202020;
+  border-bottom: 1px solid #606060;
+  box-sizing: border-box;
+  color: #ffffff;
+  display: block;
+  min-height: 38px;
+  padding: 7px 12px 9px;
+  text-decoration: none;
+ }
+' @ addStyle !
+
+.. .. .. a @ -- -- -- document createElement ! >> docLinkContainer
+.. .. .. document @ docLinkContainer classList add !
+.. .. .. $-- doc name >> docLinkContainer textContent
+.. .. .. '#$--\ doc\ id' >> docLinkContainer href
+.. .. .. $docLinkContainer @ -- -- directoryContainer appendChild !
+.. .. $doc id ~= / ?
+.. << doc :: docs !
+<< directoryContainer docs components
+

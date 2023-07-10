@@ -12,20 +12,39 @@
  }
 ' @ addStyle !
 
+# length of time (ms) to wait before closing toolbar directory
+350 >> closeToolbarDirectoryDelay
+
+.. $-- closeToolbarDirectoryTimeout @ -- clearTimeout !
+<< >> cancelCloseToolbarDirectory
+
+.. $-- directoryContainer @ -- document body removeChild !
+<< >> closeToolbarDirectoryImmediately
+
+.. $-- closeToolbarDirectoryImmediately , $-- closeToolbarDirectoryDelay \
+   @ -- setTimeout !
+.. >> -- closeToolbarDirectoryTimeout
+<< >> closeToolbarDirectory
+
+# close toolbar directory on route
+hashchange , $closeToolbarDirectoryImmediately @ addEventListener !
+
 div @ document createElement ! >> directoryContainer
 toolbarDirectory @ directoryContainer classList add !
+mouseenter , $cancelCloseToolbarDirectory @ directoryContainer addEventListener !
+mouseleave , $closeToolbarDirectory @ directoryContainer addEventListener !
 
+.. $-- cancelCloseToolbarDirectory !
+.. '' >> -- directoryContainer textContent
 .. $-- directoryContainer @ -- document body appendChild !
 .. $segmentButton getBoundingClientRect ! >> buttonRect
 .. '$buttonRect\ left\ -1 px' >> -- directoryContainer style left
-<< dir segmentButton >> openToolbarDirectory
-
-.. $-- directoryContainer @ -- document body removeChild !
-<< >> closeToolbarDirectory
-
 .. $dir @ Documents getByDir ! >> docs
-.. 'Docs in \'$dir \'' , $docs @ -- console log !
-.. '' >> toolbar container innerHTML
+.. '' >> -- directoryContainer textContent
+.. $-- directoryContainer , $docs , $components @ components documentsList !
+<< dir segmentButton Documents components >> openToolbarDirectory
+
+.. '' >> toolbar container textContent
 .. / @ dir split ! >> dirSegments
 .. $-- Array ! >> linkSegments
 .. .. $segment @ -- -- components button ! >> segmentButton
@@ -34,11 +53,12 @@ toolbarDirectory @ directoryContainer classList add !
 .. .. $segmentButton @ -- toolbar container appendChild !
 .. .. .. $-- segmentFullPath >> -- -- -- location hash
 .. .. << >> segmentLinkButtonClick
-.. .. .. $-- dir , $-- segmentButton @ -- -- -- openToolbarDirectory !
+.. .. .. $-- segmentFullPath , $-- segmentButton , $-- -- Documents , \
+         $-- -- components @ -- -- -- openToolbarDirectory !
 .. .. << >> segmentLinkButtonHover
 .. .. click , $segmentLinkButtonClick @ segmentButton addEventListener !
 .. .. mouseenter , $segmentLinkButtonHover @ segmentButton addEventListener !
 .. .. mouseleave , $-- -- closeToolbarDirectory @ segmentButton addEventListener !
 .. << segment :: dirSegments !
-<< dir toolbar Documents
+<< dir toolbar Documents components
 

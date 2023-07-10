@@ -73,7 +73,9 @@ civil.parse = function (source) {
  for (let i = 0; i < source.length; i++) {
   const char = source[i]
   if (state.inEscape) {
-   word += ESCAPE + char
+   if (char !== '\n') {
+    word += char === 'n' ? '\n' : ESCAPE + char
+   }
    state.inEscape = false
   }
   else {
@@ -366,7 +368,21 @@ civil.states = {
   '': '?',
   async complete(me, scope) {
    if (!Array.isArray(me.data.focus)) {
-    throw new Error(`? may only be used after a recording, got ${typeof me.data.focus}`)
+    if (!me.data.lastRecording) {
+     throw new Error(`? may only be used after a recording, got ${typeof me.data.focus}`)
+    }
+    const code = me.data.lastRecording.slice(0)
+    const condition = function condition() {
+     const newScope = { '--': scope }
+     return civil.scope(newScope).run(code)
+    }
+    if (me.data.focus) {
+     me.data.focus = await condition()
+    }
+    else {
+     me.data.focus = undefined
+    }
+    return
    }
    const code = me.data.focus.splice(0)
    me.data.focus = function condition() {
@@ -464,7 +480,7 @@ civil.states = {
    )
   },
   completeLines(me, scope) {
-   me.data.focus = me.data.recording.splice(0)
+   me.data.focus = me.data.lastRecording = me.data.recording.splice(0)
    // console.log('finish recording', me.data.focus.slice())
   }
  },
@@ -564,6 +580,23 @@ civil.states = {
     }
     return output
    }
+  }
+ },
+
+ '~=': {
+  '': '~=',
+  apply(me, scope, word) {
+   me.data.compareToPath.push(word)
+  },
+  begin(me, scope) {
+   me.data.compareToPath = []
+  },
+  complete(me, scope) {
+   const handPaths = me.data.hand.splice(0)
+   const compareToPath = me.data.compareToPath.splice(0)
+   const handValues = handPaths.map(handPath => civil.get(scope, scope, handPath))
+   const compareToValue = civil.get(scope, scope, compareToPath)
+   me.data.focus = handValues.some(handValue => handValue !== compareToValue)
   }
  }
 }
