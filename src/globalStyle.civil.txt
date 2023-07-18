@@ -2,45 +2,142 @@ style @ document createElement ! >> globalStyle
 $globalStyle @ document head appendChild !
 
 '
- html, body {
-  margin: 0;
-  min-height: 100vh;
-  padding: 0;
- }
+html, body {
+ margin: 0;
+ min-height: 100vh;
+ padding: 0;
+}
 
- body, input, select, textarea, button {
-  color: #ffffff;
-  font-family: Monospace, monospace;
-  font-size: 14px;
-  line-height: 1.5;
- }
+body {
+ display: flex;
+ flex-direction: column;
+}
 
- input, select, textarea, button {
-  background-color: #606060;
-  border: 1px solid #ffffff;
-  padding: 7px 12px 9px;
- }
- 
- button, select {
-  cursor: pointer;
- }
- 
- button:hover {
-  background-color: #808080;
- }
- 
- button:active {
-  background-color: #404040;
- }
+body, input, select, textarea, button {
+ color: #ffffff;
+ font-family: sans-serif;
+ font-size: 14px;
+ font-weight: 500;
+ letter-spacing: 0.25px;
+ line-height: 1.5;
+}
 
- *::selection {
-  background-color: #ffffff;
-  color: #000000;
- }
- 
- h1, h2, h3, h4, h5, h6, p {
-  margin: 0 0 10px;
- }
+input, select, textarea, button, .button {
+ background-color: #404040;
+ border: 1px solid #606060;
+ padding: 7px 12px 9px;
+}
+
+input:disabled, select:disabled, textarea:disabled, button:disabled, .button[disabled] {
+ color: #a0a0a0;
+}
+
+a.button {
+ box-sizing: border-box;
+ color: inherit;
+ display: inline-block;
+ text-decoration: none;
+}
+
+button, select, .button {
+ cursor: pointer;
+ position: relative;
+}
+
+.link {
+ display: inline-block;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+}
+
+.link > span {
+ display: inline-block;
+ overflow: visible;
+ position: relative;
+}
+
+button::before, .button::before {
+ bottom: 7px;
+ left: 12px;
+ right: 12px;
+}
+
+.link > span::before {
+ bottom: -2px;
+ left: 0;
+ right: 0;
+}
+
+button::before, .button::before, .link > span::before {
+ background-color: #c0c0c0;
+ border-radius: 50%;
+ content: \'\';
+ display: block;
+ height: 2px;
+ opacity: 0;
+ position: absolute;
+ transition: opacity 0.2s ease;
+}
+
+button:hover::before, .button:hover::before, .link:hover > span::before {
+ opacity: 1;
+}
+
+button:active::before, .button:active::before {
+ background-color: #606060;
+}
+
+*::selection {
+ background-color: #ffffff;
+ color: #000000;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+ margin: 0 0 10px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+ font-weight: 600;
+}
+
+h1 {
+ font-size: 24px;
+}
+
+h2 {
+ font-size: 22px;
+}
+
+h3 {
+ font-size: 20px;
+}
+
+h4 {
+ font-size: 18px;
+}
+
+h5 {
+ font-size: 16px;
+}
+
+h6 {
+ font-size: 14px;
+}
+
+*:focus {
+ box-shadow: inset 0 0 0 1px #ffffff, inset 0 0 0 2px #a0a0a0, inset 0 0 0 3px #ffffff;
+ outline: none;
+}
+
+.current-path > .button:first-child:after {
+ content: \'Home\';
+}
+
+.document-area {
+ flex-grow: 1;
+ overflow: auto;
+}
 
 ' >> globalStyle textContent
 

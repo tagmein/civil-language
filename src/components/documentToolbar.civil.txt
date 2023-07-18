@@ -1,29 +1,44 @@
 '
  .toolbarDirectory {
-  background-color: #404040;
-  border: 1px solid #a0a0a0;
+  background-color: #202020;
+  border: 1px solid #606060;
   bottom: 1px;
+  box-shadow: 0 0 20px #80808080;
   box-sizing: border-box;
   min-width: 240px;
+  opacity: 0;
   overflow: auto;
   position: absolute;
-  top: 38px;
+  top: 37px;
+  transition: opacity 0s ease;
   width: auto;
+ }
+ 
+ .toolbarDirectory.visible {
+  opacity: 1;
+  transition: opacity 0.2s ease;
  }
 ' @ addStyle !
 
 # length of time (ms) to wait before closing toolbar directory
 350 >> closeToolbarDirectoryDelay
 
+# is toolbar directory allowed to close?
+1 >> allowCloseToolbarDirectory
+
 .. $-- closeToolbarDirectoryTimeout @ -- clearTimeout !
 << >> cancelCloseToolbarDirectory
 
-.. $-- directoryContainer @ -- document body removeChild !
+.. 0 >> -- allowCloseToolbarDirectory
+<< >> preventCloseToolbarDirectory
+
+.. $-- directoryContainer remove !
 << >> closeToolbarDirectoryImmediately
 
-.. $-- closeToolbarDirectoryImmediately , $-- closeToolbarDirectoryDelay \
-   @ -- setTimeout !
-.. >> -- closeToolbarDirectoryTimeout
+.. .. $-- -- closeToolbarDirectoryImmediately , $-- -- closeToolbarDirectoryDelay \
+   @ -- -- setTimeout !
+.. .. >> -- -- closeToolbarDirectoryTimeout
+.. $-- allowCloseToolbarDirectory = 1 ?
 << >> closeToolbarDirectory
 
 # close toolbar directory on route
@@ -32,33 +47,40 @@ hashchange , $closeToolbarDirectoryImmediately @ addEventListener !
 div @ document createElement ! >> directoryContainer
 toolbarDirectory @ directoryContainer classList add !
 mouseenter , $cancelCloseToolbarDirectory @ directoryContainer addEventListener !
+contextmenu , $preventCloseToolbarDirectory @ directoryContainer addEventListener !
 mouseleave , $closeToolbarDirectory @ directoryContainer addEventListener !
 
+.. 1 >> allowCloseToolbarDirectory
 .. $-- cancelCloseToolbarDirectory !
+.. visible @ -- directoryContainer classList remove !
 .. '' >> -- directoryContainer textContent
 .. $-- directoryContainer @ -- document body appendChild !
 .. $segmentButton getBoundingClientRect ! >> buttonRect
 .. '$buttonRect\ left\ -1 px' >> -- directoryContainer style left
-.. $dir @ Documents getByDir ! >> docs
+.. '$dir /' @ Documents getByDir ! >> docs
 .. '' >> -- directoryContainer textContent
-.. $-- directoryContainer , $docs , $components @ components documentsList !
-<< dir segmentButton Documents components >> openToolbarDirectory
+.. $-- directoryContainer , $dir , $docs , $saveDocument , $renameDocument , \
+    $components @ components documentsList !
+.. visible @ -- directoryContainer classList add !
+<< dir segmentButton Documents saveDocument renameDocument components >> openToolbarDirectory
 
-.. '' >> toolbar container textContent
-.. / @ dir split ! >> dirSegments
+.. '' >> toolbar textContent
+.. / @ dir split ! >> rawDirSegments
+.. $-- decodeURIComponent @ rawDirSegments map ! >> dirSegments
 .. $-- Array ! >> linkSegments
-.. .. $segment @ -- -- components button ! >> segmentButton
+.. .. a @ -- -- document createElement ! >> segmentButton
 .. .. $segment @ -- linkSegments push !
 .. .. / @ -- linkSegments join ! >> segmentFullPath
-.. .. $segmentButton @ -- toolbar container appendChild !
-.. .. .. $-- segmentFullPath >> -- -- -- location hash
-.. .. << >> segmentLinkButtonClick
+.. .. $segmentButton @ -- toolbar appendChild !
+.. .. '#$segmentFullPath' >> segmentButton href
+.. .. $segment >> segmentButton textContent
+.. .. button @ segmentButton classList add !
 .. .. .. $-- segmentFullPath , $-- segmentButton , $-- -- Documents , \
-         $-- -- components @ -- -- -- openToolbarDirectory !
+          $-- -- saveDocument , $-- -- renameDocument , $-- -- components \
+          @ -- -- -- openToolbarDirectory !
 .. .. << >> segmentLinkButtonHover
-.. .. click , $segmentLinkButtonClick @ segmentButton addEventListener !
 .. .. mouseenter , $segmentLinkButtonHover @ segmentButton addEventListener !
 .. .. mouseleave , $-- -- closeToolbarDirectory @ segmentButton addEventListener !
 .. << segment :: dirSegments !
-<< dir toolbar Documents components
+<< dir toolbar Documents saveDocument renameDocument components
 

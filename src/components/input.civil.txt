@@ -1,0 +1,39 @@
+'
+.input-container {
+ box-sizing: border-box;
+ display: block;
+ margin: 10px 0;
+ padding: 0 10px;
+ width: 100%;
+}
+
+.input-container > div {
+ color: #a0a0a0;
+ padding: 0 10px 5px;
+}
+
+.input-container > input {
+ box-sizing: border-box;
+ width: 100%;
+}
+
+' @ addStyle !
+
+.. $-- Object ! >> control
+.. label @ -- document createElement ! >> control container
+.. div @ -- document createElement ! >> label
+.. input @ -- document createElement ! >> control input
+.. input-container @ control container classList add !
+.. $label @ control container appendChild !
+.. $control input @ control container appendChild !
+.. .. $-- control input value @ -- onChange !
+.. << event >> handleChange
+.. .. change , $-- handleChange @ -- control input addEventListener !
+.. .. keyup  , $-- handleChange @ -- control input addEventListener !
+.. $onChange ?
+.. .. $-- initialValue >> -- control input value
+.. $initialValue ?
+.. $labelText >> label textContent
+.. $control
+<< labelText initialValue onChange
+

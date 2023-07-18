@@ -1,3 +1,40 @@
+Array.prototype.sortAsync = async function (comparator) {
+ const promises = []
+ const compareMap = new Map
+ const array = this
+ for (const a of array) {
+  for (const b of array) {
+   promises.push(
+    (async function () {
+     if (!compareMap.has(a)) {
+      compareMap.set(a, new Map)
+     }
+     compareMap.get(a).set(b, await comparator(a, b))
+    })()
+   )
+  }
+ }
+ await Promise.all(promises)
+ return array.sort(function (a, b) {
+  return compareMap.get(a).get(b)
+ })
+}
+
+Array.prototype.sortByProperty = function (propertyName) {
+ return this.sort(function (a, b) {
+  const aProp = a[propertyName]
+  const bProp = b[propertyName]
+  switch (typeof aProp) {
+   case 'string':
+    return aProp.localeCompare(bProp)
+   case 'number':
+    return aProp - bProp
+   default:
+    return 0
+  }
+ })
+}
+
 const civil = globalThis.civil = {}
 
 civil.code = Symbol('civil.code')
@@ -289,13 +326,31 @@ civil.scope = function civilScope(scope) {
          debugger
         }
         else {
-         await me.apply(word)
+         try {
+          await me.apply(word)
+         }
+         catch (e) {
+          console.error(`Error at '${word}' on line ${lineI} word ${wordI}: ${arg[lineI].join(' ')}`)
+          throw e
+         }
         }
        }
-       await me.break()
+       try {
+        await me.break()
+       }
+       catch (e) {
+        console.error(`Error at end of line ${lineI}: ${arg[lineI].join(' ')}`)
+        throw e
+       }
       }
       if (me.lineState?.completeLines) {
-       await me.lineState.completeLines(me, scope)
+       try {
+        await me.lineState.completeLines(me, scope)
+       }
+       catch (e) {
+        console.error('Error at end')
+        throw e
+       }
       }
       // console.log('finished run', { code: arg }, me)
       return me.data.focus
@@ -597,6 +652,91 @@ civil.states = {
    const handValues = handPaths.map(handPath => civil.get(scope, scope, handPath))
    const compareToValue = civil.get(scope, scope, compareToPath)
    me.data.focus = handValues.some(handValue => handValue !== compareToValue)
+  }
+ },
+
+ '=': {
+  '': '=',
+  apply(me, scope, word) {
+   me.data.compareToPath.push(word)
+  },
+  begin(me, scope) {
+   me.data.compareToPath = []
+  },
+  complete(me, scope) {
+   const handPaths = me.data.hand.splice(0)
+   const compareToPath = me.data.compareToPath.splice(0)
+   const handValues = handPaths.map(handPath => civil.get(scope, scope, handPath))
+   const compareToValue = civil.get(scope, scope, compareToPath)
+   me.data.focus = handValues.some(handValue => handValue === compareToValue)
+  }
+ },
+
+ '<': {
+  '': '<',
+  apply(me, scope, word) {
+   me.data.compareToPath.push(word)
+  },
+  begin(me, scope) {
+   me.data.compareToPath = []
+  },
+  complete(me, scope) {
+   const handPaths = me.data.hand.splice(0)
+   const compareToPath = me.data.compareToPath.splice(0)
+   const handValues = handPaths.map(handPath => civil.get(scope, scope, handPath))
+   const compareToValue = civil.get(scope, scope, compareToPath)
+   me.data.focus = handValues.some(handValue => handValue < compareToValue)
+  }
+ },
+
+ '>': {
+  '': '>',
+  apply(me, scope, word) {
+   me.data.compareToPath.push(word)
+  },
+  begin(me, scope) {
+   me.data.compareToPath = []
+  },
+  complete(me, scope) {
+   const handPaths = me.data.hand.splice(0)
+   const compareToPath = me.data.compareToPath.splice(0)
+   const handValues = handPaths.map(handPath => civil.get(scope, scope, handPath))
+   const compareToValue = civil.get(scope, scope, compareToPath)
+   me.data.focus = handValues.some(handValue => handValue > compareToValue)
+  }
+ },
+
+ '<=': {
+  '': '<=',
+  apply(me, scope, word) {
+   me.data.compareToPath.push(word)
+  },
+  begin(me, scope) {
+   me.data.compareToPath = []
+  },
+  complete(me, scope) {
+   const handPaths = me.data.hand.splice(0)
+   const compareToPath = me.data.compareToPath.splice(0)
+   const handValues = handPaths.map(handPath => civil.get(scope, scope, handPath))
+   const compareToValue = civil.get(scope, scope, compareToPath)
+   me.data.focus = handValues.some(handValue => handValue <= compareToValue)
+  }
+ },
+
+ '>=': {
+  '': '>=',
+  apply(me, scope, word) {
+   me.data.compareToPath.push(word)
+  },
+  begin(me, scope) {
+   me.data.compareToPath = []
+  },
+  complete(me, scope) {
+   const handPaths = me.data.hand.splice(0)
+   const compareToPath = me.data.compareToPath.splice(0)
+   const handValues = handPaths.map(handPath => civil.get(scope, scope, handPath))
+   const compareToValue = civil.get(scope, scope, compareToPath)
+   me.data.focus = handValues.some(handValue => handValue >= compareToValue)
   }
  }
 }

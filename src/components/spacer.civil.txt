@@ -1,0 +1,13 @@
+'
+.spacer {
+ flex-grow: 1;
+ min-width: 10px;
+}
+
+' @ addStyle !
+
+.. div @ -- document createElement ! >> spacer
+.. spacer @ spacer classList add !
+.. $spacer
+<<
+

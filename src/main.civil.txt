@@ -11,13 +11,34 @@
 $Object ! >> components
 .. './src/components/$name .civil.txt' @ -- load !
 .. >> -- components $name
-<< name : button database documentsList documentsStore documentToolbar toolbar !
+<< name : button database dialog \
+ documentCreateDialog documentManageDialog \
+ documentToolbar documentView documentsList documentsStore \
+ input menu spacer toolbar !
+Components , $components @ console log !
 
 # create main toolbar
-Components , $components @ console log !
 $components toolbar ! >> mainToolbar
-mainToolbar , $mainToolbar @ console log !
+div @ document createElement ! >> currentPathButtons
+current-path @ currentPathButtons classList add ! 
+$currentPathButtons @ mainToolbar container appendChild !
+$components spacer ! @ mainToolbar container appendChild !
+button @ document createElement ! >> fullScreenButton
+⛶ >> fullScreenButton textContent
+.. $-- document fullscreen >> isFullScreen
+.. .. $-- -- document exitFullscreen !
+.. $isFullScreen ?
+.. .. $-- -- document body requestFullscreen !
+.. $isFullScreen ~ ?
+<< >> toggleFullScreen
+click , $toggleFullScreen @ fullScreenButton addEventListener !
+$fullScreenButton @ mainToolbar container appendChild !
 $mainToolbar container @ document body appendChild !
+
+# create document area
+div @ document createElement ! >> documentArea
+document-area @ documentArea classList add !
+$documentArea @ document body appendChild !
 
 # connect to documents store
 Civil @ components database ! >> civilDatabase
@@ -27,7 +48,7 @@ Documents , $Documents @ console log !
 
 # function to save a document
 .. $-- Object ! >> documentObject
-.. '$dir /$name' >> documentObject id
+.. '$dir $name' >> documentObject id
 .. $name >> documentObject name
 .. $dir >> documentObject dir
 .. $value >> documentObject value
@@ -35,17 +56,28 @@ Documents , $Documents @ console log !
 .. 'Saved document' , $saveResult @ -- console log !
 << dir name value >> saveDocument
 
-# function to open a document
-.. $dir , $-- mainToolbar , $-- Documents , $-- components \
-   @ -- components documentToolbar !
-<< dir >> openDocument
+# function to rename a document
+.. '$dir $oldName' >> oldId
+.. $oldId @ -- Documents get ! >> documentObject
+.. '$dir $newName' >> documentObject id
+.. $newName >> documentObject name
+.. $oldId , $documentObject @ -- Documents replace ! >> saveResult
+.. 'Renamed document' , $saveResult @ -- console log !
+<< dir oldName newName >> renameDocument
 
 # test create document
-'' , '' , 'test document' @ saveDocument !
-'' , 'foo' , 'test document 2' @ saveDocument !
-'/foo' , 'bar' , 'test document 3' @ saveDocument !
-'/foo/bar' , 'bat' , 'test document 3' @ saveDocument !
-'/foo/bar/bat' , 'baz' , 'test document 3' @ saveDocument !
+# '/' , '' , 'test document' @ saveDocument !
+# '/' , 'foo' , 'test document 2' @ saveDocument !
+# '/foo/' , 'bar' , 'test document 3' @ saveDocument !
+# '/foo/bar/' , 'bat' , 'test document 3' @ saveDocument !
+# '/foo/bar/bat/' , 'baz' , 'test document 3' @ saveDocument !
+
+# function to open a document
+.. $dir , $-- currentPathButtons , $-- Documents , $-- saveDocument , $-- renameDocument , \
+   $-- components @ -- components documentToolbar !
+.. $dir , $-- documentArea , $-- Documents , $-- saveDocument , \
+   $-- components @ -- components documentView !
+<< dir >> openDocument
 
 # open document on hash navigation event
 .. 1 @ -- location hash substring ! @ -- openDocument !

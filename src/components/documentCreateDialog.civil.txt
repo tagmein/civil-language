@@ -1,0 +1,32 @@
+.. '' >> newDocumentName
+.. .. .. '$--\ --\ path /' , $-- -- newDocumentName , '' @ -- -- saveDocument !
+.. .. .. '$--\ --\ path /$--\ --\ newDocumentName' >> -- -- -- location hash
+.. .. $-- newDocumentName length > 0 ?
+.. .. .. name_too_short >> -- error
+.. .. $-- newDocumentName length = 0 ?
+.. .. $error
+.. << >> handleCreate
+.. $handleCreate @ -- components dialog ! >> createDialog
+.. .. $-- path >> -- createPath
+.. $path length > 0 ?
+.. .. Home >> -- createPath
+.. $path length = 0 ?
+.. 'Create at path' , $createPath @ -- \
+    components input ! >> createDocumentPath
+.. disabled >> createDocumentPath input disabled
+.. .. $value >> -- newDocumentName
+.. << value >> updateDocumentName
+.. 'Document name' , '' , $updateDocumentName @ -- \
+    components input ! >> createDocumentName
+.. h6 @ -- document createElement ! >> createDialogTitle
+.. 'Create document' >> createDialogTitle textContent
+.. button @ -- document createElement ! >> confirmButton
+.. Create >> confirmButton textContent
+.. $createDialogTitle @ createDialog contents appendChild !
+.. $createDocumentPath container @ createDialog contents appendChild !
+.. $createDocumentName container @ createDialog contents appendChild !
+.. $confirmButton @ createDialog contents appendChild !
+.. $createDocumentName input focus !
+.. required >> createDocumentName input required
+<< path saveDocument components
+

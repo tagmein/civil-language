@@ -1,0 +1,83 @@
+'
+ .dialog {
+  background-color: #20202080;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  overflow: auto;
+  padding: 15px;
+ }
+
+.dialog-wrap {
+ margin: auto;
+ min-height: 50vh;
+ min-width: 50vw;
+ position: relative;
+}
+
+.dialog-contents {
+ background-color: #202020;
+ border: 1px solid #606060;
+ box-shadow: 0 0 20px #80808080;
+ min-height: 100%;
+ min-width: 100%;
+}
+
+.dialog-close {
+ background: transparent;
+ border: none;
+ font-size: 24px;
+ height: 43px;
+ line-height: 24px;
+ position: absolute;
+ right: -2px;
+ top: 0;
+ width: 43px;
+}
+
+button.dialog-close::before {
+ bottom: 9px;
+}
+
+.dialog-contents h6 {
+ margin: 10px;
+}
+
+.dialog-contents button {
+ display: block;
+ margin: 20px 10px 10px;
+}
+' @ addStyle !
+
+'To do: Press Esc to close open dialog' @ console info !
+
+.. $-- Object ! >> control
+.. .. $-- container remove !
+.. << >> control close
+.. div @ -- document createElement ! >> container
+.. div @ -- document createElement ! >> wrap
+.. form @ -- document createElement ! >> contents
+.. .. $event preventDefault !
+.. .. $-- onSubmit ! >> preventClose
+.. .. .. $-- -- control close !
+.. .. $preventClose ~ ?
+.. << event >> handleSubmit
+.. submit , $handleSubmit @ contents addEventListener !
+.. button @ -- document createElement ! >> closeButton
+.. dialog @ container classList add !
+.. dialog-contents @ contents classList add !
+.. dialog-wrap @ wrap classList add !
+.. dialog-close @ closeButton classList add !
+.. × >> closeButton textContent
+.. click , $control close @ closeButton addEventListener !
+.. $contents @ wrap appendChild !
+.. $closeButton @ wrap appendChild !
+.. $wrap @ container appendChild !
+.. $container @ -- document body appendChild !
+.. $contents >> control contents
+.. $control
+<< onSubmit
+

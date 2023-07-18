@@ -1,22 +1,53 @@
 '
- .document {
+ .document-list-tools {
   background-color: #202020;
   border-bottom: 1px solid #606060;
   box-sizing: border-box;
-  color: #ffffff;
-  display: block;
-  min-height: 38px;
-  padding: 7px 12px 9px;
-  text-decoration: none;
+  color: #a0a0a0;
+  display: flex;
+  flex-direction: row;
+  height: 38px;
  }
+ 
+ .document-list-tools > span {
+  display: inline-block;
+  flex-grow: 1;
+  padding: 7px 12px 9px;
+ }
+ 
+ .document-list-tools > button {
+  border-bottom: none;
+  border-right: none;
+  border-top: none;
+ }
+ 
 ' @ addStyle !
 
-.. .. .. a @ -- -- -- document createElement ! >> docLinkContainer
-.. .. .. document @ docLinkContainer classList add !
-.. .. .. $-- doc name >> docLinkContainer textContent
-.. .. .. '#$--\ doc\ id' >> docLinkContainer href
-.. .. .. $docLinkContainer @ -- -- directoryContainer appendChild !
-.. .. $doc id ~= / ?
-.. << doc :: docs !
-<< directoryContainer docs components
+.. div @ -- document createElement ! >> docListToolContainer
+.. document-list-tools @ docListToolContainer classList add !
+.. span @ -- document createElement ! >> docListCount
+.. $docListCount @ docListToolContainer appendChild !
+.. $docListToolContainer @ directoryContainer appendChild !
+.. .. document >> -- pluralized
+.. $docs length = 1 ?
+.. .. documents >> -- pluralized
+.. $docs length ~= 1 ?
+.. button @ -- document createElement ! >> docListCreate
+.. Create >> docListCreate textContent
+.. $docListCreate @ docListToolContainer appendChild !
+.. .. $-- path , $-- saveDocument , $-- components \
+       @ -- components documentCreateDialog !
+.. << >> openCreateDialog
+.. click , $openCreateDialog @ docListCreate addEventListener !
+.. '$docs\ length  $pluralized' >> docListCount textContent
+.. .. $-- -- Object ! >> docListMenuItem
+.. .. $doc name >> docListMenuItem name
+.. .. '#$doc\ id' >> docListMenuItem href
+.. .. .. $-- doc , $-- -- renameDocument , $-- -- components \
+       @ -- -- components documentManageDialog !
+.. .. << >> docListMenuItem more
+.. .. $docListMenuItem
+.. << doc :: docs ! >> docListMenuItems
+.. $directoryContainer , $docListMenuItems @ components menu !
+<< directoryContainer path docs saveDocument renameDocument components
 

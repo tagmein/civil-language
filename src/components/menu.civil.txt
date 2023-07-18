@@ -1,0 +1,61 @@
+'
+.menu {
+ max-height: 100%;
+ overflow: auto;
+}
+
+.menu > .item {
+ background-color: #202020;
+ border-bottom: 1px solid #606060;
+ box-sizing: border-box;
+ color: #ffffff;
+ display: flex;
+ flex-direction: row;
+ min-height: 38px;
+}
+
+.menu > .item > .link {
+ color: #ffffff;
+ flex-grow: 1;
+ padding: 7px 12px 9px;
+ text-decoration: none;
+}
+
+.menu > .item > button {
+ border-bottom: none;
+ border-right: none;
+ border-top: none;
+ opacity: 0;
+ transition: opacity 0.2s ease;
+}
+
+.menu > .item:hover > button {
+ opacity: 1;
+}
+
+' @ addStyle !
+
+.. div @ -- document createElement ! >> menuContainer
+.. menu @ menuContainer classList add !
+.. .. div @ -- -- document createElement ! >> itemContainer
+.. .. item @ itemContainer classList add !
+.. .. a @ -- -- document createElement ! >> linkContainer
+.. .. link @ linkContainer classList add !
+.. .. span @ -- -- document createElement ! >> linkName
+.. .. $link name >> linkName textContent
+.. .. .. $-- link href >> -- linkContainer href
+.. .. $link href ?
+.. .. .. click , $-- link action @ -- linkContainer addEventListener ! 
+.. .. $link action ?
+.. .. $linkName @ linkContainer appendChild !
+.. .. $linkContainer @ itemContainer appendChild !
+.. .. .. button @ -- -- -- document createElement ! >> linkMoreButton
+.. .. .. '···' >> linkMoreButton textContent
+.. .. .. click , $-- link more @ linkMoreButton addEventListener !
+.. .. .. $linkMoreButton @ -- itemContainer appendChild !
+.. .. $link more ?
+.. .. $itemContainer @ -- menuContainer appendChild !
+.. << link :: links !
+.. $menuContainer @ container appendChild !
+<< container links
+

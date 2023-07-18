@@ -1,20 +1,33 @@
 '
 .toolbar {
- border-bottom: 1px solid #a0a0a0;
+ border-bottom: 1px solid #606060;
  box-sizing: border-box;
- height: 39px;
+ display: flex;
+ flex-direction: row;
+ height: 38px;
+ overflow-x: auto;
+ overflow-y: hidden;
 }
 
-.toolbar > button {
+.toolbar > * {
+ flex-shrink: 0;
+}
+
+.toolbar .button, .toolbar button {
  border: none;
- border-right: 1px solid #a0a0a0;
- height: 38px;
+ border-right: 1px solid #606060;
+ height: 100%;
  vertical-align: top;
 }
 
-.toolbar > button:first-child:after {
- content: \'Home\';
+.toolbar > .button:last-child, .toolbar > button:last-child {
+ border-right: none;
 }
+
+.toolbar .spacer + .button, .toolbar .spacer + button {
+ border-left: 1px solid #606060;
+}
+
 ' @ addStyle !
 
 .. $--  Object ! >> control

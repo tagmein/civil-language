@@ -1,4 +1,15 @@
 .. $-- Object ! >> control
+..
+.. .. documents , readonly @ -- database transaction ! >> transaction
+.. .. documents @ transaction objectStore ! >> store
+.. .. $id @ store get ! >> operation
+.. .. .. .. $error @ -- reject !
+.. .. .. << error >> -- operation onerror
+.. .. .. .. $event target result @ -- resolve !
+.. .. .. << event >> -- operation onsuccess
+.. .. << resolve reject @ -- -- promise !
+.. << id >> control get
+..
 .. .. documents , readwrite @ -- database transaction ! >> transaction
 .. .. documents @ transaction objectStore ! >> store
 .. .. $value @ store put ! >> operation
@@ -8,14 +19,40 @@
 .. .. .. << event >> -- operation onsuccess
 .. .. << resolve reject @ -- -- promise !
 .. << value >> control put
-.. 
+..
+.. .. documents , readwrite @ -- database transaction ! >> transaction
+.. .. documents @ transaction objectStore ! >> store
+.. .. $oldId @ store delete !
+.. .. $store openCursor ! >> moveSubDocumentsOperation
+.. .. .. $event target result >> moveSubDocumentsCursor
+.. .. .. .. $-- moveSubDocumentsCursor value >> currentDocument
+.. .. .. .. .. $-- currentDocument id >> idToRemove
+.. .. .. .. .. $-- -- -- oldId length @ -- currentDocument dir substring ! >> dirRemainder
+.. .. .. .. .. '$--\ --\ --\ value\ id $dirRemainder' >> -- currentDocument dir
+.. .. .. .. .. '$--\ currentDocument\ dir $--\ currentDocument\ name' >> -- currentDocument id
+.. .. .. .. .. $idToRemove @ -- -- -- store delete !
+.. .. .. .. .. $-- currentDocument @ -- -- -- store add !
+.. .. .. .. '$--\ --\ oldId /' @ currentDocument dir startsWith ! ?
+.. .. .. .. $-- moveSubDocumentsCursor continue !
+.. .. .. $moveSubDocumentsCursor ?
+.. .. << event >> moveSubDocumentsOperation onsuccess
+.. .. $value @ store add ! >> saveOperation
+.. .. .. .. $error @ -- reject !
+.. .. .. << error >> -- saveOperation onerror
+.. .. .. .. $event target result @ -- resolve !
+.. .. .. << event >> -- saveOperation onsuccess
+.. .. << resolve reject @ -- -- promise !
+.. << oldId value >> control replace
+..
 .. .. documents , readonly @ -- database transaction ! >> transaction
 .. .. documents @ transaction objectStore ! >> store
 .. .. dirIndex @ store index ! >> dirIndex
 .. .. $-- -- Array ! >> searchResults
 .. .. .. $-- dir @ -- dirIndex openCursor ! >> getByDirRequest
 .. .. .. .. $-- getByDirRequest result >> searchCursor
-.. .. .. .. .. $-- searchCursor value @ -- -- -- searchResults push !
+.. .. .. .. .. $-- searchCursor value >> candidateDocument
+.. .. .. .. .. .. $-- candidateDocument @ -- -- -- -- searchResults push !
+.. .. .. .. .. $candidateDocument id ~= / ?
 .. .. .. .. .. $-- searchCursor continue !
 .. .. .. .. $searchCursor ?
 .. .. .. .. .. $-- -- resolve !
@@ -24,9 +61,8 @@
 .. .. .. .. $-- reject !
 .. .. .. << >> getByDirRequest onerror
 .. .. << resolve reject @ -- -- promise !
-.. .. $searchResults
+.. .. name @ searchResults sortByProperty !
 .. << dir >> control getByDir
 .. $control
 << database
-
 
