@@ -2,9 +2,10 @@
  .toolbarDirectory {
   background-color: #202020;
   border: 1px solid #606060;
-  bottom: 1px;
+  border-bottom: none;
   box-shadow: 0 0 20px #80808080;
   box-sizing: border-box;
+  max-height: calc(100vh - 38px);
   min-width: 240px;
   opacity: 0;
   overflow: auto;
@@ -65,15 +66,14 @@ mouseleave , $closeToolbarDirectory @ directoryContainer addEventListener !
 << dir segmentButton Documents saveDocument renameDocument components >> openToolbarDirectory
 
 .. '' >> toolbar textContent
-.. / @ dir split ! >> rawDirSegments
-.. $-- decodeURIComponent @ rawDirSegments map ! >> dirSegments
+.. / @ dir split ! >> dirSegments
 .. $-- Array ! >> linkSegments
 .. .. a @ -- -- document createElement ! >> segmentButton
 .. .. $segment @ -- linkSegments push !
 .. .. / @ -- linkSegments join ! >> segmentFullPath
 .. .. $segmentButton @ -- toolbar appendChild !
 .. .. '#$segmentFullPath' >> segmentButton href
-.. .. $segment >> segmentButton textContent
+.. .. $segment @ -- -- decodeURIComponent ! >> segmentButton textContent
 .. .. button @ segmentButton classList add !
 .. .. .. $-- segmentFullPath , $-- segmentButton , $-- -- Documents , \
           $-- -- saveDocument , $-- -- renameDocument , $-- -- components \

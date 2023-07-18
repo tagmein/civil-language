@@ -135,6 +135,8 @@ h6 {
 }
 
 .document-area {
+ display: flex;
+ flex-direction: column;
  flex-grow: 1;
  overflow: auto;
 }

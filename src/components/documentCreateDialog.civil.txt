@@ -1,13 +1,14 @@
 .. '' >> newDocumentName
-.. .. .. '$--\ --\ path /' , $-- -- newDocumentName , '' @ -- -- saveDocument !
-.. .. .. '$--\ --\ path /$--\ --\ newDocumentName' >> -- -- -- location hash
+.. .. .. $-- -- newDocumentName @ -- -- -- encodeURIComponent ! >> encodedName
+.. .. .. '$--\ --\ path /' , $encodedName , '' @ -- -- saveDocument !
+.. .. .. '$--\ --\ path /$encodedName' >> -- -- -- location hash
 .. .. $-- newDocumentName length > 0 ?
 .. .. .. name_too_short >> -- error
 .. .. $-- newDocumentName length = 0 ?
 .. .. $error
 .. << >> handleCreate
 .. $handleCreate @ -- components dialog ! >> createDialog
-.. .. $-- path >> -- createPath
+.. .. $-- path @ -- -- decodeURIComponent ! >> -- createPath
 .. $path length > 0 ?
 .. .. Home >> -- createPath
 .. $path length = 0 ?

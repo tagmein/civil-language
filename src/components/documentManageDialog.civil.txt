@@ -1,7 +1,8 @@
 'To do: Select new folder to move document in document manage dialog' @ console info !
 .. $document name >> documentName
+.. .. .. $-- -- documentName @ -- -- -- encodeURIComponent ! >> encodedName
 .. .. .. $-- -- document dir , $-- -- document name , \
-          $-- -- documentName @ -- -- renameDocument !
+          $encodedName @ -- -- renameDocument !
 .. .. .. '$--\ --\ document\ dir $--\ --\ documentName' \
           >> -- -- -- location hash
 .. .. $-- documentName length > 0 ?
@@ -10,16 +11,18 @@
 .. .. $error
 .. << >> handleSave
 .. $handleSave @ -- components dialog ! >> manageDialog
-.. .. $-- document dir >> -- documentPath
-.. $document dir length > 0 ?
+.. 0 , $document dir length -1 @ document dir substring ! >> realPath
+.. .. $-- realPath @ -- -- decodeURIComponent ! >> -- documentPath
+.. $realPath length > 0 ?
 .. .. Home >> -- documentPath
-.. $document dir length = 0 ?
+.. $realPath length = 0 ?
 .. 'Document path' , $documentPath @ -- \
     components input ! >> documentPathInput
 .. disabled >> documentPathInput input disabled
 .. .. $value >> -- documentName
 .. << value >> updateDocumentName
-.. 'Document name' , $document name , $updateDocumentName @ -- \
+.. $document name @ -- decodeURIComponent ! >> decodedName
+.. 'Document name' , $decodedName , $updateDocumentName @ -- \
     components input ! >> documentName
 .. h6 @ -- document createElement ! >> manageDialogTitle
 .. 'Manage document' >> manageDialogTitle textContent

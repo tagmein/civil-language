@@ -1,7 +1,21 @@
 '
+
+.document-view {
+ background-color: #404040;
+ border: 1px solid #606060;
+ border-bottom: none;
+ box-shadow: 0 0 20px #80808080;
+ flex-grow: 1;
+ margin: 19px 19px 0 19px;
+}
+
 ' @ addStyle !
 
 .. '' >> area textContent
-.. $dir >> area textContent
-<< dir area Documents saveDocument components
+.. $path @ Documents get ! >> activeDocument
+.. 'Editing document' , $activeDocument @ -- console log !
+.. div @ -- document createElement ! >> view
+.. document-view @ view classList add !
+.. $view @ area appendChild !
+<< path area Documents saveDocument renameDocument components
 

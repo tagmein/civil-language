@@ -41,7 +41,7 @@
 .. click , $openCreateDialog @ docListCreate addEventListener !
 .. '$docs\ length  $pluralized' >> docListCount textContent
 .. .. $-- -- Object ! >> docListMenuItem
-.. .. $doc name >> docListMenuItem name
+.. .. $doc name @ -- -- decodeURIComponent ! >> docListMenuItem name
 .. .. '#$doc\ id' >> docListMenuItem href
 .. .. .. $-- doc , $-- -- renameDocument , $-- -- components \
        @ -- -- components documentManageDialog !

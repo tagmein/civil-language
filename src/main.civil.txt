@@ -75,7 +75,7 @@ Documents , $Documents @ console log !
 # function to open a document
 .. $dir , $-- currentPathButtons , $-- Documents , $-- saveDocument , $-- renameDocument , \
    $-- components @ -- components documentToolbar !
-.. $dir , $-- documentArea , $-- Documents , $-- saveDocument , \
+.. $dir , $-- documentArea , $-- Documents , $-- saveDocument , $-- renameDocument , \
    $-- components @ -- components documentView !
 << dir >> openDocument
 
