@@ -12,8 +12,10 @@
 }
 
 .document-view-code {
+ box-sizing: border-box;
  height: calc(100vh - 59px);
  overflow: auto;
+ padding: 3px;
  width: 50%;
 }
 
@@ -21,12 +23,14 @@
  border-bottom: 1px solid #505050;
  box-sizing: border-box;
  min-height: 32px;
- padding: 8px 0 0 8px;
+ padding: 4px;
+ position: relative;
 }
 
 .document-view-code .word {
  display: inline-block;
- padding: 0 8px 8px 0;
+ padding: 4px;
+ position: relative;
 }
 
 .document-view-preview {
@@ -40,10 +44,53 @@
  width: 50%;
 }
 
+@keyframes caret-blink {
+ 0% {
+  opacity: 1;
+ }
+ 12.5% {
+  opacity: 1;
+ }
+ 37.5% {
+  opacity: 1;
+ }
+ 62.5% {
+  opacity: 0;
+ }
+ 87.5% {
+  opacity: 0;
+ }
+ 100% {
+  opacity: 1;
+ }
+}
+
+.document-view-code .caret {
+ border-left: 1px solid #a0a0a0;
+ border-right: 1px solid #808080;
+ display: inline-block;
+ height: 23px;
+ left: 4px;
+ position: absolute;
+ top: 4px;
+}
+
+.document-view-code:focus .caret {
+ animation: caret-blink 1.5s infinite;
+ border-left: 1px solid #d0d0d0;
+ border-right: 1px solid #a0a0a0;
+}
+
 ' @ addStyle !
 
 .. '' >> area textContent
+.. .. / >> -- path 
+.. $path = '' ?
 .. $path @ Documents get ! >> activeDocument
+.. .. .. / , '' , '' @ -- -- saveDocument !
+.. .. $-- path = / ?
+.. .. $-- path @ -- Documents get ! >> -- activeDocument
+.. $activeDocument ~ ?
 .. 'Editing document' , $activeDocument @ -- console log !
 .. div @ -- document createElement ! >> view
 .. document-view @ view classList add !
@@ -52,11 +99,14 @@
 .. 0 >> code tabIndex
 .. iframe @ -- document createElement ! >> preview
 .. document-view-preview @ preview classList add !
-.. 1 >> preview tabIndex
 .. $code @ view appendChild !
 .. $preview @ view appendChild !
 .. $view @ area appendChild !
 .. $activeDocument value @ -- civil parse ! >> activeValue
+.. div @ -- document createElement ! >> finalLineElement
+.. line @ finalLineElement classList add !
+.. div @ -- document createElement ! >> caretElement
+.. caret @ caretElement classList add !
 .. .. '' >> -- code textContent
 .. .. .. div @ -- -- -- document createElement ! >> lineElement
 .. .. .. line @ lineElement classList add !
@@ -67,6 +117,8 @@
 .. .. .. .. $word >> wordElement textContent
 .. .. .. << word :: line !
 .. .. << line :: -- activeValue !
+.. .. $-- finalLineElement @ -- code appendChild !
+.. .. $-- caretElement @ -- finalLineElement appendChild !
 .. << >> render
 .. $render !
 << path area Documents saveDocument renameDocument components
