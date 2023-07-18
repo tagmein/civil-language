@@ -22,7 +22,7 @@
 .document-view-code .line {
  border-bottom: 1px solid #505050;
  box-sizing: border-box;
- min-height: 32px;
+ min-height: 38px;
  padding: 4px;
  position: relative;
 }
@@ -66,19 +66,35 @@
 }
 
 .document-view-code .caret {
- border-left: 1px solid #a0a0a0;
- border-right: 1px solid #808080;
+ color: transparent;
  display: inline-block;
- height: 23px;
+ height: 19px;
  left: 4px;
  position: absolute;
  top: 4px;
 }
 
-.document-view-code:focus .caret {
+.document-view-code > .line > .caret {
+ left: 8px;
+ top: 8px;
+}
+
+.document-view-code .caret::before {
+ border-left: 1px solid #a0a0a0;
+ border-right: 1px solid #808080;
+ content: \'\';
+ display: block;
+ height: 19px;
+ right: 0;
+ position: absolute;
+ top: 1px;
+ width: 0;
+}
+
+.document-view-code:focus .caret::before {
  animation: caret-blink 1.5s infinite;
- border-left: 1px solid #d0d0d0;
- border-right: 1px solid #a0a0a0;
+ border-left: 1px solid #ffffff;
+ border-right: 1px solid #f0f0f0;
 }
 
 ' @ addStyle !
@@ -107,6 +123,8 @@
 .. line @ finalLineElement classList add !
 .. div @ -- document createElement ! >> caretElement
 .. caret @ caretElement classList add !
+..
+.. # render document value
 .. .. '' >> -- code textContent
 .. .. .. div @ -- -- -- document createElement ! >> lineElement
 .. .. .. line @ lineElement classList add !
@@ -121,5 +139,20 @@
 .. .. $-- caretElement @ -- finalLineElement appendChild !
 .. << >> render
 .. $render !
+..
+.. # handle key press event
+.. .. $-- caretElement parentElement >> insertPoint
+.. .. .. div @ -- -- -- document createElement ! >> wordElement
+.. .. .. word @ wordElement classList add !
+.. .. .. $wordElement @ -- insertPoint appendChild !
+.. .. .. $-- event key >> wordElement textContent
+.. .. .. $wordElement textContent >> -- -- caretElement textContent
+.. .. .. $-- -- caretElement @ wordElement appendChild !
+.. .. line @ insertPoint classList contains ! ?
+.. .. .. on-a-word @ -- -- -- console log !
+.. .. word @ insertPoint classList contains ! ?
+.. .. $event key @ -- -- console log !
+.. << event >> handleKeyPress
+.. keypress , $handleKeyPress @ code addEventListener !
 << path area Documents saveDocument renameDocument components
 

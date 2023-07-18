@@ -90,8 +90,8 @@ button:active::before, .button:active::before {
 }
 
 *::selection {
- background-color: #ffffff;
- color: #000000;
+ background-color: #a0a0a0;
+ color: #ffffff;
 }
 
 h1, h2, h3, h4, h5, h6, p {
