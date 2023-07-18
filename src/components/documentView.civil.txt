@@ -5,8 +5,39 @@
  border: 1px solid #606060;
  border-bottom: none;
  box-shadow: 0 0 20px #80808080;
+ display: flex;
+ flex-direction: row;
  flex-grow: 1;
  margin: 19px 19px 0 19px;
+}
+
+.document-view-code {
+ height: 100%;
+ overflow: auto;
+ width: 50%;
+}
+
+.document-view-code .line {
+ border-bottom: 1px solid #505050;
+ box-sizing: border-box;
+ min-height: 32px;
+ padding: 5px 0 0 5px;
+}
+
+.document-view-code .word {
+ display: inline-block;
+ padding: 0 5px 5px 0;
+}
+
+.document-view-preview {
+ background-color: #303030;
+ border: none;
+ border-left: 1px solid #606060;
+ box-shadow: inset 0 0 40px #00000060;
+ box-sizing: border-box;
+ min-height: 100%;
+ overflow: auto;
+ width: 50%;
 }
 
 ' @ addStyle !
@@ -16,6 +47,21 @@
 .. 'Editing document' , $activeDocument @ -- console log !
 .. div @ -- document createElement ! >> view
 .. document-view @ view classList add !
+.. div @ -- document createElement ! >> code
+.. document-view-code @ code classList add !
+.. iframe @ -- document createElement ! >> preview
+.. document-view-preview @ preview classList add !
+.. $code @ view appendChild !
+.. $preview @ view appendChild !
 .. $view @ area appendChild !
+.. '\$activeDocument value' @ -- civil parse ! >> activeValue
+.. .. '' >> -- code textContent
+.. .. .. div @ -- -- -- document createElement ! >> lineElement
+.. .. .. line @ lineElement classList add !
+.. .. .. $lineElement @ -- -- code appendChild !
+.. .. .. $line @ -- -- -- console log !
+.. .. << line :: -- activeValue !
+.. << >> render
+.. $render !
 << path area Documents saveDocument renameDocument components
 
