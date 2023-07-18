@@ -628,6 +628,11 @@ civil.states = {
    const func = me.data.focus
    const applyPath = me.data.applyPath.splice(0)
    const value = civil.get(scope, scope, applyPath, true)
+   if (!Array.isArray(value)) {
+    throw new Error(
+     `:: was expecting '${applyPath.join(' ')}' to be an Array, got ${typeof value}`
+    )
+   }
    const output = []
    me.data.focus = async function () {
     for (let i = 0; i < value.length; i++) {
