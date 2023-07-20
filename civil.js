@@ -1,13 +1,13 @@
 Array.prototype.sortAsync = async function (comparator) {
  const promises = []
- const compareMap = new Map
+ const compareMap = new Map()
  const array = this
  for (const a of array) {
   for (const b of array) {
    promises.push(
     (async function () {
      if (!compareMap.has(a)) {
-      compareMap.set(a, new Map)
+      compareMap.set(a, new Map())
      }
      compareMap.get(a).set(b, await comparator(a, b))
     })()
@@ -35,17 +35,15 @@ Array.prototype.sortByProperty = function (propertyName) {
  })
 }
 
-const civil = globalThis.civil = {}
+const civil = (globalThis.civil = {})
 
 civil.code = Symbol('civil.code')
 civil.namedArguments = Symbol('civil.namedArguments')
 
-civil.get = function (scope, initialTrace, _path, read=false) {
+civil.get = function (scope, initialTrace, _path, read = false) {
  const path = _path.slice(0)
  const firstSegment = path.shift()
- let trace = read
-  ? initialTrace[firstSegment]
-  : civil.resolve(initialTrace, firstSegment)
+ let trace = read ? initialTrace[firstSegment] : civil.resolve(initialTrace, firstSegment)
  forSegment: for (const segment of path) {
   if (typeof trace === 'undefined' || trace === null) {
    throw new Error(`cannot read '${segment}' of ${trace}: '${_path.join(' ')}'`)
@@ -75,8 +73,7 @@ civil.get = function (scope, initialTrace, _path, read=false) {
   }
   if (typeof trace[realSegment] === 'function') {
    trace = trace[realSegment].bind(trace)
-  }
-  else {
+  } else {
    trace = trace[realSegment]
   }
  }
@@ -93,7 +90,7 @@ civil.parse = function (source) {
  let word = ''
  const state = {
   inEscape: false,
-  inString: false
+  inString: false,
  }
  function pushWord() {
   if (word.length || state.inString) {
@@ -114,14 +111,12 @@ civil.parse = function (source) {
     word += char === 'n' ? '\n' : ESCAPE + char
    }
    state.inEscape = false
-  }
-  else {
-    switch (char) {
+  } else {
+   switch (char) {
     case BREAK:
      if (state.inString) {
       word += char
-     }
-     else {
+     } else {
       pushLine()
      }
      break
@@ -135,8 +130,7 @@ civil.parse = function (source) {
     case SPACE:
      if (state.inString) {
       word += char
-     }
-     else {
+     } else {
       pushWord()
      }
      break
@@ -182,8 +176,7 @@ civil.resolve = function civilResolve(scope, token) {
   if (isInEscape) {
    isInEscape = false
    part += char
-  }
-  else {
+  } else {
    switch (char) {
     case ESCAPE:
      isInEscape = true
@@ -192,8 +185,7 @@ civil.resolve = function civilResolve(scope, token) {
      if (isVariable) {
       pushPart()
       isVariable = false
-     }
-     else {
+     } else {
       part += char
      }
      break
@@ -210,25 +202,14 @@ civil.resolve = function civilResolve(scope, token) {
  function compoundGet(first, ...rest) {
   const value = scope[first]
   if (rest.length > 0 && (typeof value === 'undefined' || value === null)) {
-   throw new Error(
-    `Cannot read property '${rest.join(' ')}' of ${first} because it is ${value}`
-   )
+   throw new Error(`Cannot read property '${rest.join(' ')}' of ${first} because it is ${value}`)
   }
-  return rest.length > 0
-   ? civil.get(scope, value, rest, true)
-   : value
+  return rest.length > 0 ? civil.get(scope, value, rest, true) : value
  }
  if (parts.length === 1) {
-  return partVariables[0]
-   ? compoundGet(...parts[0].split(' '))
-   : parts[0]
+  return partVariables[0] ? compoundGet(...parts[0].split(' ')) : parts[0]
  }
- return parts
-  .map((part, i) => partVariables[i]
-   ? compoundGet(...part.split(' '))
-   : part
-  )
-  .join('')
+ return parts.map((part, i) => (partVariables[i] ? compoundGet(...part.split(' ')) : part)).join('')
 }
 
 civil.set = function civilSet(scope, value, _path) {
@@ -285,12 +266,10 @@ civil.scope = function civilScope(scope) {
       await me.state.complete(me, scope)
       me.state = civil.states[civil.initialState]
      }
-    }
-    else {
+    } else {
      await me.state.apply(me, scope, word)
     }
-   }
-   else if (me.state.apply) {
+   } else if (me.state.apply) {
     await me.state.apply(me, scope, word)
    }
   },
@@ -304,7 +283,7 @@ civil.scope = function civilScope(scope) {
    // console.log(':::: --- break ---')
   },
   data: {
-   isAtBreak: true
+   isAtBreak: true,
   },
   async end() {
    if (me.previousLineState?.completeLines) {
@@ -317,13 +296,11 @@ civil.scope = function civilScope(scope) {
    await me.state.begin(me)
    if (typeof arg === 'string') {
     return me.run(civil.parse(arg))
-   }
-   else if (Array.isArray(arg)) {
+   } else if (Array.isArray(arg)) {
     if (arg.length > 0) {
      if (typeof arg[0] === 'string') {
       return me.run(arg[0])
-     }
-     else {
+     } else {
       for (let lineI = 0; lineI < arg.length; lineI++) {
        const lineWords = arg[lineI].slice()
        let deltaWord = 0
@@ -336,16 +313,14 @@ civil.scope = function civilScope(scope) {
            `Expecting identifier after !! on line ${lineI} word 1 of (code) ${arg[lineI].join(' ')}`
           )
          }
-         civil.set(scope, me.data.error, [ errorName ])
+         civil.set(scope, me.data.error, [errorName])
          me.data.error = undefined
          deltaWord += 2
          me.state = me.lineState = civil.states[civil.initialState]
-        }
-        else {
+        } else {
          continue
         }
-       }
-       else if (arg[lineI][0] === '!!') {
+       } else if (arg[lineI][0] === '!!') {
         continue
        }
        for (let wordI = 0; wordI < lineWords.length; wordI++) {
@@ -355,14 +330,14 @@ civil.scope = function civilScope(scope) {
         const word = lineWords[wordI]
         if (word === '!debug' && !me.data.recording) {
          debugger
-        }
-        else {
+        } else {
          try {
           await me.apply(word)
-         }
-         catch (e) {
+         } catch (e) {
           console.warn(
-           `Error at '${word}' on line ${lineI} word ${wordI + deltaWord} of (code) ${arg[lineI].join(' ')}`
+           `Error at '${word}' on line ${lineI} word ${wordI + deltaWord} of (code) ${arg[
+            lineI
+           ].join(' ')}`
           )
           console.error(e)
           me.data.error = e
@@ -374,8 +349,7 @@ civil.scope = function civilScope(scope) {
        }
        try {
         await me.break()
-       }
-       catch (e) {
+       } catch (e) {
         console.warn(`Error at end of line ${lineI} (code) ${arg[lineI].join(' ')}`)
         console.error(e)
         me.data.error = e
@@ -384,8 +358,7 @@ civil.scope = function civilScope(scope) {
       if (!me.data.error && me.lineState?.completeLines) {
        try {
         await me.lineState.completeLines(me, scope)
-       }
-       catch (e) {
+       } catch (e) {
         console.warn('Error at end')
         console.error(e)
         me.data.error = e
@@ -398,8 +371,7 @@ civil.scope = function civilScope(scope) {
       return me.data.focus
      }
     }
-   }
-   else {
+   } else {
     throw new Error(`invalid argument run(${typeof arg})`)
    }
   },
@@ -424,9 +396,7 @@ civil.states = {
   },
   complete(me, scope) {
    if (me.data.pendingHand.length > 0) {
-    me.data.hand.push(
-     me.data.pendingHand.splice(0)
-    )
+    me.data.hand.push(me.data.pendingHand.splice(0))
    }
   },
   completeLines(me, scope) {
@@ -434,33 +404,31 @@ civil.states = {
     const item = me.data.hand.shift()
     me.data.focus = civil.get(scope, scope, item)
    }
-  }
+  },
  },
- 
+
  ',': {
   '': ',',
   complete(me, scope) {
    if (me.data.pendingHand.length > 0) {
-    me.data.hand.push(
-     me.data.pendingHand.splice(0)
-    )
+    me.data.hand.push(me.data.pendingHand.splice(0))
    }
   },
-  immediate: true
+  immediate: true,
  },
- 
+
  '~': {
   '': '~',
   complete(me, scope) {
    const handPaths = me.data.hand.splice(0)
    if (handPaths.length > 0) {
-    const hand = handPaths.map(path => civil.get(scope, scope, path))
-    me.data.value = !hand.some(x => x)
+    const hand = handPaths.map((path) => civil.get(scope, scope, path))
+    me.data.value = !hand.some((x) => x)
    }
   },
-  immediate: true
+  immediate: true,
  },
- 
+
  '?': {
   '': '?',
   async complete(me, scope) {
@@ -475,8 +443,7 @@ civil.states = {
     }
     if (me.data.focus) {
      me.data.focus = await condition()
-    }
-    else {
+    } else {
      me.data.focus = undefined
     }
     return
@@ -488,19 +455,18 @@ civil.states = {
    }
    const handPaths = me.data.hand.splice(0)
    if (handPaths.length > 0) {
-    const hand = handPaths.map(path => civil.get(scope, scope, path))
-    if (hand.some(x => x)) {
-      me.data.focus = await me.data.focus()
-      return
+    const hand = handPaths.map((path) => civil.get(scope, scope, path))
+    if (hand.some((x) => x)) {
+     me.data.focus = await me.data.focus()
+     return
     }
-   }
-   else if (me.data.value) {
+   } else if (me.data.value) {
     me.data.focus = await me.data.focus()
     return
    }
    me.data.focus = undefined
   },
-  immediate: true
+  immediate: true,
  },
 
  '@': {
@@ -515,21 +481,20 @@ civil.states = {
    const functionPath = me.data.functionPath.splice(0)
    const func = civil.get(scope, scope, functionPath, true)
    if (typeof func !== 'function') {
-    throw new Error(`@ expects '${
-     functionPath.join(' ')
-    }' to resolve to a function, got ${typeof func}`)
+    throw new Error(
+     `@ expects '${functionPath.join(' ')}' to resolve to a function, got ${typeof func}`
+    )
    }
    const handPaths = me.data.hand.splice(0)
    if (handPaths.length === 0) {
     me.data.focus = func.bind(undefined, me.data.focus)
-   }
-   else {
-    const hand = handPaths.map(path => civil.get(scope, scope, path))
+   } else {
+    const hand = handPaths.map((path) => civil.get(scope, scope, path))
     me.data.focus = func.bind(undefined, ...hand)
    }
-  }
+  },
  },
- 
+
  '!': {
   '': '!',
   async complete(me, scope) {
@@ -537,24 +502,26 @@ civil.states = {
     const functionPath = me.data.hand.shift()
     me.data.focus = civil.get(scope, scope, functionPath)
     if (typeof me.data.focus !== 'function') {
-     throw new Error(`! may only be used after a function, got ${
-      typeof me.data.focus
-     } at '${functionPath.join(' ')}'`)
+     throw new Error(
+      `! may only be used after a function, got ${typeof me.data.focus} at '${functionPath.join(
+       ' '
+      )}'`
+     )
     }
    }
    if (typeof me.data.focus !== 'function') {
     throw new Error(`! may only be used after a function, got ${typeof me.data.focus}`)
    }
    const handPaths = me.data.hand.splice(0)
-   const args = handPaths.map(path => civil.get(scope, scope, path))
+   const args = handPaths.map((path) => civil.get(scope, scope, path))
    me.data.focus = await me.data.focus(...args)
   },
-  immediate: true
+  immediate: true,
  },
 
  '#': {
   '': '#',
-  capture: true
+  capture: true,
  },
 
  '..': {
@@ -572,14 +539,12 @@ civil.states = {
   },
   capture: true,
   complete(me, scope) {
-   me.data.recording.push(
-    me.data.recordingLine.splice(0)
-   )
+   me.data.recording.push(me.data.recordingLine.splice(0))
   },
   completeLines(me, scope) {
    me.data.focus = me.data.lastRecording = me.data.recording.splice(0)
    // console.log('finish recording', me.data.focus.slice())
-  }
+  },
  },
 
  '<<': {
@@ -599,8 +564,7 @@ civil.states = {
    me.data.focus = function namedArguments(...args) {
     if (args[0] === civil.namedArguments) {
      return argumentNames.slice()
-    }
-    else if (args[0] === civil.code) {
+    } else if (args[0] === civil.code) {
      return code.slice()
     }
     const newScope = { '--': scope }
@@ -609,7 +573,7 @@ civil.states = {
     }
     return civil.scope(newScope).run(code)
    }
-  }
+  },
  },
 
  '>>': {
@@ -621,13 +585,12 @@ civil.states = {
    me.data.destinationPath = []
   },
   complete(me, scope) {
-   const value = me.data.hand.length > 0
-    ? civil.get(scope, scope, me.data.hand.shift())
-    : me.data.focus
+   const value =
+    me.data.hand.length > 0 ? civil.get(scope, scope, me.data.hand.shift()) : me.data.focus
    civil.set(scope, value, me.data.destinationPath.splice(0))
-  }
+  },
  },
- 
+
  ':': {
   '': ':',
   apply(me, scope, word) {
@@ -646,12 +609,11 @@ civil.states = {
    const func = me.data.focus
    const applyMultiple = me.data.applyMultiple.splice(0)
    me.data.focus = async function () {
-    await Promise.all(
-     applyMultiple.map(word => func(word)))
+    await Promise.all(applyMultiple.map((word) => func(word)))
    }
-  }
+  },
  },
- 
+
  '::': {
   '': '::',
   apply(me, scope, word) {
@@ -671,9 +633,7 @@ civil.states = {
    const applyPath = me.data.applyPath.splice(0)
    const value = civil.get(scope, scope, applyPath, true)
    if (!Array.isArray(value)) {
-    throw new Error(
-     `:: was expecting '${applyPath.join(' ')}' to be an Array, got ${typeof value}`
-    )
+    throw new Error(`:: was expecting '${applyPath.join(' ')}' to be an Array, got ${typeof value}`)
    }
    const output = []
    me.data.focus = async function () {
@@ -682,7 +642,7 @@ civil.states = {
     }
     return output
    }
-  }
+  },
  },
 
  '~=': {
@@ -696,10 +656,10 @@ civil.states = {
   complete(me, scope) {
    const handPaths = me.data.hand.splice(0)
    const compareToPath = me.data.compareToPath.splice(0)
-   const handValues = handPaths.map(handPath => civil.get(scope, scope, handPath))
+   const handValues = handPaths.map((handPath) => civil.get(scope, scope, handPath))
    const compareToValue = civil.get(scope, scope, compareToPath)
-   me.data.focus = handValues.some(handValue => handValue !== compareToValue)
-  }
+   me.data.focus = handValues.some((handValue) => handValue !== compareToValue)
+  },
  },
 
  '=': {
@@ -713,10 +673,10 @@ civil.states = {
   complete(me, scope) {
    const handPaths = me.data.hand.splice(0)
    const compareToPath = me.data.compareToPath.splice(0)
-   const handValues = handPaths.map(handPath => civil.get(scope, scope, handPath))
+   const handValues = handPaths.map((handPath) => civil.get(scope, scope, handPath))
    const compareToValue = civil.get(scope, scope, compareToPath)
-   me.data.focus = handValues.some(handValue => handValue === compareToValue)
-  }
+   me.data.focus = handValues.some((handValue) => handValue === compareToValue)
+  },
  },
 
  '<': {
@@ -730,10 +690,10 @@ civil.states = {
   complete(me, scope) {
    const handPaths = me.data.hand.splice(0)
    const compareToPath = me.data.compareToPath.splice(0)
-   const handValues = handPaths.map(handPath => civil.get(scope, scope, handPath))
+   const handValues = handPaths.map((handPath) => civil.get(scope, scope, handPath))
    const compareToValue = civil.get(scope, scope, compareToPath)
-   me.data.focus = handValues.some(handValue => handValue < compareToValue)
-  }
+   me.data.focus = handValues.some((handValue) => handValue < compareToValue)
+  },
  },
 
  '>': {
@@ -747,10 +707,10 @@ civil.states = {
   complete(me, scope) {
    const handPaths = me.data.hand.splice(0)
    const compareToPath = me.data.compareToPath.splice(0)
-   const handValues = handPaths.map(handPath => civil.get(scope, scope, handPath))
+   const handValues = handPaths.map((handPath) => civil.get(scope, scope, handPath))
    const compareToValue = civil.get(scope, scope, compareToPath)
-   me.data.focus = handValues.some(handValue => handValue > compareToValue)
-  }
+   me.data.focus = handValues.some((handValue) => handValue > compareToValue)
+  },
  },
 
  '<=': {
@@ -764,10 +724,10 @@ civil.states = {
   complete(me, scope) {
    const handPaths = me.data.hand.splice(0)
    const compareToPath = me.data.compareToPath.splice(0)
-   const handValues = handPaths.map(handPath => civil.get(scope, scope, handPath))
+   const handValues = handPaths.map((handPath) => civil.get(scope, scope, handPath))
    const compareToValue = civil.get(scope, scope, compareToPath)
-   me.data.focus = handValues.some(handValue => handValue <= compareToValue)
-  }
+   me.data.focus = handValues.some((handValue) => handValue <= compareToValue)
+  },
  },
 
  '>=': {
@@ -781,10 +741,9 @@ civil.states = {
   complete(me, scope) {
    const handPaths = me.data.hand.splice(0)
    const compareToPath = me.data.compareToPath.splice(0)
-   const handValues = handPaths.map(handPath => civil.get(scope, scope, handPath))
+   const handValues = handPaths.map((handPath) => civil.get(scope, scope, handPath))
    const compareToValue = civil.get(scope, scope, compareToPath)
-   me.data.focus = handValues.some(handValue => handValue >= compareToValue)
-  }
- }
+   me.data.focus = handValues.some((handValue) => handValue >= compareToValue)
+  },
+ },
 }
-
