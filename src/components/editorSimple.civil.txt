@@ -1,0 +1,23 @@
+'
+.editor-simple {
+ border: none;
+ box-sizing: border-box;
+ font-family: monospace;
+ overflow: auto;
+ padding: 10px;
+ resize: none;
+}
+
+' @ addStyle !
+
+.. $-- Object ! >> control
+.. textarea @ -- document createElement ! >> control container
+.. editor-simple @ control container classList add !
+.. $initialValue >> control container value
+.. .. $-- control container value @ -- onUpdateValue !
+.. << event >> handleChangeImmediate
+.. $handleChangeImmediate , 250 @ components debounce ! >> handleChange
+.. keyup , $handleChange @ control container addEventListener !
+.. $control
+<< initialValue onUpdateValue components
+

@@ -209,6 +209,11 @@ civil.resolve = function civilResolve(scope, token) {
  pushPart()
  function compoundGet(first, ...rest) {
   const value = scope[first]
+  if (rest.length > 0 && (typeof value === 'undefined' || value === null)) {
+   throw new Error(
+    `Cannot read property '${rest.join(' ')}' of ${first} because it is ${value}`
+   )
+  }
   return rest.length > 0
    ? civil.get(scope, value, rest, true)
    : value
@@ -320,8 +325,34 @@ civil.scope = function civilScope(scope) {
      }
      else {
       for (let lineI = 0; lineI < arg.length; lineI++) {
-       for (let wordI = 0; wordI < arg[lineI].length; wordI++) {
-        const word = arg[lineI][wordI]
+       const lineWords = arg[lineI].slice()
+       let deltaWord = 0
+       if (me.data.error) {
+        if (lineWords[0] === '!!') {
+         lineWords.shift()
+         const errorName = lineWords.shift()
+         if (typeof errorName !== 'string') {
+          throw new Error(
+           `Expecting identifier after !! on line ${lineI} word 1 of (code) ${arg[lineI].join(' ')}`
+          )
+         }
+         civil.set(scope, me.data.error, [ errorName ])
+         me.data.error = undefined
+         deltaWord += 2
+         me.state = me.lineState = civil.states[civil.initialState]
+        }
+        else {
+         continue
+        }
+       }
+       else if (arg[lineI][0] === '!!') {
+        continue
+       }
+       for (let wordI = 0; wordI < lineWords.length; wordI++) {
+        if (me.data.error) {
+         break
+        }
+        const word = lineWords[wordI]
         if (word === '!debug' && !me.data.recording) {
          debugger
         }
@@ -330,29 +361,40 @@ civil.scope = function civilScope(scope) {
           await me.apply(word)
          }
          catch (e) {
-          console.error(`Error at '${word}' on line ${lineI} word ${wordI}: ${arg[lineI].join(' ')}`)
-          throw e
+          console.warn(
+           `Error at '${word}' on line ${lineI} word ${wordI + deltaWord} of (code) ${arg[lineI].join(' ')}`
+          )
+          console.error(e)
+          me.data.error = e
          }
         }
+       }
+       if (me.data.error) {
+        continue
        }
        try {
         await me.break()
        }
        catch (e) {
-        console.error(`Error at end of line ${lineI}: ${arg[lineI].join(' ')}`)
-        throw e
+        console.warn(`Error at end of line ${lineI} (code) ${arg[lineI].join(' ')}`)
+        console.error(e)
+        me.data.error = e
        }
       }
-      if (me.lineState?.completeLines) {
+      if (!me.data.error && me.lineState?.completeLines) {
        try {
         await me.lineState.completeLines(me, scope)
        }
        catch (e) {
-        console.error('Error at end')
-        throw e
+        console.warn('Error at end')
+        console.error(e)
+        me.data.error = e
        }
       }
       // console.log('finished run', { code: arg }, me)
+      if (me.data.error) {
+       throw me.data.error
+      }
       return me.data.focus
      }
     }

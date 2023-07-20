@@ -11,10 +11,10 @@
 $Object ! >> components
 .. './src/components/$name .civil.txt' @ -- load !
 .. >> -- components $name
-<< name : button database dialog \
+<< name : button database debounce dialog \
  documentCreateDialog documentManageDialog \
  documentToolbar documentView documentsList documentsStore \
- input menu spacer toolbar !
+ editor editorSimple input menu spacer toolbar !
 Components , $components @ console log !
 
 # create main toolbar

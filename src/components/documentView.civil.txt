@@ -2,7 +2,6 @@
 
 .document-view {
  background-color: #404040;
- border: 1px solid #606060;
  border-bottom: none;
  box-shadow: 0 0 20px #80808080;
  display: flex;
@@ -11,90 +10,28 @@
  margin: 19px 19px 0 19px;
 }
 
-.document-view-code {
- box-sizing: border-box;
+.document-view > .editor {
  height: calc(100vh - 59px);
- overflow: auto;
- padding: 3px;
  width: 50%;
 }
 
-.document-view-code .line {
- border-bottom: 1px solid #505050;
- box-sizing: border-box;
- min-height: 38px;
- padding: 4px;
+.document-view > .editor-simple {
+ border: 1px solid #606060;
+ border-right: none;
+ height: calc(100vh - 57px);
  position: relative;
-}
-
-.document-view-code .word {
- display: inline-block;
- padding: 4px;
- position: relative;
+ top: -1px;
+ width: 50%;
 }
 
 .document-view-preview {
  background-color: #303030;
- border: none;
- border-left: 1px solid #606060;
+ border: 1px solid #606060;
  box-shadow: inset 0 0 40px #00000060;
  box-sizing: border-box;
- height: calc(100vh - 59px);
+ height: calc(100vh - 57px);
  overflow: auto;
  width: 50%;
-}
-
-@keyframes caret-blink {
- 0% {
-  opacity: 1;
- }
- 12.5% {
-  opacity: 1;
- }
- 37.5% {
-  opacity: 1;
- }
- 62.5% {
-  opacity: 0;
- }
- 87.5% {
-  opacity: 0;
- }
- 100% {
-  opacity: 1;
- }
-}
-
-.document-view-code .caret {
- color: transparent;
- display: inline-block;
- height: 19px;
- left: 4px;
- position: absolute;
- top: 4px;
-}
-
-.document-view-code > .line > .caret {
- left: 8px;
- top: 8px;
-}
-
-.document-view-code .caret::before {
- border-left: 1px solid #a0a0a0;
- border-right: 1px solid #808080;
- content: \'\';
- display: block;
- height: 19px;
- right: 0;
- position: absolute;
- top: 1px;
- width: 0;
-}
-
-.document-view-code:focus .caret::before {
- animation: caret-blink 1.5s infinite;
- border-left: 1px solid #ffffff;
- border-right: 1px solid #f0f0f0;
 }
 
 ' @ addStyle !
@@ -110,49 +47,35 @@
 .. 'Editing document' , $activeDocument @ -- console log !
 .. div @ -- document createElement ! >> view
 .. document-view @ view classList add !
-.. div @ -- document createElement ! >> code
-.. document-view-code @ code classList add !
-.. 0 >> code tabIndex
 .. iframe @ -- document createElement ! >> preview
 .. document-view-preview @ preview classList add !
-.. $code @ view appendChild !
+.. .. $-- activeDocument value @ -- -- JSON stringify ! >> previewCode
+.. .. '<!doctype html>
+<html>
+ <head>
+  <script src="./civil.js"></script>
+ </head>
+ <body>
+  <script>
+   globalThis.promise = x => new Promise(x)
+   globalThis.main = civil.scope(globalThis)
+   main.run($previewCode )
+  </script>
+ </body>
+</html>' >> -- preview srcdoc
+.. << >> renderPreview
+.. .. .. $-- newValue >> -- -- activeDocument value
+.. .. .. $-- -- activeDocument dir , $-- -- activeDocument name , \
+       $-- -- activeDocument value @ -- -- saveDocument !
+.. .. .. $-- -- renderPreview !
+.. .. $newValue ~= $-- activeDocument value ?
+.. << newValue >> onUpdateActiveValue
+.. $activeDocument value , $onUpdateActiveValue , $components \
+    @ components editorSimple ! >> code
+.. $code container @ view appendChild !
 .. $preview @ view appendChild !
 .. $view @ area appendChild !
-.. $activeDocument value @ -- civil parse ! >> activeValue
-.. div @ -- document createElement ! >> finalLineElement
-.. line @ finalLineElement classList add !
-.. div @ -- document createElement ! >> caretElement
-.. caret @ caretElement classList add !
-..
-.. # render document value
-.. .. '' >> -- code textContent
-.. .. .. div @ -- -- -- document createElement ! >> lineElement
-.. .. .. line @ lineElement classList add !
-.. .. .. $lineElement @ -- -- code appendChild !
-.. .. .. .. div @ -- -- -- -- document createElement ! >> wordElement
-.. .. .. .. word @ wordElement classList add !
-.. .. .. .. $wordElement @ -- lineElement appendChild !
-.. .. .. .. $word >> wordElement textContent
-.. .. .. << word :: line !
-.. .. << line :: -- activeValue !
-.. .. $-- finalLineElement @ -- code appendChild !
-.. .. $-- caretElement @ -- finalLineElement appendChild !
-.. << >> render
-.. $render !
-..
-.. # handle key press event
-.. .. $-- caretElement parentElement >> insertPoint
-.. .. .. div @ -- -- -- document createElement ! >> wordElement
-.. .. .. word @ wordElement classList add !
-.. .. .. $wordElement @ -- insertPoint appendChild !
-.. .. .. $-- event key >> wordElement textContent
-.. .. .. $wordElement textContent >> -- -- caretElement textContent
-.. .. .. $-- -- caretElement @ wordElement appendChild !
-.. .. line @ insertPoint classList contains ! ?
-.. .. .. on-a-word @ -- -- -- console log !
-.. .. word @ insertPoint classList contains ! ?
-.. .. $event key @ -- -- console log !
-.. << event >> handleKeyPress
-.. keypress , $handleKeyPress @ code addEventListener !
+.. $code container focus !
+.. $renderPreview !
 << path area Documents saveDocument renameDocument components
 

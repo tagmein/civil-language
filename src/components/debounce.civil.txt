@@ -1,0 +1,7 @@
+.. .. $-- timeout @ -- -- clearTimeout !
+.. .. .. $-- x , $-- y , $-- z @ -- -- function !
+.. .. << >> delayFunction
+.. .. $delayFunction , $-- delay @ -- -- setTimeout ! >> -- timeout
+.. << x y z
+<< function delay
+
