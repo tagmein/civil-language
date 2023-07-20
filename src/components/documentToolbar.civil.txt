@@ -82,5 +82,15 @@ mouseleave , $closeToolbarDirectory @ directoryContainer addEventListener !
 .. .. mouseenter , $segmentLinkButtonHover @ segmentButton addEventListener !
 .. .. mouseleave , $-- -- closeToolbarDirectory @ segmentButton addEventListener !
 .. << segment :: dirSegments !
+..
+.. .. $-- dir @ -- Documents get ! >> doc
+.. .. .. $-- doc , $-- -- renameDocument , $-- -- components \
+       @ -- -- components documentManageDialog !
+.. .. << >> manageDocument
+.. .. button @ -- -- document createElement ! >> manageDocumentButton
+.. .. '···' >> manageDocumentButton textContent
+.. .. click , $manageDocument @ manageDocumentButton addEventListener !
+.. .. $manageDocumentButton @ -- toolbar appendChild !
+.. $dir ~= '' ?
 << dir toolbar Documents saveDocument renameDocument components
 
