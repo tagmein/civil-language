@@ -142,5 +142,8 @@ h6 {
  overflow: hidden;
 }
 
-' >> globalStyle textContent
+body.editor-enabled .toggle-editor {
+ background-color: #808080;
+}
 
+' >> globalStyle textContent

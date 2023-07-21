@@ -7,10 +7,15 @@
  display: flex;
  flex-direction: row;
  flex-grow: 1;
+ margin: 0;
+}
+
+body.editor-enabled .document-view {
  margin: 19px 19px 0 19px;
 }
 
 .document-view > .editor {
+ display: none;
  height: calc(100vh - 59px);
  width: 50%;
 }
@@ -18,19 +23,30 @@
 .document-view > .editor-simple {
  border: 1px solid #606060;
  border-right: none;
+ display: none;
  height: calc(100vh - 57px);
  position: relative;
  top: -1px;
  width: 50%;
 }
 
+body.editor-enabled .document-view > .editor,
+body.editor-enabled .document-view > .editor-simple {
+ display: block;
+}
+
 .document-view-preview {
  background-color: #303030;
- border: 1px solid #606060;
+ border: none;
  box-shadow: inset 0 0 40px #00000060;
  box-sizing: border-box;
- height: calc(100vh - 57px);
  overflow: auto;
+ width: 100%;
+}
+
+body.editor-enabled .document-view-preview {
+ border: 1px solid #606060;
+ height: calc(100vh - 57px);
  width: 50%;
 }
 
@@ -54,10 +70,80 @@
 <html>
  <head>
   <script src="./civil.js"></script>
+  <style>
+   body {
+    box-sizing: border-box;
+    margin: 0;
+    min-height: 100%;
+   }
+   html {
+    height: 100vh;
+   }
+   body, input, select, textarea, button {
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.25px;
+    line-height: 1.5;
+   }
+   input, select, textarea, button {
+    background-color: #404040;
+    border: 1px solid #808080;
+   }
+   button, .button {
+    cursor: pointer;
+   }
+   button:hover, .button:hover {
+    background-color: #505050;
+   }
+   button:active, .button:active {
+    background-color: #303030;
+   }
+   *::selection {
+    background-color: #a0a0a0;
+    color: #ffffff;
+   }
+  </style>
  </head>
  <body>
   <script>
+   globalThis.date = x => new Date(x)
    globalThis.promise = x => new Promise(x)
+   let apiRequestUniqueId = 0
+   const apiRequestMap = new Map()
+   addEventListener(\'message\', function (message) {
+    if (apiRequestMap.has(message.data.requestId)) {
+     const apiRequest = apiRequestMap.get(message.data.requestId)
+     if (\'data\' in message.data) {
+      apiRequest.resolve(message.data.data)
+     }
+     else {
+      apiRequest.reject(message.data.error)
+     }
+    }
+   })
+   globalThis.civilApi = {
+    async readDir(path) {
+     const requestId = apiRequestUniqueId++
+     return new Promise(function (_resolve, _reject) {
+      function resolve(x) {
+       _resolve(x)
+       apiRequestMap.delete(requestId)
+      }
+      function reject(x) {
+       _reject(x)
+       apiRequestMap.delete(requestId)
+      }
+      apiRequestMap.set(requestId, { resolve, reject })
+      top.postMessage({
+       requestId,
+       data: { path },
+       type: \'readDir\',
+      })
+     })
+    },
+   }
    globalThis.main = civil.scope(globalThis)
    main.run($previewCode )
   </script>
@@ -78,4 +164,3 @@
 .. $code container focus !
 .. $renderPreview !
 << path area Documents saveDocument renameDocument components
-

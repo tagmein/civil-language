@@ -63,6 +63,25 @@
 .. .. << resolve reject @ -- -- promise !
 .. .. name @ searchResults sortByProperty !
 .. << dir >> control getByDir
+..
+.. .. documents , readonly @ -- database transaction ! >> transaction
+.. .. documents @ transaction objectStore ! >> store
+.. .. dirIndex @ store index ! >> dirIndex
+.. .. $-- -- Array ! >> searchResults
+.. .. .. $-- dir @ -- dirIndex openCursor ! >> getByDirRequest
+.. .. .. .. $-- getByDirRequest result >> searchCursor
+.. .. .. .. .. $-- searchCursor value >> candidateDocument
+.. .. .. .. .. .. $-- candidateDocument name @ -- -- -- -- searchResults push !
+.. .. .. .. .. $candidateDocument id ~= / ?
+.. .. .. .. .. $-- searchCursor continue !
+.. .. .. .. $searchCursor ?
+.. .. .. .. .. $-- -- resolve !
+.. .. .. .. $searchCursor ~ ?
+.. .. .. << >> getByDirRequest onsuccess
+.. .. .. .. $-- reject !
+.. .. .. << >> getByDirRequest onerror
+.. .. << resolve reject @ -- -- promise !
+.. .. name @ searchResults sortByProperty !
+.. << dir >> control getNamesByDir
 .. $control
 << database
-

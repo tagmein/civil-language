@@ -23,6 +23,25 @@ div @ document createElement ! >> currentPathButtons
 current-path @ currentPathButtons classList add ! 
 $currentPathButtons @ mainToolbar container appendChild !
 $components spacer ! @ mainToolbar container appendChild !
+
+# toggle editor
+button @ document createElement ! >> toggleEditorButton
+toggle-editor @ toggleEditorButton classList add !
+'🖉 Editor' >> toggleEditorButton textContent
+.. editor-enabled @ -- document body classList contains ! >> editorEnabled
+.. .. editor-enabled @ -- -- document body classList remove !
+.. .. editor-enabled @ -- -- localStorage removeItem !
+.. $editorEnabled ?
+.. .. editor-enabled @ -- -- document body classList add !
+.. .. editor-enabled , true @ -- -- localStorage setItem !
+.. $editorEnabled ~ ?
+<< >> toggleEditor
+click , $toggleEditor @ toggleEditorButton addEventListener !
+$toggleEditorButton @ mainToolbar container appendChild !
+.. editor-enabled @ -- document body classList add !
+editor-enabled @ localStorage getItem ! ?
+
+# toggle full screen
 button @ document createElement ! >> fullScreenButton
 ⛶ >> fullScreenButton textContent
 .. $-- document fullscreen >> isFullScreen
@@ -52,6 +71,13 @@ Documents , $Documents @ console log !
 .. $name >> documentObject name
 .. $dir >> documentObject dir
 .. $value >> documentObject value
+.. $documentObject id @ -- Documents get ! >> existingDocument
+.. .. .. $-- -- existingDocument created >> -- -- documentObject created
+.. .. $-- existingDocument created ?
+.. .. .. $-- -- -- Date now ! >> -- -- documentObject created
+.. .. $-- existingDocument created ~ ?
+.. $existingDocument ?
+.. $-- Date now ! >> documentObject updated
 .. $documentObject @ -- Documents put ! >> saveResult
 .. 'Saved document' , $saveResult @ -- console log !
 << dir name value >> saveDocument
@@ -85,3 +111,17 @@ Documents , $Documents @ console log !
 hashchange , $route @ addEventListener !
 $route !
 
+# handle cross-frame messages
+.. 'Incoming message' , $message @ -- console log !
+.. $-- Object ! >> response
+.. $message data requestId >> response requestId
+.. .. 1 @ -- -- location hash substring ! >> basePath
+.. .. '$basePath $--\ message\ data\ data\ path' @ -- -- Documents getByDir ! >> -- reply
+.. $message data type = readDir ?
+.. .. 1 @ -- -- location hash substring ! >> basePath
+.. .. '$basePath $--\ message\ data\ data\ path' @ -- -- Documents getNamesByDir ! >> -- reply
+.. $message data type = readDirNames ?
+.. $reply >> response data
+.. $response @ message source postMessage !
+<< message >> handleMessage
+message , $handleMessage @ addEventListener !
