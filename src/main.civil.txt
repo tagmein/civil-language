@@ -12,7 +12,8 @@ $Object ! >> components
 .. './src/components/$name .civil.txt' @ -- load !
 .. >> -- components $name
 << name : button database debounce dialog \
- documentCreateDialog documentManageDialog \
+ documentCreateDialog documentDownload \
+ documentManageDialog documentManageDelete \
  documentToolbar documentView documentsList documentsStore \
  editor editorSimple input menu spacer toolbar !
 Components , $components @ console log !
@@ -111,6 +112,10 @@ Documents , $Documents @ console log !
 hashchange , $route @ addEventListener !
 $route !
 
+# cross-browser styles
+$navigator appCodeName toLowerCase ! >> appCodeName
+'navigator-$appCodeName' @ document body classList add !
+
 # handle cross-frame messages
 .. 'Incoming message' , $message @ -- console log !
 .. $-- Object ! >> response
@@ -125,3 +130,4 @@ $route !
 .. $response @ message source postMessage !
 << message >> handleMessage
 message , $handleMessage @ addEventListener !
+

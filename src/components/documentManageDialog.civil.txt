@@ -31,8 +31,31 @@
 .. $manageDialogTitle @ manageDialog contents appendChild !
 .. $documentPathInput container @ manageDialog contents appendChild !
 .. $documentName container @ manageDialog contents appendChild !
-.. $confirmButton @ manageDialog contents appendChild !
-.. $documentName input focus !
 .. required >> documentName input required
-<< document renameDocument components
+.. $documentName input focus !
+.. $confirmButton @ manageDialog contents appendChild !
+.. hr @ -- document createElement ! @ manageDialog contents appendChild !
+.. h6 @ -- document createElement ! >> manageDialogToolsTitle
+.. 'More options' >> manageDialogToolsTitle textContent
+.. $manageDialogToolsTitle @ manageDialog contents appendChild !
+.. div @ -- document createElement ! >> moreButtons
+.. $moreButtons @ manageDialog contents appendChild !
+..
+.. # download document
+.. button @ -- document createElement ! >> downloadButton
+.. 'Download' >> downloadButton textContent
+.. $downloadButton @ moreButtons appendChild !
+.. .. $event preventDefault !
+.. .. $-- Documents , $-- document @ -- components documentDownload !
+.. << event >> downloadDocument
+.. click , $downloadDocument @ downloadButton addEventListener !
+..
+.. # delete document
+.. button @ -- document createElement ! >> deleteButton
+.. 'Delete' >> deleteButton textContent
+.. $deleteButton @ moreButtons appendChild !
+.. .. $event preventDefault !
+.. << event >> deleteDocument
+.. click , $deleteDocument @ deleteButton addEventListener !
+<< document Documents renameDocument components
 

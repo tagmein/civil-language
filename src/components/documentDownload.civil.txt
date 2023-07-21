@@ -1,0 +1,18 @@
+.. $document id @ Documents getAllByDir ! >> allSubDocuments
+.. $-- Object ! >> package
+.. .. $-- document id length @ doc id substring ! >> packedId
+.. .. $doc value >> -- package $packedId
+.. << doc :: allSubDocuments !
+.. $-- Array ! >> blobParts
+.. $package @ -- JSON stringify ! @ blobParts push !
+.. $blobParts @ -- blob ! >> fileBlob
+.. $fileBlob @ -- URL createObjectURL ! >> fileUrl
+.. a @ -- document createElement ! >> fileLink
+.. $document name @ -- decodeURIComponent ! >> name
+.. download , '$name .json' @ fileLink setAttribute !
+.. href , $fileUrl @ fileLink setAttribute !
+.. $fileLink @ -- document body appendChild !
+.. $fileLink click !
+.. $fileLink remove !
+<< Documents document
+

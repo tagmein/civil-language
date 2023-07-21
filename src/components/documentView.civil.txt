@@ -108,6 +108,7 @@ body.editor-enabled .document-view-preview {
  </head>
  <body>
   <script>
+   globalThis.blob = (...x) => new Blob(...x)
    globalThis.date = x => new Date(x)
    globalThis.promise = x => new Promise(x)
    let apiRequestUniqueId = 0

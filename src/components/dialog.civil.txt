@@ -46,9 +46,19 @@ button.dialog-close::before {
  margin: 10px;
 }
 
+.dialog-contents hr {
+ border: none;
+ border-top: 1px solid #606060;
+}
+
 .dialog-contents button {
  display: block;
- margin: 20px 10px 10px;
+ margin: 10px;
+}
+
+.dialog-contents .buttons {
+ display: flex;
+ flex-direction: row;
 }
 ' @ addStyle !
 

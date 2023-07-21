@@ -60,7 +60,7 @@ mouseleave , $closeToolbarDirectory @ directoryContainer addEventListener !
 .. '$buttonRect\ left\ -1 px' >> -- directoryContainer style left
 .. '$dir /' @ Documents getByDir ! >> docs
 .. '' >> -- directoryContainer textContent
-.. $-- directoryContainer , $dir , $docs , $saveDocument , $renameDocument , \
+.. $-- directoryContainer , $dir , $Documents , $docs , $saveDocument , $renameDocument , \
     $components @ components documentsList !
 .. visible @ -- directoryContainer classList add !
 << dir segmentButton Documents saveDocument renameDocument components >> openToolbarDirectory
@@ -84,7 +84,7 @@ mouseleave , $closeToolbarDirectory @ directoryContainer addEventListener !
 .. << segment :: dirSegments !
 ..
 .. .. $-- dir @ -- Documents get ! >> doc
-.. .. .. $-- doc , $-- -- renameDocument , $-- -- components \
+.. .. .. $-- doc , $-- -- Documents , $-- -- renameDocument , $-- -- components \
        @ -- -- components documentManageDialog !
 .. .. << >> manageDocument
 .. .. button @ -- -- document createElement ! >> manageDocumentButton
