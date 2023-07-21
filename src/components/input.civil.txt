@@ -23,6 +23,7 @@
 .. label @ -- document createElement ! >> control container
 .. div @ -- document createElement ! >> label
 .. input @ -- document createElement ! >> control input
+.. type , $type @ control input setAttribute !
 .. input-container @ control container classList add !
 .. $label @ control container appendChild !
 .. $control input @ control container appendChild !
@@ -35,5 +36,5 @@
 .. $initialValue ?
 .. $labelText >> label textContent
 .. $control
-<< labelText initialValue onChange
+<< labelText initialValue onChange type
 

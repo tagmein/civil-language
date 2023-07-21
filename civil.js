@@ -41,6 +41,9 @@ civil.code = Symbol('civil.code')
 civil.namedArguments = Symbol('civil.namedArguments')
 
 civil.get = function (scope, initialTrace, _path, read = false) {
+ if (_path.length === 0) {
+  return undefined
+ }
  const path = _path.slice(0)
  const firstSegment = path.shift()
  let trace = read ? initialTrace[firstSegment] : civil.resolve(initialTrace, firstSegment)
@@ -335,6 +338,7 @@ civil.scope = function civilScope(scope) {
         } else {
          try {
           await me.apply(word)
+          me.data.lastWord = word
          } catch (e) {
           console.warn(
            `Error at '${word}' on line ${lineI} word ${wordI + deltaWord} of (code) ${arg[
@@ -351,6 +355,7 @@ civil.scope = function civilScope(scope) {
        }
        try {
         await me.break()
+          me.data.lastWord = undefined
        } catch (e) {
         console.warn(`Error at end of line ${lineI} (code) ${arg[lineI].join(' ')}`)
         console.error(e)
@@ -413,7 +418,10 @@ civil.states = {
   '': ',',
   complete(me, scope) {
    if (me.data.pendingHand.length > 0) {
-    me.data.hand.push(me.data.pendingHand.splice(0))
+    throw new Error('should not happen')
+   }
+   if (me.data.lastWord === ',') {
+    me.data.hand.push([])
    }
   },
   immediate: true,
