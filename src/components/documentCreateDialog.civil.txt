@@ -9,7 +9,8 @@
 .. .. .. .. .. $-- -- -- -- newDocumentFile @ -- reader readAsText !
 .. .. .. .. << resolve reject @ -- -- -- -- promise ! >> fileString
 .. .. .. .. $fileString @ -- -- -- -- JSON parse ! >> fileData
-.. .. .. .. $fileData @ -- -- -- -- console log !
+.. .. .. .. $fileData @ -- -- -- -- Object entries ! >> fileEntries
+.. .. .. .. $fileEntries @ -- -- -- -- console log !
 .. .. .. $-- -- newDocumentFile ?
 .. .. .. '$--\ --\ path /$encodedName' >> -- -- -- location hash
 .. .. $-- newDocumentName length > 0 ?

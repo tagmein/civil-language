@@ -74,9 +74,13 @@ civil.get = function (scope, initialTrace, _path, read = false) {
   if (typeof realSegment !== 'string' && typeof realSegment !== 'number') {
    throw new Error(`'${segment}' does not resolve to a string or number, got ${typeof realSegment}`)
   }
-  if (trace[realSegment] !== Date && 
-   trace[realSegment] !== URL &&
-   typeof trace[realSegment] === 'function') {
+  if (
+   typeof trace[realSegment] === 'function' &&
+   trace[realSegment] !== Array && 
+   trace[realSegment] !== Date && 
+   trace[realSegment] !== Object &&
+   trace[realSegment] !== URL
+  ) {
    trace = trace[realSegment].bind(trace)
   } else {
    trace = trace[realSegment]
