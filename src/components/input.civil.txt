@@ -27,7 +27,10 @@
 .. input-container @ control container classList add !
 .. $label @ control container appendChild !
 .. $control input @ control container appendChild !
-.. .. $-- control input value @ -- onChange !
+.. .. .. $-- -- control input value @ -- -- onChange !
+.. .. $-- type ~= file ?
+.. .. .. $-- -- control input files 0 @ -- -- onChange !
+.. .. $-- type = file ?
 .. << event >> handleChange
 .. .. change , $-- handleChange @ -- control input addEventListener !
 .. .. keyup  , $-- handleChange @ -- control input addEventListener !

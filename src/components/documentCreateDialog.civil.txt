@@ -1,6 +1,16 @@
 .. '' >> newDocumentName
 .. .. .. $-- -- newDocumentName @ -- -- -- encodeURIComponent ! >> encodedName
 .. .. .. '$--\ --\ path /' , $encodedName , '' @ -- -- saveDocument !
+.. .. .. .. $-- -- -- -- fileReader ! >> reader
+.. .. .. .. .. .. $-- -- reader result @ -- resolve !
+.. .. .. .. .. << >> -- reader onload
+.. .. .. .. .. .. $error @ -- reject !
+.. .. .. .. .. << error >> -- reader onerror
+.. .. .. .. .. $-- -- -- -- newDocumentFile @ -- reader readAsText !
+.. .. .. .. << resolve reject @ -- -- -- -- promise ! >> fileString
+.. .. .. .. $fileString @ -- -- -- -- JSON parse ! >> fileData
+.. .. .. .. $fileData @ -- -- -- -- console log !
+.. .. .. $-- -- newDocumentFile ?
 .. .. .. '$--\ --\ path /$encodedName' >> -- -- -- location hash
 .. .. $-- newDocumentName length > 0 ?
 .. .. .. name_too_short >> -- error
@@ -19,7 +29,9 @@
 .. << value >> updateDocumentName
 .. 'Document name' , '' , $updateDocumentName @ -- \
     components input ! >> createDocumentName
-.. 'Contents from file' , , , file @ -- \
+.. .. $value >> -- newDocumentFile
+.. << value >> updateDocumentFile
+.. 'Contents from file' , , $updateDocumentFile , file @ -- \
     components input ! >> createDocumentFile
 .. h6 @ -- document createElement ! >> createDialogTitle
 .. 'Create document' >> createDialogTitle textContent

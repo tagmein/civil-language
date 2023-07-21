@@ -9,6 +9,7 @@
   <script>
    globalThis.blob = (...x) => new Blob(...x)
    globalThis.date = x => new Date(x)
+   globalThis.fileReader = x => new FileReader(x)
    globalThis.promise = x => new Promise(x)
    globalThis.main = civil.scope(globalThis)
    globalThis.main.run`
