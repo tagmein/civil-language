@@ -9,7 +9,8 @@
 .. $fileBlob @ -- URL createObjectURL ! >> fileUrl
 .. a @ -- document createElement ! >> fileLink
 .. $document name @ -- decodeURIComponent ! >> name
-.. download , '$name .json' @ fileLink setAttribute !
+.. $-- Date now ! >> timestamp
+.. download , '$name .$timestamp .json' @ fileLink setAttribute !
 .. href , $fileUrl @ fileLink setAttribute !
 .. $fileLink @ -- document body appendChild !
 .. $fileLink click !
