@@ -60,7 +60,7 @@ body.editor-enabled .document-view-preview {
 .. .. $-- path = / ?
 .. .. $-- path @ -- Documents get ! >> -- activeDocument
 .. $activeDocument ~ ?
-.. 'Editing document' , $activeDocument @ -- console log !
+.. # 'Editing document' , $activeDocument @ -- console log !
 .. div @ -- document createElement ! >> view
 .. document-view @ view classList add !
 .. iframe @ -- document createElement ! >> preview

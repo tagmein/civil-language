@@ -16,7 +16,7 @@ $Object ! >> components
  documentManageDialog documentManageDelete \
  documentToolbar documentView documentsList documentsStore \
  editor editorSimple input menu spacer toolbar !
-Components , $components @ console log !
+# Components , $components @ console log !
 
 # create main toolbar
 $components toolbar ! >> mainToolbar
@@ -62,9 +62,9 @@ $documentArea @ document body appendChild !
 
 # connect to documents store
 Civil @ components database ! >> civilDatabase
-civilDatabase , $civilDatabase @ console log !
+# civilDatabase , $civilDatabase @ console log !
 $civilDatabase @ components documentsStore ! >> Documents
-Documents , $Documents @ console log !
+# Documents , $Documents @ console log !
 
 # function to save a document
 .. $-- Object ! >> documentObject

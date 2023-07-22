@@ -1,4 +1,3 @@
-'To do: Select new folder to move document in document manage dialog' @ console info !
 .. $document name >> documentName
 .. .. .. $-- -- documentName @ -- -- -- encodeURIComponent ! >> encodedName
 .. .. .. $-- -- document dir , $-- -- document name , \

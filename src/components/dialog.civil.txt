@@ -62,8 +62,6 @@ button.dialog-close::before {
 }
 ' @ addStyle !
 
-'To do: Press Esc to close open dialog' @ console info !
-
 .. $-- Object ! >> control
 .. .. $-- container remove !
 .. << >> control close
