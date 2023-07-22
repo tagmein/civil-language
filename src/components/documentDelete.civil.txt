@@ -1,0 +1,15 @@
+.. $document id @ Documents getAllByDir ! >> allSubDocuments
+.. .. $subDoc id @ -- -- decodeURIComponent !
+.. << subDoc :: allSubDocuments ! >> idsToDelete
+.. \n @ idsToDelete join ! >> idMessage
+.. .. items >> -- items
+.. $allSubDocuments length ~= 1 ?
+.. .. item >> -- items
+.. $allSubDocuments length = 1 ?
+.. 'Delete $allSubDocuments\ length  $items ?\n\n$idMessage' @ -- confirm ! >> shouldDelete
+.. .. .. $subDoc id @ -- -- Documents delete !
+.. .. << subDoc :: -- allSubDocuments !
+.. .. 0 , $-- document dir length -1 @ -- document dir substring ! >> -- -- location hash
+.. $shouldDelete ?
+<< Documents document
+

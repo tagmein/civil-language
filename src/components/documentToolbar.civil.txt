@@ -65,6 +65,7 @@ mouseleave , $closeToolbarDirectory @ directoryContainer addEventListener !
 .. $-- directoryContainer @ -- document body appendChild !
 .. $segmentButton getBoundingClientRect ! >> buttonRect
 .. '$buttonRect\ left\ -1 px' >> -- directoryContainer style left
+.. '$buttonRect\ width\ +1 px' >> -- directoryContainer style minWidth
 .. '$dir /' @ Documents getByDir ! >> docs
 .. '' >> -- directoryContainer textContent
 .. $-- directoryContainer , $dir , $Documents , $docs , $saveDocument , $renameDocument , \

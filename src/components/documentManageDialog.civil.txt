@@ -54,6 +54,7 @@
 .. 'Delete' >> deleteButton textContent
 .. $deleteButton @ moreButtons appendChild !
 .. .. $event preventDefault !
+.. .. $-- Documents , $-- document @ -- components documentDelete !
 .. << event >> deleteDocument
 .. click , $deleteDocument @ deleteButton addEventListener !
 << document Documents renameDocument components

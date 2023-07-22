@@ -12,7 +12,7 @@ $Object ! >> components
 .. './src/components/$name .civil.txt' @ -- load !
 .. >> -- components $name
 << name : button database debounce dialog \
- documentCreateDialog documentDownload \
+ documentCreateDialog documentDelete documentDownload \
  documentManageDialog documentManageDelete \
  documentToolbar documentView documentsList documentsStore \
  editor editorSimple input menu spacer toolbar !
@@ -24,6 +24,14 @@ div @ document createElement ! >> currentPathButtons
 current-path @ currentPathButtons classList add ! 
 $currentPathButtons @ mainToolbar container appendChild !
 $components spacer ! @ mainToolbar container appendChild !
+
+# copy link
+button @ document createElement ! >> copyLinkButton
+⧉ >> copyLinkButton textContent
+.. Location , $-- location href @ -- prompt !
+<< >> copyLink
+click , $copyLink @ copyLinkButton addEventListener !
+$copyLinkButton @ mainToolbar container appendChild !
 
 # toggle editor
 button @ document createElement ! >> toggleEditorButton

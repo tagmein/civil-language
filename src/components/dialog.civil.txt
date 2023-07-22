@@ -62,9 +62,22 @@ button.dialog-close::before {
 }
 ' @ addStyle !
 
+.. .. $-- -- activeDialog close !
+.. $-- activeDialog ?
+<< >> closeDialogOnLocationChange
+hashchange , $closeDialogOnLocationChange @ addEventListener !
+
+.. .. .. $-- -- -- activeDialog close !
+.. .. $-- -- activeDialog ?
+.. $event key = Escape ?
+<< event >> closeDialogOnEscape
+keydown , $closeDialogOnEscape @ addEventListener !
+
 .. $-- Object ! >> control
 .. .. $-- container remove !
+.. .. $undefined >> -- -- activeDialog
 .. << >> control close
+.. $control >> -- activeDialog
 .. div @ -- document createElement ! >> container
 .. div @ -- document createElement ! >> wrap
 .. form @ -- document createElement ! >> contents

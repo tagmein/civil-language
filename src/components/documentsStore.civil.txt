@@ -1,5 +1,10 @@
 .. $-- Object ! >> control
 ..
+.. .. documents , readwrite @ -- database transaction ! >> transaction
+.. .. documents @ transaction objectStore ! >> store
+.. .. $id @ store delete !
+.. << id >> control delete
+..
 .. .. documents , readonly @ -- database transaction ! >> transaction
 .. .. documents @ transaction objectStore ! >> store
 .. .. $id @ store get ! >> operation
@@ -51,7 +56,6 @@
 .. .. .. .. $event target result >> searchCursor
 .. .. .. .. .. $-- searchCursor value >> currentDocument
 .. .. .. .. .. .. $-- currentDocument @ -- -- -- -- searchResults push !
-.. .. .. .. .. $-- -- -- dir @ -- -- -- -- -- console log !
 .. .. .. .. .. '$--\ --\ --\ dir' @ currentDocument id startsWith ! ?
 .. .. .. .. .. $-- searchCursor continue !
 .. .. .. .. $searchCursor ?
