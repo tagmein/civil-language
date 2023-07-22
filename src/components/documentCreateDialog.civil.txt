@@ -1,6 +1,6 @@
 .. '' >> newDocumentName
 .. .. .. $-- -- newDocumentName @ -- -- -- encodeURIComponent ! >> encodedName
-.. .. .. '$--\ --\ path /' , $encodedName , '' @ -- -- saveDocument !
+.. .. .. '$--\ --\ path /$encodedName' , '' @ -- -- saveDocument !
 .. .. .. .. $-- -- -- -- fileReader ! >> reader
 .. .. .. .. .. .. $-- -- reader result @ -- resolve !
 .. .. .. .. .. << >> -- reader onload
@@ -46,4 +46,3 @@
 .. $createDocumentName input focus !
 .. required >> createDocumentName input required
 << path saveDocument components
-

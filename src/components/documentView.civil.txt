@@ -56,7 +56,7 @@ body.editor-enabled .document-view-preview {
 .. .. / >> -- path 
 .. $path = '' ?
 .. $path @ Documents get ! >> activeDocument
-.. .. .. / , '' , '' @ -- -- saveDocument !
+.. .. .. / , '' @ -- -- saveDocument !
 .. .. $-- path = / ?
 .. .. $-- path @ -- Documents get ! >> -- activeDocument
 .. $activeDocument ~ ?
@@ -153,8 +153,8 @@ body.editor-enabled .document-view-preview {
 </html>' >> -- preview srcdoc
 .. << >> renderPreview
 .. .. .. $-- newValue >> -- -- activeDocument value
-.. .. .. $-- -- activeDocument dir , $-- -- activeDocument name , \
-       $-- -- activeDocument value @ -- -- saveDocument !
+.. .. .. $-- -- activeDocument id , $-- -- activeDocument value \
+          @ -- -- saveDocument !
 .. .. .. $-- -- renderPreview !
 .. .. $newValue ~= $-- activeDocument value ?
 .. << newValue >> onUpdateActiveValue

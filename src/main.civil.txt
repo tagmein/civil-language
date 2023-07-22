@@ -68,9 +68,11 @@ Documents , $Documents @ console log !
 
 # function to save a document
 .. $-- Object ! >> documentObject
-.. '$dir $name' >> documentObject id
-.. $name >> documentObject name
-.. $dir >> documentObject dir
+.. $id >> documentObject id
+.. / @ id lastIndexOf ! >> nameDirSplit
+.. $nameDirSplit +1 >> nameDirSplit
+.. $nameDirSplit @ id substring ! >> documentObject name
+.. 0 , $nameDirSplit @ id substring ! >> documentObject dir
 .. $value >> documentObject value
 .. $documentObject id @ -- Documents get ! >> existingDocument
 .. .. .. $-- -- existingDocument created >> -- -- documentObject created
@@ -81,7 +83,7 @@ Documents , $Documents @ console log !
 .. $-- Date now ! >> documentObject updated
 .. $documentObject @ -- Documents put ! >> saveResult
 .. 'Saved document' , $saveResult @ -- console log !
-<< dir name value >> saveDocument
+<< id value >> saveDocument
 
 # function to rename a document
 .. '$dir $oldName' >> oldId
@@ -93,11 +95,11 @@ Documents , $Documents @ console log !
 << dir oldName newName >> renameDocument
 
 # test create document
-# '/' , '' , 'test document' @ saveDocument !
-# '/' , 'foo' , 'test document 2' @ saveDocument !
-# '/foo/' , 'bar' , 'test document 3' @ saveDocument !
-# '/foo/bar/' , 'bat' , 'test document 3' @ saveDocument !
-# '/foo/bar/bat/' , 'baz' , 'test document 3' @ saveDocument !
+# '/' , 'test document' @ saveDocument !
+# '/foo' , 'test document 2' @ saveDocument !
+# '/foo/bar' , 'test document 3' @ saveDocument !
+# '/foo/bar/bat' , 'test document 3' @ saveDocument !
+# '/foo/bar/bat/baz' , 'test document 3' @ saveDocument !
 
 # function to open a document
 .. $dir , $-- currentPathButtons , $-- Documents , $-- saveDocument , $-- renameDocument , \
@@ -130,4 +132,3 @@ $navigator appCodeName toLowerCase ! >> appCodeName
 .. $response @ message source postMessage !
 << message >> handleMessage
 message , $handleMessage @ addEventListener !
-
