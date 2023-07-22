@@ -53,11 +53,11 @@ body.editor-enabled .document-view-preview {
 ' @ addStyle !
 
 .. '' >> area textContent
-.. .. / >> -- path 
+.. .. '/' >> -- path
 .. $path = '' ?
 .. $path @ Documents get ! >> activeDocument
-.. .. .. / , '' @ -- -- saveDocument !
-.. .. $-- path = / ?
+.. .. .. '/' , '' @ -- -- saveDocument !
+.. .. $-- path = '/' ?
 .. .. $-- path @ -- Documents get ! >> -- activeDocument
 .. $activeDocument ~ ?
 .. # 'Editing document' , $activeDocument @ -- console log !

@@ -40,6 +40,11 @@ const civil = (globalThis.civil = {})
 civil.code = Symbol('civil.code')
 civil.namedArguments = Symbol('civil.namedArguments')
 
+civil.wordType = {
+ NORMAL: '0',
+ LITERAL: '1'
+}
+
 civil.get = function (scope, initialTrace, _path, read = false) {
  if (_path.length === 0) {
   return undefined
@@ -103,7 +108,10 @@ civil.parse = function (source) {
  }
  function pushWord() {
   if (word.length || state.inString) {
-   line.push(word)
+   const prefix = state.inString
+    ? civil.wordType.LITERAL
+    : civil.wordType.NORMAL
+   line.push(prefix + word)
   }
   word = ''
  }
@@ -249,9 +257,13 @@ civil.set = function civilSet(scope, value, _path) {
 
 civil.scope = function civilScope(scope) {
  const me = {
-  async apply(word) {
-   // console.log('::::', word)
-   if (!me.state.capture && (word in civil.states || me.data.isAtBreak)) {
+  async apply(_word) {
+   const type = _word[0]
+   const word = _word.substring(1)
+   // console.log('::::', type, word)
+   if (type === civil.wordType.NORMAL &&
+    !me.state.capture && (word in civil.states || me.data.isAtBreak)
+   ) {
     if (me.state.complete) {
      await me.state.complete(me, scope)
     }
@@ -276,10 +288,10 @@ civil.scope = function civilScope(scope) {
       me.state = civil.states[civil.initialState]
      }
     } else {
-     await me.state.apply(me, scope, word)
+     await me.state.apply(me, scope, word, _word)
     }
    } else if (me.state.apply) {
-    await me.state.apply(me, scope, word)
+    await me.state.apply(me, scope, word, _word)
    }
   },
   async break() {
@@ -314,9 +326,9 @@ civil.scope = function civilScope(scope) {
        const lineWords = arg[lineI].slice()
        let deltaWord = 0
        if (me.data.error) {
-        if (lineWords[0] === '!!') {
+        if (lineWords[0] === '0!!') {
          lineWords.shift()
-         const errorName = lineWords.shift()
+         const errorName = lineWords.shift().substring(1)
          if (typeof errorName !== 'string') {
           throw new Error(
            `Expecting identifier after !! on line ${lineI} word 1 of (code) ${arg[lineI].join(' ')}`
@@ -329,7 +341,7 @@ civil.scope = function civilScope(scope) {
         } else {
          continue
         }
-       } else if (arg[lineI][0] === '!!') {
+       } else if (arg[lineI][0] === '0!!') {
         continue
        }
        for (let wordI = 0; wordI < lineWords.length; wordI++) {
@@ -337,7 +349,7 @@ civil.scope = function civilScope(scope) {
          break
         }
         const word = lineWords[wordI]
-        if (word === '!debug' && !me.data.recording) {
+        if (word === '0!debug' && !me.data.recording) {
          debugger
         } else {
          try {
@@ -406,14 +418,15 @@ civil.states = {
    me.data.pendingHand = []
   },
   complete(me, scope) {
-   if (me.data.pendingHand.length > 0) {
-    me.data.hand.push(me.data.pendingHand.splice(0))
+   if (me.data.pendingHand.length > 0 || me.data.lastWord === '0,') {
+    me.data.hand.push(
+     civil.get(scope, scope, me.data.pendingHand.splice(0))
+    )
    }
   },
   completeLines(me, scope) {
    if (me.data.hand.length > 0) {
-    const item = me.data.hand.shift()
-    me.data.focus = civil.get(scope, scope, item)
+    me.data.focus = me.data.hand.shift()
    }
   },
  },
@@ -421,11 +434,8 @@ civil.states = {
  ',': {
   '': ',',
   complete(me, scope) {
-   if (me.data.pendingHand.length > 0) {
-    throw new Error('should not happen')
-   }
-   if (me.data.lastWord === ',') {
-    me.data.hand.push([])
+   if (me.data.hand.length === 0) {
+    me.data.hand.push(me.data.focus)
    }
   },
   immediate: true,
@@ -434,9 +444,8 @@ civil.states = {
  '~': {
   '': '~',
   complete(me, scope) {
-   const handPaths = me.data.hand.splice(0)
-   if (handPaths.length > 0) {
-    const hand = handPaths.map((path) => civil.get(scope, scope, path))
+   const hand = me.data.hand.splice(0)
+   if (hand.length > 0) {
     me.data.value = !hand.some((x) => x)
    }
   },
@@ -467,9 +476,8 @@ civil.states = {
     const newScope = { '--': scope }
     return civil.scope(newScope).run(code)
    }
-   const handPaths = me.data.hand.splice(0)
-   if (handPaths.length > 0) {
-    const hand = handPaths.map((path) => civil.get(scope, scope, path))
+   const hand = me.data.hand.splice(0)
+   if (hand.length > 0) {
     if (hand.some((x) => x)) {
      me.data.focus = await me.data.focus()
      return
@@ -499,11 +507,10 @@ civil.states = {
      `@ expects '${functionPath.join(' ')}' to resolve to a function, got ${typeof func}`
     )
    }
-   const handPaths = me.data.hand.splice(0)
-   if (handPaths.length === 0) {
+   const hand = me.data.hand.splice(0)
+   if (hand.length === 0) {
     me.data.focus = func.bind(undefined, me.data.focus)
    } else {
-    const hand = handPaths.map((path) => civil.get(scope, scope, path))
     me.data.focus = func.bind(undefined, ...hand)
    }
   },
@@ -513,8 +520,7 @@ civil.states = {
   '': '!',
   async complete(me, scope) {
    if (me.data.hand.length > 0) {
-    const functionPath = me.data.hand.shift()
-    me.data.focus = civil.get(scope, scope, functionPath)
+    me.data.focus = me.data.hand.shift()
     if (typeof me.data.focus !== 'function') {
      throw new Error(
       `! may only be used after a function, got ${typeof me.data.focus} at '${functionPath.join(
@@ -526,9 +532,8 @@ civil.states = {
    if (typeof me.data.focus !== 'function') {
     throw new Error(`! may only be used after a function, got ${typeof me.data.focus}`)
    }
-   const handPaths = me.data.hand.splice(0)
-   const args = handPaths.map((path) => civil.get(scope, scope, path))
-   me.data.focus = await me.data.focus(...args)
+   const hand = me.data.hand.splice(0)
+   me.data.focus = await me.data.focus(...hand)
   },
   immediate: true,
  },
@@ -540,8 +545,8 @@ civil.states = {
 
  '..': {
   '': '..',
-  apply(me, scope, word) {
-   me.data.recordingLine.push(word)
+  apply(me, scope, word, wordRaw) {
+   me.data.recordingLine.push(wordRaw)
   },
   begin(me, scope) {
    if (!me.data.recording) {
@@ -599,8 +604,9 @@ civil.states = {
    me.data.destinationPath = []
   },
   complete(me, scope) {
-   const value =
-    me.data.hand.length > 0 ? civil.get(scope, scope, me.data.hand.shift()) : me.data.focus
+   const value = me.data.hand.length > 0
+    ? me.data.hand.shift() 
+    : me.data.focus
    civil.set(scope, value, me.data.destinationPath.splice(0))
   },
  },
@@ -668,11 +674,13 @@ civil.states = {
    me.data.compareToPath = []
   },
   complete(me, scope) {
-   const handPaths = me.data.hand.splice(0)
+   const hand = me.data.hand.splice(0)
    const compareToPath = me.data.compareToPath.splice(0)
-   const handValues = handPaths.map((handPath) => civil.get(scope, scope, handPath))
+   if (hand.length === 0) {
+    hand.push(me.data.focus)
+   }
    const compareToValue = civil.get(scope, scope, compareToPath)
-   me.data.focus = handValues.some((handValue) => handValue !== compareToValue)
+   me.data.focus = hand.some((handValue) => handValue !== compareToValue)
   },
  },
 
@@ -685,11 +693,13 @@ civil.states = {
    me.data.compareToPath = []
   },
   complete(me, scope) {
-   const handPaths = me.data.hand.splice(0)
+   const hand = me.data.hand.splice(0)
    const compareToPath = me.data.compareToPath.splice(0)
-   const handValues = handPaths.map((handPath) => civil.get(scope, scope, handPath))
+   if (hand.length === 0) {
+    hand.push(me.data.focus)
+   }
    const compareToValue = civil.get(scope, scope, compareToPath)
-   me.data.focus = handValues.some((handValue) => handValue === compareToValue)
+   me.data.focus = hand.some((handValue) => handValue === compareToValue)
   },
  },
 
@@ -702,11 +712,13 @@ civil.states = {
    me.data.compareToPath = []
   },
   complete(me, scope) {
-   const handPaths = me.data.hand.splice(0)
+   const hand = me.data.hand.splice(0)
    const compareToPath = me.data.compareToPath.splice(0)
-   const handValues = handPaths.map((handPath) => civil.get(scope, scope, handPath))
+   if (hand.length === 0) {
+    hand.push(me.data.focus)
+   }
    const compareToValue = civil.get(scope, scope, compareToPath)
-   me.data.focus = handValues.some((handValue) => handValue < compareToValue)
+   me.data.focus = hand.some((handValue) => handValue < compareToValue)
   },
  },
 
@@ -719,11 +731,13 @@ civil.states = {
    me.data.compareToPath = []
   },
   complete(me, scope) {
-   const handPaths = me.data.hand.splice(0)
+   const hand = me.data.hand.splice(0)
    const compareToPath = me.data.compareToPath.splice(0)
-   const handValues = handPaths.map((handPath) => civil.get(scope, scope, handPath))
+   if (hand.length === 0) {
+    hand.push(me.data.focus)
+   }
    const compareToValue = civil.get(scope, scope, compareToPath)
-   me.data.focus = handValues.some((handValue) => handValue > compareToValue)
+   me.data.focus = hand.some((handValue) => handValue > compareToValue)
   },
  },
 
@@ -736,11 +750,13 @@ civil.states = {
    me.data.compareToPath = []
   },
   complete(me, scope) {
-   const handPaths = me.data.hand.splice(0)
+   const hand = me.data.hand.splice(0)
    const compareToPath = me.data.compareToPath.splice(0)
-   const handValues = handPaths.map((handPath) => civil.get(scope, scope, handPath))
+   if (hand.length === 0) {
+    hand.push(me.data.focus)
+   }
    const compareToValue = civil.get(scope, scope, compareToPath)
-   me.data.focus = handValues.some((handValue) => handValue <= compareToValue)
+   me.data.focus = hand.some((handValue) => handValue <= compareToValue)
   },
  },
 
@@ -753,11 +769,108 @@ civil.states = {
    me.data.compareToPath = []
   },
   complete(me, scope) {
-   const handPaths = me.data.hand.splice(0)
+   const hand = me.data.hand.splice(0)
    const compareToPath = me.data.compareToPath.splice(0)
-   const handValues = handPaths.map((handPath) => civil.get(scope, scope, handPath))
+   if (hand.length === 0) {
+    hand.push(me.data.focus)
+   }
    const compareToValue = civil.get(scope, scope, compareToPath)
-   me.data.focus = handValues.some((handValue) => handValue >= compareToValue)
+   me.data.focus = hand.some((handValue) => handValue >= compareToValue)
+  },
+ },
+
+ '*': {
+  '': '*',
+  apply(me, scope, word) {
+   me.data.basePath.push(word)
+  },
+  begin(me, scope) {
+   me.data.basePath = []
+  },
+  complete(me, scope) {
+   const hand = me.data.hand.splice(0)
+   const basePath = me.data.basePath.splice(0)
+   if (hand.length === 0) {
+    hand.push(me.data.focus)
+   }
+   const baseValue = civil.get(scope, scope, basePath)
+   me.data.focus = hand.reduce((product, handValue) => handValue * product, baseValue)
+  },
+ },
+
+ '/': {
+  '': '/',
+  apply(me, scope, word) {
+   me.data.basePath.push(word)
+  },
+  begin(me, scope) {
+   me.data.basePath = []
+  },
+  complete(me, scope) {
+   const hand = me.data.hand.splice(0)
+   const basePath = me.data.basePath.splice(0)
+   if (hand.length === 0) {
+    hand.push(me.data.focus)
+   }
+   const baseValue = civil.get(scope, scope, basePath)
+   me.data.focus = hand.reduce((product, handValue) => handValue / product, baseValue)
+  },
+ },
+
+ '+': {
+  '': '+',
+  apply(me, scope, word) {
+   me.data.basePath.push(word)
+  },
+  begin(me, scope) {
+   me.data.basePath = []
+  },
+  complete(me, scope) {
+   const hand = me.data.hand.splice(0)
+   const basePath = me.data.basePath.splice(0)
+   if (hand.length === 0) {
+    hand.push(me.data.focus)
+   }
+   const baseValue = civil.get(scope, scope, basePath)
+   me.data.focus = hand.reduce((sum, handValue) => handValue + sum, baseValue)
+  },
+ },
+
+ '-': {
+  '': '-',
+  apply(me, scope, word) {
+   me.data.basePath.push(word)
+  },
+  begin(me, scope) {
+   me.data.basePath = []
+  },
+  complete(me, scope) {
+   const hand = me.data.hand.splice(0)
+   const basePath = me.data.basePath.splice(0)
+   if (hand.length === 0) {
+    hand.push(me.data.focus)
+   }
+   const baseValue = civil.get(scope, scope, basePath)
+   me.data.focus = hand.reduce((sum, handValue) => handValue - sum, baseValue)
+  },
+ },
+
+ '%': {
+  '': '%',
+  apply(me, scope, word) {
+   me.data.basePath.push(word)
+  },
+  begin(me, scope) {
+   me.data.basePath = []
+  },
+  complete(me, scope) {
+   const hand = me.data.hand.splice(0)
+   const basePath = me.data.basePath.splice(0)
+   if (hand.length === 0) {
+    hand.push(me.data.focus)
+   }
+   const baseValue = civil.get(scope, scope, basePath)
+   me.data.focus = hand.reduce((final, handValue) => handValue % final, baseValue)
   },
  },
 }

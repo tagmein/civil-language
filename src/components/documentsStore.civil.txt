@@ -74,7 +74,7 @@
 .. .. .. .. $-- getByDirRequest result >> searchCursor
 .. .. .. .. .. $-- searchCursor value >> candidateDocument
 .. .. .. .. .. .. $-- candidateDocument @ -- -- -- -- searchResults push !
-.. .. .. .. .. $candidateDocument id ~= / ?
+.. .. .. .. .. $candidateDocument id ~= '/' ?
 .. .. .. .. .. $-- searchCursor continue !
 .. .. .. .. $searchCursor ?
 .. .. .. .. .. $-- -- resolve !
@@ -94,7 +94,7 @@
 .. .. .. .. $-- getByDirRequest result >> searchCursor
 .. .. .. .. .. $-- searchCursor value >> candidateDocument
 .. .. .. .. .. .. $-- candidateDocument name @ -- -- -- -- searchResults push !
-.. .. .. .. .. $candidateDocument id ~= / ?
+.. .. .. .. .. $candidateDocument id ~= '/' ?
 .. .. .. .. .. $-- searchCursor continue !
 .. .. .. .. $searchCursor ?
 .. .. .. .. .. $-- -- resolve !

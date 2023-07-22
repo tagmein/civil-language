@@ -74,11 +74,11 @@ mouseleave , $closeToolbarDirectory @ directoryContainer addEventListener !
 << dir segmentButton Documents saveDocument renameDocument components >> openToolbarDirectory
 
 .. '' >> toolbar textContent
-.. / @ dir split ! >> dirSegments
+.. '/' @ dir split ! >> dirSegments
 .. $-- Array ! >> linkSegments
 .. .. a @ -- -- document createElement ! >> segmentButton
 .. .. $segment @ -- linkSegments push !
-.. .. / @ -- linkSegments join ! >> segmentFullPath
+.. .. '/' @ -- linkSegments join ! >> segmentFullPath
 .. .. $segmentButton @ -- toolbar appendChild !
 .. .. '#$segmentFullPath' >> segmentButton href
 .. .. $segment @ -- -- decodeURIComponent ! >> segmentButton textContent

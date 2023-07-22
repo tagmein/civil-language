@@ -77,7 +77,7 @@ $civilDatabase @ components documentsStore ! >> Documents
 # function to save a document
 .. $-- Object ! >> documentObject
 .. $id >> documentObject id
-.. / @ id lastIndexOf ! >> nameDirSplit
+.. '/' @ id lastIndexOf ! >> nameDirSplit
 .. $nameDirSplit +1 >> nameDirSplit
 .. $nameDirSplit @ id substring ! >> documentObject name
 .. 0 , $nameDirSplit @ id substring ! >> documentObject dir

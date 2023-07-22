@@ -16,7 +16,7 @@
 .. $initialValue >> control container value
 .. .. $-- control container value @ -- onUpdateValue !
 .. << event >> handleChangeImmediate
-.. $handleChangeImmediate , 250 @ components debounce ! >> handleChange
+.. $handleChangeImmediate , 500 @ components debounce ! >> handleChange
 .. keyup , $handleChange @ control container addEventListener !
 .. $control
 << initialValue onUpdateValue components
