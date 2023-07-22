@@ -1,6 +1,7 @@
 .. '' >> newDocumentName
 .. .. .. $-- -- newDocumentName @ -- -- -- encodeURIComponent ! >> encodedName
-.. .. .. '$--\ --\ path /$encodedName' , '' @ -- -- saveDocument !
+.. .. .. '$--\ --\ path /$encodedName' >> newDocumentId
+.. .. .. $newDocumentId , '' @ -- -- saveDocument !
 .. .. .. .. $-- -- -- -- fileReader ! >> reader
 .. .. .. .. .. .. $-- -- reader result @ -- resolve !
 .. .. .. .. .. << >> -- reader onload
@@ -10,7 +11,10 @@
 .. .. .. .. << resolve reject @ -- -- -- -- promise ! >> fileString
 .. .. .. .. $fileString @ -- -- -- -- JSON parse ! >> fileData
 .. .. .. .. $fileData @ -- -- -- -- Object entries ! >> fileEntries
-.. .. .. .. $fileEntries @ -- -- -- -- console log !
+.. .. .. .. .. $entry 0 >> key
+.. .. .. .. .. $entry 1 >> value
+.. .. .. .. .. '$--\ --\ newDocumentId $key' , $value @ -- -- -- -- saveDocument !
+.. .. .. .. << entry :: fileEntries !
 .. .. .. $-- -- newDocumentFile ?
 .. .. .. '$--\ --\ path /$encodedName' >> -- -- -- location hash
 .. .. $-- newDocumentName length > 0 ?
