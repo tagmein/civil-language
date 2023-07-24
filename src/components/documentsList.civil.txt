@@ -41,13 +41,15 @@
 .. .. << >> manageDocument
 .. .. button @ -- -- document createElement ! >> manageDocumentButton
 .. .. '···' >> manageDocumentButton textContent
+.. .. title , 'Manage document' @ manageDocumentButton setAttribute !
 .. .. click , $manageDocument @ manageDocumentButton addEventListener !
 .. .. $manageDocumentButton @ -- docListToolContainer appendChild !
 .. $path ~= '' ?
 ..
 .. # create new document
 .. button @ -- document createElement ! >> docListCreate
-.. Create >> docListCreate textContent
+.. ✚ >> docListCreate textContent
+.. title , 'Create new document' @ docListCreate setAttribute !
 .. $docListCreate @ docListToolContainer appendChild !
 .. .. $-- path , $-- saveDocument , $-- components \
        @ -- components documentCreateDialog !

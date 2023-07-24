@@ -97,6 +97,7 @@ mouseleave , $closeToolbarDirectory @ directoryContainer addEventListener !
 .. .. << >> manageDocument
 .. .. button @ -- -- document createElement ! >> manageDocumentButton
 .. .. '···' >> manageDocumentButton textContent
+.. .. title , 'Manage document' @ manageDocumentButton setAttribute !
 .. .. click , $manageDocument @ manageDocumentButton addEventListener !
 .. .. $manageDocumentButton @ -- toolbar appendChild !
 .. $dir ~= '' ?

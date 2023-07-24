@@ -88,10 +88,12 @@ $civilDatabase @ components documentsStore ! >> Documents
 .. .. .. $-- -- -- Date now ! >> -- -- documentObject created
 .. .. $-- existingDocument created ~ ?
 .. $existingDocument ?
+.. .. $-- documentObject , $-- additionalProperties @ -- -- Object assign !
+.. $additionalProperties ?
 .. $-- Date now ! >> documentObject updated
 .. $documentObject @ -- Documents put ! >> saveResult
-.. 'Saved document' , $saveResult @ -- console log !
-<< id value >> saveDocument
+.. 'Saved document' , $documentObject , $saveResult @ -- console log !
+<< id value additionalProperties >> saveDocument
 
 # function to rename a document
 .. '$dir $oldName' >> oldId
@@ -130,6 +132,9 @@ $navigator appCodeName toLowerCase ! >> appCodeName
 .. 'Incoming message' , $message @ -- console log !
 .. $-- Object ! >> response
 .. $message data requestId >> response requestId
+.. .. 1 @ -- -- location hash substring ! >> basePath
+.. .. '$basePath $--\ message\ data\ data\ path' , $-- message data data viewPath @ -- -- Documents getFromView ! >> -- reply
+.. $message data type = readView ?
 .. .. 1 @ -- -- location hash substring ! >> basePath
 .. .. '$basePath $--\ message\ data\ data\ path' @ -- -- Documents getByDir ! >> -- reply
 .. $message data type = readDir ?

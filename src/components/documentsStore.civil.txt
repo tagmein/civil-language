@@ -15,6 +15,10 @@
 .. .. << resolve reject @ -- -- promise !
 .. << id >> control get
 ..
+.. .. $viewId @ -- control get ! >> viewDocument
+.. .. '$viewDocument\ view $path' @ -- control get !
+.. << viewId path >> control getFromView
+..
 .. .. documents , readwrite @ -- database transaction ! >> transaction
 .. .. documents @ transaction objectStore ! >> store
 .. .. $value @ store put ! >> operation

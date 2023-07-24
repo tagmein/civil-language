@@ -1,7 +1,10 @@
 .. '' >> newDocumentName
+.. '' >> newDocumentView
 .. .. .. $-- -- newDocumentName @ -- -- -- encodeURIComponent ! >> encodedName
 .. .. .. '$--\ --\ path /$encodedName' >> newDocumentId
-.. .. .. $newDocumentId , '' @ -- -- saveDocument !
+.. .. .. $-- -- -- Object ! >> additionalProperties
+.. .. .. $-- -- newDocumentView >> additionalProperties view
+.. .. .. $newDocumentId , '' , $additionalProperties @ -- -- saveDocument !
 .. .. .. .. $-- -- -- -- fileReader ! >> reader
 .. .. .. .. .. .. $-- -- reader result @ -- resolve !
 .. .. .. .. .. << >> -- reader onload
@@ -34,6 +37,10 @@
 .. << value >> updateDocumentName
 .. 'Document name' , '' , $updateDocumentName @ -- \
     components input ! >> createDocumentName
+.. .. $value >> -- newDocumentView
+.. << value >> updateDocumentView
+.. 'Document view' , '' , $updateDocumentView @ -- \
+    components input ! >> createDocumentView
 .. .. $value >> -- newDocumentFile
 .. << value >> updateDocumentFile
 .. 'Contents from file' , , $updateDocumentFile , file @ -- \
@@ -45,8 +52,10 @@
 .. $createDialogTitle @ createDialog contents appendChild !
 .. $createDocumentPath container @ createDialog contents appendChild !
 .. $createDocumentName container @ createDialog contents appendChild !
+.. $createDocumentView container @ createDialog contents appendChild !
 .. $createDocumentFile container @ createDialog contents appendChild !
 .. $confirmButton @ createDialog contents appendChild !
 .. $createDocumentName input focus !
 .. required >> createDocumentName input required
 << path saveDocument components
+

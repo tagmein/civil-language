@@ -155,6 +155,29 @@ body.editor-enabled .document-view-preview {
       })
      })
     },
+    async readView(path, viewPath) {
+     const requestId = apiRequestUniqueId++
+     return new Promise(function (_resolve, _reject) {
+      function resolve(x) {
+       _resolve(x)
+       apiRequestMap.delete(requestId)
+      }
+      function reject(x) {
+       _reject(x)
+       apiRequestMap.delete(requestId)
+      }
+      apiRequestMap.set(requestId, { resolve, reject })
+      top.postMessage({
+       requestId,
+       data: { path, viewPath },
+       type: \'readView\',
+      })
+     })
+    },
+    async runView(path, viewPath) {
+     const viewDocument = await globalThis.civilApi.readView(path, viewPath)
+     return await globalThis.main.run(viewDocument.value)
+    }
    }
    globalThis.main = civil.scope(globalThis)
    main.run($previewCode )

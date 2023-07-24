@@ -23,6 +23,9 @@
 .. $document name @ -- decodeURIComponent ! >> decodedName
 .. 'Document name' , $decodedName , $updateDocumentName @ -- \
     components input ! >> documentName
+.. 'Document view' , $document view , $updateDocumentView @ -- \
+    components input ! >> documentView
+.. disabled >> documentView input disabled
 .. h6 @ -- document createElement ! >> manageDialogTitle
 .. 'Manage document' >> manageDialogTitle textContent
 .. button @ -- document createElement ! >> confirmButton
@@ -30,6 +33,7 @@
 .. $manageDialogTitle @ manageDialog contents appendChild !
 .. $documentPathInput container @ manageDialog contents appendChild !
 .. $documentName container @ manageDialog contents appendChild !
+.. $documentView container @ manageDialog contents appendChild !
 .. required >> documentName input required
 .. $documentName input focus !
 .. $confirmButton @ manageDialog contents appendChild !
