@@ -136,7 +136,7 @@ body.editor-enabled .document-view-preview {
     }
    })
    globalThis.civilApi = {
-    async readDir(path) {
+    makeApiRequest(message) {
      const requestId = apiRequestUniqueId++
      return new Promise(function (_resolve, _reject) {
       function resolve(x) {
@@ -149,48 +149,33 @@ body.editor-enabled .document-view-preview {
       }
       apiRequestMap.set(requestId, { resolve, reject })
       top.postMessage({
-       requestId,
-       data: { path },
-       type: \'readDir\',
+       ...message,
+       requestId
       })
      })
     },
-    async read(path) {
-     const requestId = apiRequestUniqueId++
-     return new Promise(function (_resolve, _reject) {
-      function resolve(x) {
-       _resolve(x)
-       apiRequestMap.delete(requestId)
-      }
-      function reject(x) {
-       _reject(x)
-       apiRequestMap.delete(requestId)
-      }
-      apiRequestMap.set(requestId, { resolve, reject })
-      top.postMessage({
-       requestId,
-       data: { path },
-       type: \'read\',
-      })
+    read(path) {
+     return globalThis.civilApi.makeApiRequest({
+      data: { path },
+      type: \'read\',
      })
     },
-    async readView(path, viewPath) {
-     const requestId = apiRequestUniqueId++
-     return new Promise(function (_resolve, _reject) {
-      function resolve(x) {
-       _resolve(x)
-       apiRequestMap.delete(requestId)
-      }
-      function reject(x) {
-       _reject(x)
-       apiRequestMap.delete(requestId)
-      }
-      apiRequestMap.set(requestId, { resolve, reject })
-      top.postMessage({
-       requestId,
-       data: { path, viewPath },
-       type: \'readView\',
-      })
+    readDir(path) {
+     return globalThis.civilApi.makeApiRequest({
+      data: { path },
+      type: \'readDir\',
+     })
+    },
+    readDirNames(path) {
+     return globalThis.civilApi.makeApiRequest({
+      data: { path },
+      type: \'readDirNames\',
+     })
+    },
+    readView(path, viewPath) {
+     return globalThis.civilApi.makeApiRequest({
+      data: { path, viewPath },
+      type: \'readView\',
      })
     },
     async run(path) {
@@ -200,7 +185,13 @@ body.editor-enabled .document-view-preview {
     async runView(path, viewPath) {
      const viewDocument = await globalThis.civilApi.readView(path, viewPath)
      return await globalThis.main.run(viewDocument.value)
-    }
+    },
+    write(path, value, additionalProperties) {
+     return globalThis.civilApi.makeApiRequest({
+      data: { path, value, additionalProperties },
+      type: \'write\',
+     })
+    },
    }
    globalThis.main = civil.scope(globalThis)
    main.run($previewCode )

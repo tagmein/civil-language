@@ -144,6 +144,10 @@ $navigator appCodeName toLowerCase ! >> appCodeName
 .. .. 1 @ -- -- location hash substring ! >> basePath
 .. .. '$basePath $--\ message\ data\ data\ path' @ -- -- Documents getNamesByDir ! >> -- reply
 .. $message data type = readDirNames ?
+.. .. 1 @ -- -- location hash substring ! >> basePath
+.. .. '$basePath $--\ message\ data\ data\ path' , $-- message data data value , \
+       $-- message data data additionalProperties @ -- -- saveDocument ! >> -- reply
+.. $message data type = write ?
 .. $reply >> response data
 .. $response @ message source postMessage !
 << message >> handleMessage
