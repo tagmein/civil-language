@@ -91,6 +91,12 @@ mouseleave , $closeToolbarDirectory @ directoryContainer addEventListener !
 .. .. mouseleave , $-- -- closeToolbarDirectory @ segmentButton addEventListener !
 .. << segment :: dirSegments !
 ..
+.. .. 'Home - Civil' >> -- -- document title
+.. $dir = '' ?
+..
+.. .. $-- dirSegments $--\ dirSegments\ length\ -1 @ -- -- decodeURIComponent ! >> title
+.. .. $-- dir @ -- -- decodeURIComponent ! >> readableDir
+.. .. '$title  - Civil - $readableDir' >> -- -- document title
 .. .. $-- dir @ -- Documents get ! >> doc
 .. .. .. $-- doc , $-- -- Documents , $-- -- renameDocument , $-- -- components \
        @ -- -- components documentManageDialog !
@@ -102,4 +108,3 @@ mouseleave , $closeToolbarDirectory @ directoryContainer addEventListener !
 .. .. $manageDocumentButton @ -- toolbar appendChild !
 .. $dir ~= '' ?
 << dir toolbar Documents saveDocument renameDocument components
-
