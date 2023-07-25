@@ -133,6 +133,9 @@ $navigator appCodeName toLowerCase ! >> appCodeName
 .. $-- Object ! >> response
 .. $message data requestId >> response requestId
 .. .. 1 @ -- -- location hash substring ! >> basePath
+.. .. '$basePath $--\ message\ data\ data\ path' @ -- -- Documents get ! >> -- reply
+.. $message data type = read ?
+.. .. 1 @ -- -- location hash substring ! >> basePath
 .. .. '$basePath $--\ message\ data\ data\ path' , $-- message data data viewPath @ -- -- Documents getFromView ! >> -- reply
 .. $message data type = readView ?
 .. .. 1 @ -- -- location hash substring ! >> basePath

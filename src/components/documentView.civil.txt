@@ -155,6 +155,25 @@ body.editor-enabled .document-view-preview {
       })
      })
     },
+    async read(path) {
+     const requestId = apiRequestUniqueId++
+     return new Promise(function (_resolve, _reject) {
+      function resolve(x) {
+       _resolve(x)
+       apiRequestMap.delete(requestId)
+      }
+      function reject(x) {
+       _reject(x)
+       apiRequestMap.delete(requestId)
+      }
+      apiRequestMap.set(requestId, { resolve, reject })
+      top.postMessage({
+       requestId,
+       data: { path },
+       type: \'read\',
+      })
+     })
+    },
     async readView(path, viewPath) {
      const requestId = apiRequestUniqueId++
      return new Promise(function (_resolve, _reject) {
@@ -173,6 +192,10 @@ body.editor-enabled .document-view-preview {
        type: \'readView\',
       })
      })
+    },
+    async run(path) {
+     const civilDocument = await globalThis.civilApi.read(path)
+     return await globalThis.main.run(civilDocument.value)
     },
     async runView(path, viewPath) {
      const viewDocument = await globalThis.civilApi.readView(path, viewPath)
