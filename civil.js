@@ -608,6 +608,7 @@ civil.states = {
     ? me.data.hand.shift() 
     : me.data.focus
    civil.set(scope, value, me.data.destinationPath.splice(0))
+   me.data.focus = value
   },
  },
 
