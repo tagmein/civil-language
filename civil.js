@@ -448,6 +448,9 @@ civil.states = {
    if (hand.length > 0) {
     me.data.value = !hand.some((x) => x)
    }
+   else {
+    me.data.focus = !me.data.focus
+   }
   },
   immediate: true,
  },
@@ -523,9 +526,9 @@ civil.states = {
     me.data.focus = me.data.hand.shift()
     if (typeof me.data.focus !== 'function') {
      throw new Error(
-      `! may only be used after a function, got ${typeof me.data.focus} at '${functionPath.join(
+      `! may only be used after a function, got ${typeof me.data.focus} at '${me.data.functionPath ? me.data.functionPath.join(
        ' '
-      )}'`
+      ) : 'unknown'}'`
      )
     }
    }
