@@ -92,7 +92,7 @@ $civilDatabase @ components documentsStore ! >> Documents
 .. $additionalProperties ?
 .. $-- Date now ! >> documentObject updated
 .. $documentObject @ -- Documents put ! >> saveResult
-.. 'Saved document' , $documentObject , $saveResult @ -- console log !
+.. 'Saved document' , $documentObject id , $saveResult @ -- console log !
 << id value additionalProperties >> saveDocument
 
 # function to rename a document

@@ -320,6 +320,9 @@ civil.scope = function civilScope(scope) {
    }
   },
   async run(arg) {
+   if (typeof arg === 'undefined') {
+    return me
+   }
    // console.log('start run', JSON.stringify(arg, null, 2))
    me.state = civil.states[civil.initialState]
    await me.state.begin(me)
@@ -563,6 +566,28 @@ civil.states = {
    }
    const hand = me.data.hand.splice(0)
    me.data.focus = await me.data.focus(...hand)
+  },
+  immediate: true,
+ },
+
+ '!new': {
+  '': '!new',
+  async complete(me, scope) {
+   if (me.data.hand.length > 0) {
+    me.data.focus = me.data.hand.shift()
+    if (typeof me.data.focus !== 'function') {
+     throw new Error(
+      `! may only be used after a function, got ${typeof me.data.focus} at '${me.data.functionPath ? me.data.functionPath.join(
+       ' '
+      ) : 'unknown'}'`
+     )
+    }
+   }
+   if (typeof me.data.focus !== 'function') {
+    throw new Error(`! may only be used after a function, got ${typeof me.data.focus}`)
+   }
+   const hand = me.data.hand.splice(0)
+   me.data.focus = await new me.data.focus(...hand)
   },
   immediate: true,
  },
