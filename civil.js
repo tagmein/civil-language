@@ -51,7 +51,11 @@ civil.get = function (scope, initialTrace, _path, read = false) {
  }
  const path = _path.slice(0)
  const firstSegment = path.shift()
- let trace = read ? initialTrace[firstSegment] : civil.resolve(initialTrace, firstSegment)
+ const realFirstSegment = civil.resolve(scope, firstSegment)
+ let trace = read ? initialTrace[firstSegment] : realFirstSegment
+ if (read && typeof trace === 'function') {
+  trace = trace.bind(initialTrace)
+ }
  const indices = path.map((_, i) => i)
  forSegment: for (const segmentIndex of indices) {
   const segment = path[segmentIndex]
@@ -424,9 +428,18 @@ civil.states = {
   },
   complete(me, scope) {
    if (me.data.pendingHand.length > 0 || me.data.lastWord === '0,') {
-    me.data.hand.push(
-     civil.get(scope, scope, me.data.pendingHand.splice(0))
-    )
+    const handCopy = me.data.pendingHand.splice(0)
+    if (typeof handCopy[0] === 'object') {
+     const context = handCopy.shift()
+     me.data.hand.push(
+      civil.get(scope, context, handCopy, true)
+     )
+    }
+    else {
+     me.data.hand.push(
+      civil.get(scope, scope, handCopy)
+     )
+    }
    }
   },
   completeLines(me, scope) {
@@ -434,6 +447,14 @@ civil.states = {
     me.data.focus = me.data.hand.shift()
    }
   },
+ },
+
+ '.': {
+  '': '.',
+  complete(me, scope) {
+   me.data.pendingHand.push(me.data.focus)
+  },
+  immediate: true,
  },
 
  ',': {
