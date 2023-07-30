@@ -52,7 +52,10 @@ civil.get = function (scope, initialTrace, _path, read = false) {
  const path = _path.slice(0)
  const firstSegment = path.shift()
  let trace = read ? initialTrace[firstSegment] : civil.resolve(initialTrace, firstSegment)
- forSegment: for (const segment of path) {
+ const indices = path.map((_, i) => i)
+ forSegment: for (const segmentIndex of indices) {
+  const segment = path[segmentIndex]
+  const nextSegment = path[segmentIndex + 1]
   if (typeof trace === 'undefined' || trace === null) {
    throw new Error(`cannot read '${segment}' of ${trace}: '${_path.join(' ')}'`)
   }
@@ -84,7 +87,8 @@ civil.get = function (scope, initialTrace, _path, read = false) {
    trace[realSegment] !== Array && 
    trace[realSegment] !== Date && 
    trace[realSegment] !== Object &&
-   trace[realSegment] !== URL
+   trace[realSegment] !== URL &&
+   nextSegment !== 'name'
   ) {
    trace = trace[realSegment].bind(trace)
   } else {
@@ -262,13 +266,13 @@ civil.scope = function civilScope(scope) {
    const word = _word.substring(1)
    // console.log('::::', type, word)
    if (type === civil.wordType.NORMAL &&
-    !me.state.capture && (word in civil.states || me.data.isAtBreak)
+    !me.state.capture && (civil.states.hasOwnProperty(word) || me.data.isAtBreak)
    ) {
     if (me.state.complete) {
      await me.state.complete(me, scope)
     }
     let stateChange = false
-    if (word in civil.states) {
+    if (civil.states.hasOwnProperty(word)) {
      stateChange = true
      me.state = civil.states[word]
     }
@@ -389,6 +393,7 @@ civil.scope = function civilScope(scope) {
       }
       // console.log('finished run', { code: arg }, me)
       if (me.data.error) {
+       me.data.error = undefined
        throw me.data.error
       }
       return me.data.focus

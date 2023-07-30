@@ -119,7 +119,7 @@ body.editor-enabled .document-view-preview {
  <body>
   <script>
    globalThis.blob = (...x) => new Blob(...x)
-   globalThis.date = x => new Date(x)
+   globalThis.date = x => typeof x === \'undefined\' ? new Date() : new Date(x)
    globalThis.fileReader = x => new FileReader(x)
    globalThis.promise = x => new Promise(x)
    globalThis.typeOf = x => typeof x
