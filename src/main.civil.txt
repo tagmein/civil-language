@@ -143,7 +143,7 @@ $navigator appCodeName toLowerCase ! >> appCodeName
 'navigator-$appCodeName' @ document body classList add !
 
 # handle cross-frame messages
-.. 'Incoming message' , $message @ -- console log !
+.. # 'Incoming message' , $message @ -- console log !
 .. $-- Object ! >> response
 .. $message data requestId >> response requestId
 .. .. 1 @ -- -- location hash substring ! >> basePath
