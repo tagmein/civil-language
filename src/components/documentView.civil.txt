@@ -213,4 +213,8 @@ body.editor-enabled .document-view-preview {
 .. $view @ area appendChild !
 .. $code container focus !
 .. $renderPreview !
+.. $-- Object ! >> control
+.. $renderPreview >> control reset
+.. $control
 << path area Documents saveDocument renameDocument components
+

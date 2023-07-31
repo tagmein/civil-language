@@ -28,10 +28,21 @@ $components spacer ! @ mainToolbar container appendChild !
 # copy link
 button @ document createElement ! >> copyLinkButton
 ⧉ >> copyLinkButton textContent
+'Get link' >> copyLinkButton title
 .. Location , $-- location href @ -- prompt !
 << >> copyLink
 click , $copyLink @ copyLinkButton addEventListener !
 $copyLinkButton @ mainToolbar container appendChild !
+
+# reset document
+button @ document createElement ! >> resetDocumentButton
+↻ >> resetDocumentButton textContent
+'Reset document' >> resetDocumentButton title
+.. .. $-- -- activeDocumentView reset !
+.. $-- activeDocumentView ?
+<< >> resetDocument
+click , $resetDocument @ resetDocumentButton addEventListener !
+$resetDocumentButton @ mainToolbar container appendChild !
 
 # toggle editor
 button @ document createElement ! >> toggleEditorButton
@@ -53,6 +64,7 @@ editor-enabled @ localStorage getItem ! ?
 # toggle full screen
 button @ document createElement ! >> fullScreenButton
 ⛶ >> fullScreenButton textContent
+'Toggle full screen' >> fullScreenButton title
 .. $-- document fullscreen >> isFullScreen
 .. .. $-- -- document exitFullscreen !
 .. $isFullScreen ?
@@ -61,6 +73,8 @@ button @ document createElement ! >> fullScreenButton
 << >> toggleFullScreen
 click , $toggleFullScreen @ fullScreenButton addEventListener !
 $fullScreenButton @ mainToolbar container appendChild !
+
+# attach toolbar
 $mainToolbar container @ document body appendChild !
 
 # create document area
@@ -115,7 +129,7 @@ $civilDatabase @ components documentsStore ! >> Documents
 .. $dir , $-- currentPathButtons , $-- Documents , $-- saveDocument , $-- renameDocument , \
    $-- components @ -- components documentToolbar !
 .. $dir , $-- documentArea , $-- Documents , $-- saveDocument , $-- renameDocument , \
-   $-- components @ -- components documentView !
+   $-- components @ -- components documentView ! >> -- activeDocumentView
 << dir >> openDocument
 
 # open document on hash navigation event
