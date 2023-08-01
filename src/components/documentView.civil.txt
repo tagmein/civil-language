@@ -164,7 +164,10 @@ body.editor-enabled[data-editor-size="4"] .document-view-preview {
     }
    })
    globalThis.civilApi = {
-    makeApiRequest(message) {
+    makeApiRequest: async function namedArguments(message) {
+     if (message === civil.namedArguments) {
+      return [ \'message\' ]
+     }
      const requestId = apiRequestUniqueId++
      return new Promise(function (_resolve, _reject) {
       function resolve(x) {
@@ -182,39 +185,64 @@ body.editor-enabled[data-editor-size="4"] .document-view-preview {
       })
      })
     },
-    read(path) {
+    read: async function namedArguments(path) {
+     if (path === civil.namedArguments) {
+      return [ \'path\' ]
+     }
      return globalThis.civilApi.makeApiRequest({
       data: { path },
       type: \'read\',
      })
     },
-    readDir(path) {
+    readDir: async function namedArguments(path) {
+     if (path === civil.namedArguments) {
+      return [ \'path\' ]
+     }
      return globalThis.civilApi.makeApiRequest({
       data: { path },
       type: \'readDir\',
      })
     },
-    readDirNames(path) {
+    readDirNames: async function namedArguments(path) {
+     if (path === civil.namedArguments) {
+      return [ \'path\' ]
+     }
      return globalThis.civilApi.makeApiRequest({
       data: { path },
       type: \'readDirNames\',
      })
     },
-    readView(path, viewPath) {
+    readView: async function namedArguments(path, viewPath) {
+     if (path === civil.namedArguments) {
+      return [ \'path\',  \'viewPath\' ]
+     }
+
      return globalThis.civilApi.makeApiRequest({
       data: { path, viewPath },
       type: \'readView\',
      })
     },
-    async run(path) {
+    run: async function namedArguments(path) {
+     if (path === civil.namedArguments) {
+      return [ \'path\' ]
+     }
+
      const civilDocument = await globalThis.civilApi.read(path)
      return await globalThis.main.run(civilDocument.value)
     },
-    async runView(path, viewPath) {
+    runView: async function namedArguments(path, viewPath) {
+     if (path === civil.namedArguments) {
+      return [ \'path\', \'viewPath\' ]
+     }
+
      const viewDocument = await globalThis.civilApi.readView(path, viewPath)
      return await globalThis.main.run(viewDocument.value)
     },
-    write(path, value, additionalProperties) {
+    write: async function namedArguments(path, value, additionalProperties) {
+     if (path === civil.namedArguments) {
+      return [ \'path\', \'value\', \'additionalProperties\' ]
+     }
+
      return globalThis.civilApi.makeApiRequest({
       data: { path, value, additionalProperties },
       type: \'write\',
