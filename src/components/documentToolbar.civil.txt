@@ -7,7 +7,7 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 38px);
+  max-height: calc(100vh - 76px);
   min-width: 240px;
   opacity: 0;
   overflow: visible;

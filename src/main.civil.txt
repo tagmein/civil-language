@@ -15,7 +15,7 @@ $Object ! >> components
  documentCreateDialog documentDelete documentDownload \
  documentManageDialog documentManageDelete \
  documentToolbar documentView documentsList documentsStore \
- editor editorSimple input menu spacer toolbar !
+ editor editorSimple input menu spacer toggleEditor toolbar !
 # Components , $components @ console log !
 
 # create main toolbar
@@ -45,21 +45,8 @@ click , $resetDocument @ resetDocumentButton addEventListener !
 $resetDocumentButton @ mainToolbar container appendChild !
 
 # toggle editor
-button @ document createElement ! >> toggleEditorButton
-toggle-editor @ toggleEditorButton classList add !
-'🖉 Editor' >> toggleEditorButton textContent
-.. editor-enabled @ -- document body classList contains ! >> editorEnabled
-.. .. editor-enabled @ -- -- document body classList remove !
-.. .. editor-enabled @ -- -- localStorage removeItem !
-.. $editorEnabled ?
-.. .. editor-enabled @ -- -- document body classList add !
-.. .. editor-enabled , true @ -- -- localStorage setItem !
-.. $editorEnabled ~ ?
-<< >> toggleEditor
-click , $toggleEditor @ toggleEditorButton addEventListener !
-$toggleEditorButton @ mainToolbar container appendChild !
-.. editor-enabled @ -- document body classList add !
-editor-enabled @ localStorage getItem ! ?
+$components toggleEditor ! >> toggleEditor
+$toggleEditor button @ mainToolbar container appendChild !
 
 # toggle full screen
 button @ document createElement ! >> fullScreenButton
