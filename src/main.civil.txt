@@ -11,19 +11,31 @@
 $Object ! >> components
 .. './src/components/$name .civil.txt' @ -- load !
 .. >> -- components $name
-<< name : button database debounce dialog \
+<< name : \
+ button database debounce dialog \
  documentCreateDialog documentDelete documentDownload \
  documentManageDialog documentManageDelete \
  documentToolbar documentView documentsList documentsStore \
- editor editorSimple input menu spacer toggleEditor toolbar !
+ editor editorSimple input menu newsFeed \
+ spacer toggleEditor toolbar \
+!
+
 # Components , $components @ console log !
 
 # create main toolbar
 $components toolbar ! >> mainToolbar
+
+# news feed
+$components @ components newsFeed ! >> newsFeed
+$newsFeed button @ mainToolbar container appendChild !
+
+# current document path
 div @ document createElement ! >> currentPathButtons
 current-path @ currentPathButtons classList add ! 
 $currentPathButtons @ mainToolbar container appendChild !
-$components spacer ! @ mainToolbar container appendChild !
+
+# news feed flash
+$newsFeed flash @ mainToolbar container appendChild !
 
 # copy link
 button @ document createElement ! >> copyLinkButton
@@ -94,6 +106,11 @@ $civilDatabase @ components documentsStore ! >> Documents
 .. $-- Date now ! >> documentObject updated
 .. $documentObject @ -- Documents put ! >> saveResult
 .. 'Saved document' , $documentObject id , $saveResult @ -- console log !
+.. .. Home >> -- decodedName
+.. $id = '/' ?
+.. .. $-- documentObject name @ -- -- decodeURIComponent ! >> -- decodedName
+.. $id ~= '/' ?
+.. 'Saved \'$decodedName \'' @ -- newsFeed news !
 << id value additionalProperties >> saveDocument
 
 # function to rename a document

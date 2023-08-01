@@ -1,0 +1,41 @@
+'
+.news-flash {
+ color: #e0e0e0;
+ flex-grow: 1;
+ padding: 7px 12px 9px;
+ text-overflow: ellipsis;
+ overflow: hidden;
+ white-space: nowrap;
+ transition: opacity 0.2s ease;
+ opacity: 1;
+}
+
+.news-flash.empty {
+ opacity: 0;
+}
+' @ addStyle !
+
+.. $-- Object ! >> control
+.. button @ -- document createElement ! >> control button
+.. ▤ >> control button textContent
+.. 'News feed' >> control button title
+.. .. 'coming soon' @ -- -- alert !
+.. << >> pinNewsFeed
+.. click , $pinNewsFeed @ control button addEventListener !
+.. div @ -- document createElement ! >> control flash
+.. news-flash @ control flash classList add !
+.. empty @ control flash classList add !
+.. .. '' >> -- control flash textContent
+.. << >> control finalClearFlash
+.. .. empty @ -- control flash classList add !
+.. .. $-- control finalClearFlash , 400 @ -- -- setTimeout ! >> -- finalClearFlashTimeout
+.. << >> control clearFlash
+.. .. -- clearFlashTimeout @ -- -- clearTimeout !
+.. .. -- finalClearFlashTimeout @ -- -- clearTimeout !
+.. .. $-- control clearFlash , 800 @ -- -- setTimeout ! >> -- clearFlashTimeout
+.. .. $text >> -- control flash textContent
+.. .. empty @ -- control flash classList remove !
+.. << text >> control news
+.. $control
+<< components
+
