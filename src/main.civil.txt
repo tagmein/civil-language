@@ -29,6 +29,16 @@ $components toolbar ! >> mainToolbar
 $components @ components newsFeed ! >> newsFeed
 $newsFeed button @ mainToolbar container appendChild !
 
+# reset document
+button @ document createElement ! >> resetDocumentButton
+↻ >> resetDocumentButton textContent
+'Reset document' >> resetDocumentButton title
+.. .. $-- -- activeDocumentView reset !
+.. $-- activeDocumentView ?
+<< >> resetDocument
+click , $resetDocument @ resetDocumentButton addEventListener !
+$resetDocumentButton @ mainToolbar container appendChild !
+
 # current document path
 div @ document createElement ! >> currentPathButtons
 current-path @ currentPathButtons classList add ! 
@@ -45,16 +55,6 @@ button @ document createElement ! >> copyLinkButton
 << >> copyLink
 click , $copyLink @ copyLinkButton addEventListener !
 $copyLinkButton @ mainToolbar container appendChild !
-
-# reset document
-button @ document createElement ! >> resetDocumentButton
-↻ >> resetDocumentButton textContent
-'Reset document' >> resetDocumentButton title
-.. .. $-- -- activeDocumentView reset !
-.. $-- activeDocumentView ?
-<< >> resetDocument
-click , $resetDocument @ resetDocumentButton addEventListener !
-$resetDocumentButton @ mainToolbar container appendChild !
 
 # toggle editor
 $components toggleEditor ! >> toggleEditor
