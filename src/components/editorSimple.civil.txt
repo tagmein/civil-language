@@ -3,6 +3,8 @@
  border: none;
  box-sizing: border-box;
  font-family: monospace;
+ font-size: 13px;
+ line-height: 2;
  overflow: auto;
  padding: 10px;
  resize: none;
