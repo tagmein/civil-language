@@ -262,7 +262,7 @@ body.editor-enabled[data-editor-size="4"] .document-view-preview {
 .. .. .. $-- -- renderPreview !
 .. .. $newValue ~= $preSaveValue ?
 .. .. .. .. $-- -- -- activeDocument name @ -- -- -- -- decodeURIComponent ! >> decodedName
-.. .. .. .. 'No changes to save for \'$decodedName \'' @ -- -- -- -- newsFeed news !
+.. .. .. .. 'No changes to save for \'$decodedName \'' @ -- -- -- -- newsFeed news !~
 .. .. .. $-- newValue = $-- preSaveValue ?
 .. .. $manualSave = 1 ?
 .. << newValue manualSave >> onUpdateActiveValue

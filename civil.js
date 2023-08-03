@@ -575,6 +575,51 @@ civil.states = {
   immediate: true,
  },
 
+ '!-': {
+  '': '!-',
+  async complete(me, scope) {
+   if (me.data.hand.length > 0) {
+    me.data.focus = me.data.hand.shift()
+    if (typeof me.data.focus !== 'function') {
+     throw new Error(
+      `!- may only be used after a function, got ${typeof me.data.focus} at '${me.data.functionPath ? me.data.functionPath.join(
+       ' '
+      ) : 'unknown'}'`
+     )
+    }
+   }
+   if (typeof me.data.focus !== 'function') {
+    throw new Error(`!- may only be used after a function, got ${typeof me.data.focus}`)
+   }
+   const hand = me.data.hand.splice(0)
+   me.data.focus = me.data.focus(...hand)
+  },
+  immediate: true,
+ },
+
+ '!~': {
+  '': '!~',
+  async complete(me, scope) {
+   if (me.data.hand.length > 0) {
+    me.data.focus = me.data.hand.shift()
+    if (typeof me.data.focus !== 'function') {
+     throw new Error(
+      `!~ may only be used after a function, got ${typeof me.data.focus} at '${me.data.functionPath ? me.data.functionPath.join(
+       ' '
+      ) : 'unknown'}'`
+     )
+    }
+   }
+   if (typeof me.data.focus !== 'function') {
+    throw new Error(`!~ may only be used after a function, got ${typeof me.data.focus}`)
+   }
+   const hand = me.data.hand.splice(0)
+   me.data.focus(...hand)
+   me.data.focus = undefined
+  },
+  immediate: true,
+ },
+
  '!new': {
   '': '!new',
   async complete(me, scope) {

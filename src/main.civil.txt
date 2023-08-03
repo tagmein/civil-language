@@ -110,7 +110,7 @@ $civilDatabase @ components documentsStore ! >> Documents
 .. $id = '/' ?
 .. .. $-- documentObject name @ -- -- decodeURIComponent ! >> -- decodedName
 .. $id ~= '/' ?
-.. 'Saved \'$decodedName \'' @ -- newsFeed news !
+.. 'Saved \'$decodedName \'' @ -- newsFeed news !~
 << id value additionalProperties >> saveDocument
 
 # function to rename a document
