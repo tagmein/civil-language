@@ -16,7 +16,7 @@ body.editor-enabled .document-view {
 
 .document-view > .editor {
  display: none;
- height: calc(100vh - 59px);
+ height: calc(100vh - 57px);
  width: 50%;
 }
 
@@ -42,6 +42,7 @@ body.editor-enabled[data-editor-size="3"] .document-view > .editor-simple {
 
 body.editor-enabled[data-editor-size="4"] .document-view > .editor,
 body.editor-enabled[data-editor-size="4"] .document-view > .editor-simple {
+ border-right: 1px solid #606060;
  width: 100%;
 }
 
@@ -55,7 +56,8 @@ body.editor-enabled .document-view > .editor-simple {
  border: none;
  box-shadow: inset 0 0 40px #00000060;
  box-sizing: border-box;
- overflow: auto;
+ overflow: hidden;
+ height: calc(100vh - 38px);
  width: 100%;
 }
 
@@ -145,6 +147,16 @@ body.editor-enabled[data-editor-size="4"] .document-view-preview {
  </head>
  <body>
   <script>
+   window.addEventListener(\'click\', function (event) {
+    if (event.target.tagName === \'A\') {
+     event.preventDefault()
+     const href = event.target.getAttribute(\'href\')
+     top.postMessage({
+      data: { href },
+      type: \'navigate\'
+     })
+    }
+   })
    globalThis.blob = (...x) => new Blob(...x)
    globalThis.date = x => typeof x === \'undefined\' ? new Date() : new Date(x)
    globalThis.fileReader = x => new FileReader(x)

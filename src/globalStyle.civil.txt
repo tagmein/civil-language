@@ -5,13 +5,13 @@ $globalStyle @ document head appendChild !
 html, body {
  margin: 0;
  min-height: 100vh;
+ overflow: hidden;
  padding: 0;
 }
 
 body {
  display: flex;
  flex-direction: column;
- overflow: hidden;
 }
 
 body, input, select, textarea, button {
@@ -136,10 +136,26 @@ h6 {
 }
 
 .document-area {
- display: flex;
- flex-direction: column;
- flex-grow: 1;
  overflow: hidden;
+ position: fixed;
+ top: 38px;
+ left: 300px;
+ right: 0;
+ bottom: -10px;
+}
+
+.document-details {
+ background-color: #303030;
+ border-right: 1px solid #606060;
+ box-sizing: border-box;
+ overflow-x: hidden;
+ overflow-y: auto;
+ position: fixed;
+ top: 38px;
+ left: 0;
+ right: 0;
+ bottom: 0;
+ width: 300px;
 }
 
 body.editor-enabled .toggle-editor {

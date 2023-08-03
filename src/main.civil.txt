@@ -13,8 +13,8 @@ $Object ! >> components
 .. >> -- components $name
 << name : \
  button database debounce delay dialog \
- documentCreateDialog documentDelete documentDownload \
- documentManageDialog documentManageDelete \
+ documentCreateDialog documentDelete documentDetails \
+ documentDownload documentManageDialog documentManageDelete \
  documentToolbar documentView documentsList documentsStore \
  editor editorSimple input menu newsFeed \
  spacer toggleEditor toolbar \
@@ -76,6 +76,11 @@ $fullScreenButton @ mainToolbar container appendChild !
 # attach toolbar
 $mainToolbar container @ document body appendChild !
 
+# create document details
+div @ document createElement ! >> documentDetails
+document-details @ documentDetails classList add !
+$documentDetails @ document body appendChild !
+
 # create document area
 div @ document createElement ! >> documentArea
 document-area @ documentArea classList add !
@@ -132,6 +137,8 @@ $civilDatabase @ components documentsStore ! >> Documents
 # function to open a document
 .. $dir , $-- currentPathButtons , $-- Documents , $-- saveDocument , $-- renameDocument , \
    $-- components @ -- components documentToolbar !
+.. $dir , $-- documentDetails , $-- Documents , $-- saveDocument , $-- renameDocument , \
+   $-- components @ -- components documentDetails ! >> -- activeDocumentDetails
 .. $dir , $-- documentArea , $-- Documents , $-- saveDocument , $-- renameDocument , \
    $-- components @ -- components documentView ! >> -- activeDocumentView
 << dir >> openDocument
@@ -149,6 +156,9 @@ $navigator appCodeName toLowerCase ! >> appCodeName
 # handle cross-frame messages
 .. # 'Incoming message' , $message @ -- console log !
 .. $-- Object ! >> response
+.. .. '$--\ --\ location\ hash $--\ message\ data\ data\ href' @ -- -- console info !
+.. .. '$--\ --\ location\ hash $--\ message\ data\ data\ href' >> -- -- location hash
+.. $message data type = navigate ?
 .. $message data requestId >> response requestId
 .. .. 1 @ -- -- location hash substring ! >> basePath
 .. .. '$basePath $--\ message\ data\ data\ path' @ -- -- Documents get ! >> -- reply

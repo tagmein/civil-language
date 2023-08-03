@@ -1,0 +1,8 @@
+.. '' >> area textContent
+.. '$path /' @ Documents getByDir ! >> docs
+.. $area , $path , $Documents , $docs , $saveDocument , $renameDocument , \
+    $components @ components documentsList !
+.. $-- Object ! >> control
+.. $control
+<< path area Documents saveDocument renameDocument components
+
