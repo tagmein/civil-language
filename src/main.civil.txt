@@ -105,7 +105,7 @@ $civilDatabase @ components documentsStore ! >> Documents
 .. $additionalProperties ?
 .. $-- Date now ! >> documentObject updated
 .. $documentObject @ -- Documents put ! >> saveResult
-.. 'Saved document' , $documentObject id , $saveResult @ -- console log !
+.. # 'Saved document' , $documentObject id , $saveResult @ -- console log !
 .. .. Home >> -- decodedName
 .. $id = '/' ?
 .. .. $-- documentObject name @ -- -- decodeURIComponent ! >> -- decodedName
@@ -119,7 +119,7 @@ $civilDatabase @ components documentsStore ! >> Documents
 .. '$dir $newName' >> documentObject id
 .. $newName >> documentObject name
 .. $oldId , $documentObject @ -- Documents replace ! >> saveResult
-.. 'Renamed document' , $saveResult @ -- console log !
+.. # 'Renamed document' , $saveResult @ -- console log !
 << dir oldName newName >> renameDocument
 
 # test create document
