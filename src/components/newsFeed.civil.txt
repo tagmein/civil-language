@@ -2,6 +2,7 @@
 .news-flash {
  color: #e0e0e0;
  flex-grow: 1;
+ min-width: 120px;
  overflow: hidden;
  position: relative;
 }

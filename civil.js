@@ -45,6 +45,10 @@ civil.wordType = {
  LITERAL: '1'
 }
 
+civil.formatString = function (string) {
+ return `'${string.replace(/\\/g, '\\\\').replace(/'/g, '\\\'')}'`
+}
+
 civil.get = function (scope, initialTrace, _path, read = false) {
  if (_path.length === 0) {
   return undefined
@@ -53,7 +57,7 @@ civil.get = function (scope, initialTrace, _path, read = false) {
  const firstSegment = path.shift()
  const realFirstSegment = civil.resolve(scope, firstSegment)
  let trace = read ? initialTrace[firstSegment] : realFirstSegment
- if (read && typeof trace === 'function') {
+ if (read && typeof trace === 'function' && !trace.name.startsWith('bound ')) {
   trace = trace.bind(initialTrace)
  }
  const indices = path.map((_, i) => i)
@@ -92,7 +96,8 @@ civil.get = function (scope, initialTrace, _path, read = false) {
    trace[realSegment] !== Date && 
    trace[realSegment] !== Object &&
    trace[realSegment] !== URL &&
-   nextSegment !== 'name'
+   nextSegment !== 'name' &&
+   !trace[realSegment].name.startsWith('bound ')
   ) {
    trace = trace[realSegment].bind(trace)
   } else {
