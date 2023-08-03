@@ -27,7 +27,8 @@
  border-right: none;
 }
 
-.toolbar .spacer + .button, .toolbar .spacer + button {
+.toolbar .spacer + .button, .toolbar .spacer + button
+.toolbar .news-flash + .button, .toolbar .news-flash + button {
  border-left: 1px solid #606060;
 }
 
