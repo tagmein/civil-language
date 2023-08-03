@@ -12,7 +12,7 @@ $Object ! >> components
 .. './src/components/$name .civil.txt' @ -- load !
 .. >> -- components $name
 << name : \
- button database debounce dialog \
+ button database debounce delay dialog \
  documentCreateDialog documentDelete documentDownload \
  documentManageDialog documentManageDelete \
  documentToolbar documentView documentsList documentsStore \

@@ -1,0 +1,4 @@
+.. .. $resolve , $-- delay @ -- -- setTimeout !
+.. << resolve @ -- promise !
+<< delay
+

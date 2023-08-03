@@ -18,6 +18,13 @@
 .. << event >> handleChangeImmediate
 .. $handleChangeImmediate , 500 @ components debounce ! >> handleChange
 .. keyup , $handleChange @ control container addEventListener !
+.. .. # manual save with ctrl + s
+.. .. .. .. $-- -- event preventDefault !
+.. .. .. .. $-- -- -- control container value , 1 @ -- -- -- onUpdateValue !
+.. .. .. $-- event key = s ?
+.. .. $event ctrlKey ?
+.. << event >> handleKeyDown
+.. keydown , $handleKeyDown @ control container addEventListener !
 .. $control
 << initialValue onUpdateValue components
 

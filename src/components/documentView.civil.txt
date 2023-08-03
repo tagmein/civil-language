@@ -255,12 +255,17 @@ body.editor-enabled[data-editor-size="4"] .document-view-preview {
  </body>
 </html>' >> -- preview srcdoc
 .. << >> renderPreview
+.. .. $-- activeDocument value >> preSaveValue
 .. .. .. $-- newValue >> -- -- activeDocument value
 .. .. .. $-- -- activeDocument id , $-- -- activeDocument value \
           @ -- -- saveDocument !
 .. .. .. $-- -- renderPreview !
-.. .. $newValue ~= $-- activeDocument value ?
-.. << newValue >> onUpdateActiveValue
+.. .. $newValue ~= $preSaveValue ?
+.. .. .. .. $-- -- -- activeDocument name @ -- -- -- -- decodeURIComponent ! >> decodedName
+.. .. .. .. 'No changes to save for \'$decodedName \'' @ -- -- -- -- newsFeed news !
+.. .. .. $-- newValue = $-- preSaveValue ?
+.. .. $manualSave = 1 ?
+.. << newValue manualSave >> onUpdateActiveValue
 .. $activeDocument value , $onUpdateActiveValue , $components \
     @ components editorSimple ! >> code
 .. $code container @ view appendChild !

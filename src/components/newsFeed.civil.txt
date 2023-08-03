@@ -2,15 +2,29 @@
 .news-flash {
  color: #e0e0e0;
  flex-grow: 1;
- padding: 7px 12px 9px;
- text-overflow: ellipsis;
  overflow: hidden;
- white-space: nowrap;
- transition: opacity 0.2s ease;
- opacity: 1;
+ position: relative;
 }
 
-.news-flash.empty {
+.news-flash > div {
+ position: absolute;
+ top: 0;
+ left: 0;
+ right: 0;
+ display: flex;
+ flex-direction: column;
+}
+
+.news-flash > div > span {
+ opacity: 1;
+ overflow: hidden;
+ padding: 7px 12px 9px;
+ text-overflow: ellipsis;
+ transition: opacity 0.2s ease;
+ white-space: nowrap;
+}
+
+.news-flash > div > span.initial {
  opacity: 0;
 }
 ' @ addStyle !
@@ -24,17 +38,29 @@
 .. click , $pinNewsFeed @ control button addEventListener !
 .. div @ -- document createElement ! >> control flash
 .. news-flash @ control flash classList add !
-.. empty @ control flash classList add !
-.. .. '' >> -- control flash textContent
-.. << >> control finalClearFlash
-.. .. empty @ -- control flash classList add !
-.. .. $-- control finalClearFlash , 400 @ -- -- setTimeout ! >> -- finalClearFlashTimeout
-.. << >> control clearFlash
-.. .. -- clearFlashTimeout @ -- -- clearTimeout !
-.. .. -- finalClearFlashTimeout @ -- -- clearTimeout !
-.. .. $-- control clearFlash , 800 @ -- -- setTimeout ! >> -- clearFlashTimeout
-.. .. $text >> -- control flash textContent
-.. .. empty @ -- control flash classList remove !
+.. div @ -- document createElement ! >> control stories
+.. $control stories @ control flash appendChild !
+.. 0 >> processing
+.. .. 1 >> -- processing
+.. .. $-- control stories firstElementChild >> storySpan
+.. .. 1 @ -- components delay !
+.. .. initial @ storySpan classList remove !
+.. .. 1200 @ -- components delay !
+.. .. initial @ storySpan classList add !
+.. .. 300 @ -- components delay !
+.. .. $storySpan @ -- control stories removeChild !
+.. .. 0 >> -- processing
+.. .. .. $-- -- processFirstStory !
+.. .. $-- control stories firstElementChild ?
+.. << >> processFirstStory
+.. .. News! , $text @ -- -- console info !
+.. .. span @ -- -- document createElement ! >> storySpan
+.. .. initial @ storySpan classList add !
+.. .. $text >> storySpan textContent
+.. .. title , $text @ storySpan setAttribute !
+.. .. $storySpan @ -- control stories appendChild !
+.. .. .. $-- -- processFirstStory !
+.. .. $-- processing = 0 ?
 .. << text >> control news
 .. $control
 << components
