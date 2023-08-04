@@ -21,6 +21,13 @@
   border-top: none;
  }
  
+ .document-list-tools .new-document {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 20px;
+  width: 37px;
+ }
+ 
 ' @ addStyle !
 
 .. div @ -- document createElement ! >> docListToolContainer
@@ -48,7 +55,8 @@
 ..
 .. # create new document
 .. button @ -- document createElement ! >> docListCreate
-.. ✚ >> docListCreate textContent
+.. new-document @ docListCreate classList add !
+.. '+' >> docListCreate textContent
 .. title , 'Create new document' @ docListCreate setAttribute !
 .. $docListCreate @ docListToolContainer appendChild !
 .. .. $-- path , $-- saveDocument , $-- components \
