@@ -20,7 +20,7 @@
 .. $doc ~ ?
 .. h1 @ -- document createElement ! >> title
 .. document-details-title @ title classList add !
-.. $doc name >> title textContent
+.. $doc name @ -- decodeURIComponent ! >> title textContent
 .. .. Home >> -- title textContent
 .. $id = '/' ?
 .. $title @ area appendChild !
