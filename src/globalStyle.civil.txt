@@ -163,3 +163,4 @@ body.editor-enabled .toggle-editor {
 }
 
 ' >> globalStyle textContent
+
