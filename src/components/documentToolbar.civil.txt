@@ -75,6 +75,7 @@ mouseleave , $closeToolbarDirectory @ directoryContainer addEventListener !
 
 .. '' >> toolbar textContent
 .. '/' @ dir split ! >> dirSegments
+.. $dirSegments pop !
 .. $-- Array ! >> linkSegments
 .. .. a @ -- -- document createElement ! >> segmentButton
 .. .. $segment @ -- linkSegments push !
@@ -97,14 +98,5 @@ mouseleave , $closeToolbarDirectory @ directoryContainer addEventListener !
 .. .. $-- dirSegments $--\ dirSegments\ length\ -1 @ -- -- decodeURIComponent ! >> title
 .. .. $-- dir @ -- -- decodeURIComponent ! >> readableDir
 .. .. '$title  - Civil - $readableDir' >> -- -- document title
-.. .. $-- dir @ -- Documents get ! >> doc
-.. .. .. $-- doc , $-- -- Documents , $-- -- renameDocument , $-- -- components \
-       @ -- -- components documentManageDialog !
-.. .. << >> manageDocument
-.. .. button @ -- -- document createElement ! >> manageDocumentButton
-.. .. '···' >> manageDocumentButton textContent
-.. .. title , 'Manage document' @ manageDocumentButton setAttribute !
-.. .. click , $manageDocument @ manageDocumentButton addEventListener !
-.. .. $manageDocumentButton @ -- toolbar appendChild !
 .. $dir ~= '' ?
 << dir toolbar Documents saveDocument renameDocument components

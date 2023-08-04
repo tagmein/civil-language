@@ -148,8 +148,9 @@ h6 {
  background-color: #303030;
  border-right: 1px solid #606060;
  box-sizing: border-box;
- overflow-x: hidden;
- overflow-y: auto;
+ display: flex;
+ flex-direction: column;
+ overflow: hidden;
  position: fixed;
  top: 38px;
  left: 0;

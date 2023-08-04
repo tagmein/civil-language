@@ -1,4 +1,29 @@
+'
+.document-details-title {
+ border-bottom: 1px solid #606060;
+ box-sizing: border-box;
+ flex-shrink: 0;
+ font-size: 14px;
+ margin: 0;
+ min-height: 37px;
+ padding: 8px 12px;
+}
+' @ addStyle !
+
 .. '' >> area textContent
+.. $path >> id
+.. .. '/' >> -- id
+.. $id = '' ?
+.. $id @ Documents get ! >> doc
+.. .. $-- id , '' @ -- saveDocument !
+.. .. $-- id @ -- Documents get ! >> -- doc
+.. $doc ~ ?
+.. h1 @ -- document createElement ! >> title
+.. document-details-title @ title classList add !
+.. $doc name >> title textContent
+.. .. Home >> -- title textContent
+.. $id = '/' ?
+.. $title @ area appendChild !
 .. '$path /' @ Documents getByDir ! >> docs
 .. $area , $path , $Documents , $docs , $saveDocument , $renameDocument , \
     $components @ components documentsList !
