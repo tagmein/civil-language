@@ -75,7 +75,7 @@ mouseleave , $closeToolbarDirectory @ directoryContainer addEventListener !
 
 .. '' >> toolbar textContent
 .. '/' @ dir split ! >> dirSegments
-.. $dirSegments pop !
+.. $dirSegments pop ! >> currentDocumentName
 .. $-- Array ! >> linkSegments
 .. .. a @ -- -- document createElement ! >> segmentButton
 .. .. $segment @ -- linkSegments push !
@@ -91,12 +91,11 @@ mouseleave , $closeToolbarDirectory @ directoryContainer addEventListener !
 .. .. mouseenter , $segmentLinkButtonHover @ segmentButton addEventListener !
 .. .. mouseleave , $-- -- closeToolbarDirectory @ segmentButton addEventListener !
 .. << segment :: dirSegments !
-..
 .. .. 'Home - Civil' >> -- -- document title
 .. $dir = '' ?
-..
-.. .. $-- dirSegments $--\ dirSegments\ length\ -1 @ -- -- decodeURIComponent ! >> title
+.. .. $-- currentDocumentName @ -- -- decodeURIComponent ! >> title
 .. .. $-- dir @ -- -- decodeURIComponent ! >> readableDir
 .. .. '$title  - Civil - $readableDir' >> -- -- document title
 .. $dir ~= '' ?
 << dir toolbar Documents saveDocument renameDocument components
+
