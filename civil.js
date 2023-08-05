@@ -716,6 +716,37 @@ civil.states = {
   },
  },
 
+ '@>': {
+  '': '@>',
+  apply(me, scope, word) {
+   me.data.scopeName.push(word)
+  },
+  begin(me, scope) {
+   me.data.scopeName = []
+  },
+  complete(me, scope) {
+   if (!Array.isArray(me.data.focus)) {
+    throw new Error(`@> may only be used after a recording, got ${typeof me.data.focus}`)
+   }
+   const code = me.data.focus.splice(0)
+   const scopeName = me.data.scopeName.splice(0)
+   me.data.focus = function namedArguments(arg) {
+    if (arg === civil.namedArguments) {
+     return []
+    } else if (arg === civil.code) {
+     return code.slice()
+    }
+    const newScope = civil.get(scope, scope, scopeName, true)
+    if (typeof newScope !== 'object' || newScope === null) {
+     throw new Error(
+      `@> expects an object at '${scopeName.join(' ')}', got ${newScope === null ? 'null' : typeof newScope}`
+     )
+    }
+    return civil.scope(newScope).run(code)
+   }
+  },
+ },
+
  ':': {
   '': ':',
   apply(me, scope, word) {
@@ -757,15 +788,36 @@ civil.states = {
    const func = me.data.focus
    const applyPath = me.data.applyPath.splice(0)
    const value = civil.get(scope, scope, applyPath, true)
-   if (!Array.isArray(value)) {
-    throw new Error(`:: was expecting '${applyPath.join(' ')}' to be an Array, got ${typeof value}`)
-   }
-   const output = []
-   me.data.focus = async function () {
-    for (let i = 0; i < value.length; i++) {
-     output.push(await func(value[i], i))
+   if (typeof value === 'number') {
+    const output = []
+    if (value < 0) {
+     me.data.focus = async function () {
+      for (let i = 0; i > value; i--) {
+       output.push(await func(i))
+      }
+      return output
+     }
     }
-    return output
+    else {
+     me.data.focus = async function () {
+      for (let i = 0; i < value; i++) {
+       output.push(await func(i))
+      }
+      return output
+     }
+    }
+   }
+   else {
+    if (!Array.isArray(value)) {
+     throw new Error(`:: was expecting '${applyPath.join(' ')}' to be an Array, got ${typeof value}`)
+    }
+    const output = []
+    me.data.focus = async function () {
+     for (let i = 0; i < value.length; i++) {
+      output.push(await func(value[i], i))
+     }
+     return output
+    }
    }
   },
  },
@@ -919,6 +971,25 @@ civil.states = {
    }
    const baseValue = civil.get(scope, scope, basePath)
    me.data.focus = hand.reduce((product, handValue) => handValue / product, baseValue)
+  },
+ },
+
+ '//': {
+  '': '//',
+  apply(me, scope, word) {
+   me.data.basePath.push(word)
+  },
+  begin(me, scope) {
+   me.data.basePath = []
+  },
+  complete(me, scope) {
+   const hand = me.data.hand.splice(0)
+   const basePath = me.data.basePath.splice(0)
+   if (hand.length === 0) {
+    hand.push(me.data.focus)
+   }
+   const baseValue = civil.get(scope, scope, basePath)
+   me.data.focus = hand.reduce((product, handValue) => Math.floor(handValue / product), baseValue)
   },
  },
 
