@@ -742,6 +742,7 @@ civil.states = {
       `@> expects an object at '${scopeName.join(' ')}', got ${newScope === null ? 'null' : typeof newScope}`
      )
     }
+    newScope['--'] = scope // todo: not a great long-term solution
     return civil.scope(newScope).run(code)
    }
   },
