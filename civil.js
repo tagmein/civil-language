@@ -780,6 +780,10 @@ civil.states = {
    me.data.applyPath.push(word)
   },
   begin(me, scope) {
+   if (me.data.hand.length > 0) {
+    me.data.focus = me.data.hand[0]
+    me.data.hand.length = 0
+   }
    if (typeof me.data.focus !== 'function') {
     throw new Error(`focus must be a function, got ${typeof me.data.focus}`)
    }
