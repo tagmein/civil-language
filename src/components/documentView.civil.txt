@@ -240,7 +240,7 @@ body.editor-enabled[data-editor-size="4"] .document-view-preview {
      }
 
      const civilDocument = await globalThis.civilApi.read(path)
-     return await globalThis.main.run(civilDocument.value)
+     return await globalThis.main.clone().run(civilDocument.value)
     },
     runView: async function namedArguments(path, viewPath) {
      if (path === civil.namedArguments) {

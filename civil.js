@@ -324,6 +324,9 @@ civil.scope = function civilScope(scope) {
     await me.previousLineState.completeLines(me, scope)
    }
   },
+  clone() {
+   return civil.scope(scope)
+  },
   async run(arg) {
    if (typeof arg === 'undefined') {
     return me
