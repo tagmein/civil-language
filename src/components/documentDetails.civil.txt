@@ -23,7 +23,7 @@
  display: flex;
  flex-grow: 1;
  flex-direction: row;
- height: 360px;
+ max-height: 720px;
 }
 
 .document-details-explore {
@@ -32,6 +32,12 @@
  flex-direction: column;
  flex-shrink: 0;
  width: 240px;
+}
+
+.document-details-right {
+ display: flex;
+ flex-direction: column;
+ flex-grow: 1;
 }
 
 .document-details-preview {
@@ -44,10 +50,9 @@
  box-sizing: border-box;
  line-height: 2;
  flex-shrink: 0;
- flex-grow: 1;
  font-family: monospace;
  font-size: 13px;
- height: 100%
+ height: 360px;
  overflow: auto;
  padding: 8px 12px;
  resize: none;
@@ -90,16 +95,17 @@
 .. div @ -- document createElement ! >> explore
 .. document-details-explore @ explore classList add !
 .. $explore @ content appendChild !
+.. div @ -- document createElement ! >> control right
+.. document-details-right @ control right classList add !
+.. $control right @ content appendChild !
 .. textarea @ -- document createElement ! >> editor
 .. $doc value >> editor value
 .. .. $-- doc value >> preSaveValue
 .. .. .. $-- newValue >> -- -- doc value
 .. .. .. $-- -- doc id , $-- -- doc value \
           @ -- -- saveDocument !
-.. .. .. .. $-- -- -- doc @ -- -- -- activeDocumentView update !
-.. .. .. $-- -- activeDocumentView ?
 .. .. $newValue ~= $preSaveValue ?
-.. .. .. .. $-- -- -- activeDocument name @ -- -- -- -- decodeURIComponent ! >> decodedName
+.. .. .. .. $-- -- -- doc name @ -- -- -- -- decodeURIComponent ! >> decodedName
 .. .. .. .. 'No changes to save for \'$decodedName \'' @ -- -- -- -- newsFeed news !~
 .. .. .. $-- newValue = $-- preSaveValue ?
 .. .. $manualSave = 1 ?
@@ -109,13 +115,13 @@
 .. $handeEditorChange , 1500 @ components debounce ! >> debouncedUpdate
 .. keyup , $debouncedUpdate @ editor addEventListener !
 .. change , $debouncedUpdate @ editor addEventListener !
-.. $editor @ content appendChild !
+.. $editor @ control right appendChild !
 .. div @ -- document createElement ! >> preview
 .. document-details-preview @ preview classList add !
 .. .. .. .. $-- -- -- path , $-- -- -- preview , $-- -- -- Documents , $-- -- -- saveDocument , $-- -- -- renameDocument , \
-       $-- -- -- components @ -- -- -- components documentView ! >> -- -- -- activeDocumentView
-.. .. .. $-- activeDocumentView ~ ?
-.. .. .. $-- -- preview @ -- -- control container appendChild !
+       $-- -- -- components @ -- -- -- components documentView ! >> -- -- -- control view
+.. .. .. $-- -- control view ~ ?
+.. .. .. $-- -- preview @ -- -- control right appendChild !
 .. .. $-- doc active ?
 .. .. .. $-- -- preview remove !
 .. .. $-- doc active ~ ?

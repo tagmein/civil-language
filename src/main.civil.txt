@@ -63,6 +63,10 @@ $civilDatabase @ components documentsStore ! >> Documents
 .. .. $-- documentObject name @ -- -- decodeURIComponent ! >> -- decodedName
 .. $id ~= '/' ?
 .. 'Saved \'$decodedName \'' @ -- newsFeed news !~
+.. .. .. .. $-- -- document view update !
+.. .. .. $-- document view ?
+.. .. $document doc id @ -- id startsWith ! ?
+.. << document :: -- allDocuments !
 << id value additionalProperties >> saveDocument
 
 # function to rename a document
@@ -125,23 +129,27 @@ $navigator appCodeName toLowerCase ! >> appCodeName
 # handle cross-frame messages
 .. # 'Incoming message' , $message @ -- console log !
 .. $-- Object ! >> response
-.. .. '$--\ --\ location\ hash $--\ message\ data\ data\ href' @ -- -- console info !
-.. .. '$--\ --\ location\ hash $--\ message\ data\ data\ href' >> -- -- location hash
+.. .. $-- message data data href >> newHash
+.. .. '/#' @ newHash startsWith ! >> isAbsolute
+.. .. .. 2 @ -- newHash substring ! >> -- -- -- location hash
+.. .. $isAbsolute ?
+.. .. .. '$--\ --\ --\ location\ hash $--\ newHash' >> -- -- -- location hash
+.. .. $isAbsolute ~ ?
 .. $message data type = navigate ?
 .. $message data requestId >> response requestId
-.. .. 1 @ -- -- location hash substring ! >> basePath
+.. .. $-- message data basePath >> basePath
 .. .. '$basePath $--\ message\ data\ data\ path' @ -- -- Documents get ! >> -- reply
 .. $message data type = read ?
-.. .. 1 @ -- -- location hash substring ! >> basePath
+.. .. $-- message data basePath >> basePath
 .. .. '$basePath $--\ message\ data\ data\ path' , $-- message data data viewPath @ -- -- Documents getFromView ! >> -- reply
 .. $message data type = readView ?
-.. .. 1 @ -- -- location hash substring ! >> basePath
+.. .. $-- message data basePath >> basePath
 .. .. '$basePath $--\ message\ data\ data\ path' @ -- -- Documents getByDir ! >> -- reply
 .. $message data type = readDir ?
-.. .. 1 @ -- -- location hash substring ! >> basePath
+.. .. $-- message data basePath >> basePath
 .. .. '$basePath $--\ message\ data\ data\ path' @ -- -- Documents getNamesByDir ! >> -- reply
 .. $message data type = readDirNames ?
-.. .. 1 @ -- -- location hash substring ! >> basePath
+.. .. $-- message data basePath >> basePath
 .. .. '$basePath $--\ message\ data\ data\ path' , $-- message data data value , \
        $-- message data data additionalProperties @ -- -- saveDocument ! >> -- reply
 .. $message data type = write ?

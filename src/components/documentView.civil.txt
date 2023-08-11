@@ -7,7 +7,7 @@
  display: flex;
  flex-direction: row;
  margin: 0;
- height: 720px;
+ height: 360px;
  max-height: 100vh;
  width: 100%;
 }
@@ -38,6 +38,7 @@
 .. iframe @ -- document createElement ! >> preview
 .. document-view-preview @ preview classList add !
 .. .. $-- activeDocument value @ -- -- JSON stringify ! >> previewCode
+.. .. $-- path @ -- -- JSON stringify ! >> basePath
 .. .. '<!doctype html>
 <html>
  <head>
@@ -100,6 +101,7 @@
      })
     }
    })
+   globalThis.basePath = $basePath ;
    globalThis.blob = (...x) => new Blob(...x)
    globalThis.date = x => typeof x === \'undefined\' ? new Date() : new Date(x)
    globalThis.fileReader = x => new FileReader(x)
@@ -135,7 +137,8 @@
       }
       apiRequestMap.set(requestId, { resolve, reject })
       top.postMessage({
-       ...message,
+       ...message,      
+       basePath,
        requestId
       })
      })
@@ -212,9 +215,10 @@
 .. << >> renderPreview
 .. $preview @ view appendChild !
 .. $view @ area appendChild !
-.. $renderPreview !
+.. $renderPreview , 250 @ -- setTimeout !
 .. $-- Object ! >> control
-.. .. $newActiveDocument >> -- activeDocument
+.. .. .. $-- newActiveDocument >> -- -- activeDocument
+.. .. $newActiveDocument ?
 .. .. $-- renderPreview !
 .. << newActiveDocument >> control update
 .. $control
