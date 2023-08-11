@@ -135,32 +135,22 @@ h6 {
  content: \'Home\';
 }
 
-.document-area {
- overflow: hidden;
- position: fixed;
- top: 38px;
- left: 300px;
- right: 0;
- bottom: -10px;
-}
-
-.document-details {
- background-color: #303030;
- border-right: 1px solid #606060;
- box-sizing: border-box;
+.explorer {
  display: flex;
  flex-direction: column;
- overflow: hidden;
- position: fixed;
- top: 38px;
- left: 0;
- right: 0;
- bottom: 0;
- width: 300px;
+ overflow-x: hidden;
+ overflow-y: auto;
+ height: 100%;
+ width: 100%;
+ max-height: 100vh;
 }
 
-body.editor-enabled .toggle-editor {
- background-color: #808080;
+.explorer > div {
+ border-bottom: 1px solid #606060;
+ display: flex;
+ flex-direction: column;
+ flex-shrink: 0;
+ overflow: hidden;
 }
 
 ' >> globalStyle textContent

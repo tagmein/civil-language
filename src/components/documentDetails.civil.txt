@@ -2,15 +2,62 @@
 .document-details-title {
  border-bottom: 1px solid #606060;
  box-sizing: border-box;
+ display: flex;
+ flex-direction: row;
  flex-shrink: 0;
  font-size: 14px;
  margin: 0;
  min-height: 37px;
+}
+
+.document-details-title > span {
+ display: inline-block;
  padding: 8px 12px;
 }
+
+.document-details-title .spacer + .toggle {
+ border-left: 1px solid #606060;
+}
+
+.document-details-content {
+ display: flex;
+ flex-grow: 1;
+ flex-direction: row;
+ height: 360px;
+}
+
+.document-details-explore {
+ border-right: 1px solid #606060;
+ display: flex;
+ flex-direction: column;
+ flex-shrink: 0;
+ width: 240px;
+}
+
+.document-details-preview {
+ border-top: 1px solid #606060;
+}
+
+.document-details-editor {
+ background-color: #202020;
+ border: none;
+ box-sizing: border-box;
+ line-height: 2;
+ flex-shrink: 0;
+ flex-grow: 1;
+ font-family: monospace;
+ font-size: 13px;
+ height: 100%
+ overflow: auto;
+ padding: 8px 12px;
+ resize: none;
+}
+
 ' @ addStyle !
 
-.. '' >> area textContent
+.. $-- Object ! >> control
+.. div @ -- document createElement ! >> control container
+.. $control container @ area appendChild !
 .. $path >> id
 .. .. '/' >> -- id
 .. $id = '' ?
@@ -18,16 +65,67 @@
 .. .. $-- id , '' @ -- saveDocument !
 .. .. $-- id @ -- Documents get ! >> -- doc
 .. $doc ~ ?
+.. $doc >> control doc
 .. h1 @ -- document createElement ! >> title
+.. span @ -- document createElement ! >> title-label
 .. document-details-title @ title classList add !
-.. $doc name @ -- decodeURIComponent ! >> title textContent
-.. .. Home >> -- title textContent
+.. $title-label @ title appendChild !
+.. $-- components spacer ! @ title appendChild !
+.. .. $-- -- Object ! >> extraProperties
+.. .. $newActive >> extraProperties active
+.. .. $-- doc id , $-- doc value , $extraProperties \
+       @ -- saveDocument !
+.. .. $-- doc , $extraProperties @ -- -- Object assign !
+.. .. $-- renderViewIfActive !
+.. << newActive >> onSetActive
+.. Active , $doc active , $onSetActive @ -- components toggle ! >> active-toggle
+.. $active-toggle container @ title appendChild !
+.. $doc name @ -- decodeURIComponent ! >> title-label textContent
+.. .. Home >> -- title-label textContent
 .. $id = '/' ?
-.. $title @ area appendChild !
+.. $title @ control container appendChild !
+.. div @ -- document createElement ! >> content
+.. document-details-content @ content classList add !
+.. $content @ control container appendChild !
+.. div @ -- document createElement ! >> explore
+.. document-details-explore @ explore classList add !
+.. $explore @ content appendChild !
+.. textarea @ -- document createElement ! >> editor
+.. $doc value >> editor value
+.. .. $-- doc value >> preSaveValue
+.. .. .. $-- newValue >> -- -- doc value
+.. .. .. $-- -- doc id , $-- -- doc value \
+          @ -- -- saveDocument !
+.. .. .. .. $-- -- -- doc @ -- -- -- activeDocumentView update !
+.. .. .. $-- -- activeDocumentView ?
+.. .. $newValue ~= $preSaveValue ?
+.. .. .. .. $-- -- -- activeDocument name @ -- -- -- -- decodeURIComponent ! >> decodedName
+.. .. .. .. 'No changes to save for \'$decodedName \'' @ -- -- -- -- newsFeed news !~
+.. .. .. $-- newValue = $-- preSaveValue ?
+.. .. $manualSave = 1 ?
+.. << newValue manualSave >> control updateActiveValue
+.. .. $event target value @ -- control updateActiveValue !
+.. << event >> handeEditorChange
+.. $handeEditorChange , 1500 @ components debounce ! >> debouncedUpdate
+.. keyup , $debouncedUpdate @ editor addEventListener !
+.. change , $debouncedUpdate @ editor addEventListener !
+.. $editor @ content appendChild !
+.. div @ -- document createElement ! >> preview
+.. document-details-preview @ preview classList add !
+.. .. .. .. $-- -- -- path , $-- -- -- preview , $-- -- -- Documents , $-- -- -- saveDocument , $-- -- -- renameDocument , \
+       $-- -- -- components @ -- -- -- components documentView ! >> -- -- -- activeDocumentView
+.. .. .. $-- activeDocumentView ~ ?
+.. .. .. $-- -- preview @ -- -- control container appendChild !
+.. .. $-- doc active ?
+.. .. .. $-- -- preview remove !
+.. .. $-- doc active ~ ?
+.. << >> renderViewIfActive
+.. $renderViewIfActive !
+.. document-details-editor @ editor classList add !
 .. '$path /' @ Documents getByDir ! >> docs
-.. $area , $path , $Documents , $docs , $saveDocument , $renameDocument , \
+.. $explore , $path , $Documents , $docs , $saveDocument , $renameDocument , \
     $components @ components documentsList !
-.. $-- Object ! >> control
+.. $control container scrollIntoView !
 .. $control
 << path area Documents saveDocument renameDocument components
 

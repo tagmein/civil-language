@@ -1,0 +1,74 @@
+'
+.toggle {
+ cursor: pointer;
+ overflow: hidden;
+ padding: 8px 12px;
+ position: relative;
+}
+
+.toggle:hover {
+ background-color: #606060;
+}
+
+.toggle input {
+ height: 0;
+ width: 0;
+ overflow: hidden;
+ position: absolute;
+ top: -100px;
+ left: -100px;
+}
+
+.toggle span {
+ color: #a0a0a0;
+}
+
+.toggle span::after {
+ background-color: #303030;
+ border: 1px solid #808080;
+ border-radius: 5px;
+ box-sizing: border-box;
+ content: \'\';
+ display: inline-block;
+ height: 19px;
+ width: 19px;
+ margin-left: 6px;
+ vertical-align: -4px;
+}
+
+.toggle span::before {
+ background-color: #606060;
+ border-radius: 3px;
+ position: absolute;
+ content: \'\';
+ display: block;
+ top: 12px;
+ right: 20px;
+ height: 13px;
+ width: 8px;
+ box-shadow: inset 0 0 2px #a0a0a0;
+ transition: background-color 0.2s ease, right 0.4s ease;
+}
+
+.toggle input:checked + span::before {
+ background-color: #c0c0c0;
+ right: 15px;
+}
+' @ addStyle !
+.. $-- Object ! >> control
+.. label @ -- document createElement ! >> control container
+.. toggle @ control container classList add !
+.. input @ -- document createElement ! >> control input
+.. .. $-- initialActive >> -- control input checked
+.. $initialActive ?
+.. .. $-- control input checked @ -- onSetActive !
+.. << >> handleChange
+.. change , $handleChange @ control input addEventListener !
+.. span @ -- document createElement ! >> control label-text
+.. type , checkbox @ control input setAttribute !
+.. $label >> control label-text textContent
+.. $control input @ control container appendChild !
+.. $control label-text @ control container appendChild !
+.. $control
+<< label initialActive onSetActive
+

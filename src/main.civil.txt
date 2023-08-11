@@ -15,76 +15,21 @@ $Object ! >> components
  button database debounce delay dialog \
  documentCreateDialog documentDelete documentDetails \
  documentDownload documentManageDialog documentManageDelete \
- documentToolbar documentView documentsList documentsStore \
- editor editorSimple input menu newsFeed \
- spacer toggleEditor toolbar \
+ documentView documentsList documentsStore \
+ input menu newsFeed \
+ spacer toggle \
 !
 
 # Components , $components @ console log !
 
-# create main toolbar
-$components toolbar ! >> mainToolbar
-
 # news feed
 $components @ components newsFeed ! >> newsFeed
-$newsFeed button @ mainToolbar container appendChild !
+$newsFeed flash @ document body appendChild !
 
-# reset document
-button @ document createElement ! >> resetDocumentButton
-↻ >> resetDocumentButton textContent
-'Reset document' >> resetDocumentButton title
-.. .. $-- -- activeDocumentView reset !
-.. $-- activeDocumentView ?
-<< >> resetDocument
-click , $resetDocument @ resetDocumentButton addEventListener !
-$resetDocumentButton @ mainToolbar container appendChild !
-
-# current document path
-div @ document createElement ! >> currentPathButtons
-current-path @ currentPathButtons classList add ! 
-$currentPathButtons @ mainToolbar container appendChild !
-
-# news feed flash
-$newsFeed flash @ mainToolbar container appendChild !
-
-# copy link
-button @ document createElement ! >> copyLinkButton
-⧉ >> copyLinkButton textContent
-'Get link' >> copyLinkButton title
-.. Location , $-- location href @ -- prompt !
-<< >> copyLink
-click , $copyLink @ copyLinkButton addEventListener !
-$copyLinkButton @ mainToolbar container appendChild !
-
-# toggle editor
-$components toggleEditor ! >> toggleEditor
-$toggleEditor button @ mainToolbar container appendChild !
-
-# toggle full screen
-button @ document createElement ! >> fullScreenButton
-⛶ >> fullScreenButton textContent
-'Toggle full screen' >> fullScreenButton title
-.. $-- document fullscreen >> isFullScreen
-.. .. $-- -- document exitFullscreen !
-.. $isFullScreen ?
-.. .. $-- -- document body requestFullscreen !
-.. $isFullScreen ~ ?
-<< >> toggleFullScreen
-click , $toggleFullScreen @ fullScreenButton addEventListener !
-$fullScreenButton @ mainToolbar container appendChild !
-
-# attach toolbar
-$mainToolbar container @ document body appendChild !
-
-# create document details
-div @ document createElement ! >> documentDetails
-document-details @ documentDetails classList add !
-$documentDetails @ document body appendChild !
-
-# create document area
-div @ document createElement ! >> documentArea
-document-area @ documentArea classList add !
-$documentArea @ document body appendChild !
+# create explorer
+div @ document createElement ! >> explorer
+explorer @ explorer classList add !
+$explorer @ document body appendChild !
 
 # connect to documents store
 Civil @ components database ! >> civilDatabase
@@ -105,6 +50,8 @@ $civilDatabase @ components documentsStore ! >> Documents
 .. .. $-- existingDocument created ?
 .. .. .. $-- -- -- Date now ! >> -- -- documentObject created
 .. .. $-- existingDocument created ~ ?
+.. .. $-- existingDocument active >> -- documentObject active
+.. .. $-- existingDocument view >> -- documentObject view
 .. $existingDocument ?
 .. .. $-- documentObject , $-- additionalProperties @ -- -- Object assign !
 .. $additionalProperties ?
@@ -135,12 +82,34 @@ $civilDatabase @ components documentsStore ! >> Documents
 # '/foo/bar/bat/baz' , 'test document 3' @ saveDocument !
 
 # function to open a document
-.. $dir , $-- currentPathButtons , $-- Documents , $-- saveDocument , $-- renameDocument , \
-   $-- components @ -- components documentToolbar !
-.. $dir , $-- documentDetails , $-- Documents , $-- saveDocument , $-- renameDocument , \
-   $-- components @ -- components documentDetails ! >> -- activeDocumentDetails
-.. $dir , $-- documentArea , $-- Documents , $-- saveDocument , $-- renameDocument , \
-   $-- components @ -- components documentView ! >> -- activeDocumentView
+$Array ! >> allDocuments
+.. '/' @ dir split ! >> dirSegments
+.. $-- Array ! >> linkSegments
+.. .. $segment @ -- linkSegments push !
+.. .. '/' @ -- linkSegments join ! >> segmentFullPath
+.. .. $-- -- allDocuments $index >> existingDocument
+.. .. $segmentFullPath >> documentId
+.. .. .. '/' >> -- documentId
+.. .. $segmentFullPath = '' ?
+.. .. .. .. $-- -- existingDocument >> -- -- document
+.. .. .. $-- existingDocument doc id = $-- documentId ?
+.. .. .. .. $-- -- segmentFullPath , $-- -- -- -- explorer , $-- -- -- -- Documents , $-- -- -- -- saveDocument , $-- -- -- -- renameDocument , \
+             $-- -- -- -- components @ -- -- -- -- components documentDetails ! >> -- -- document
+.. .. .. $-- existingDocument doc id ~= $-- documentId ?
+.. .. $existingDocument ?
+.. .. .. $-- segmentFullPath , $-- -- -- explorer , $-- -- -- Documents , $-- -- -- saveDocument , $-- -- -- renameDocument , \
+          $-- -- -- components @ -- -- -- components documentDetails ! >> -- document
+.. .. $existingDocument ~ ?
+.. .. $document
+.. << segment index :: dirSegments ! >> newAllDocuments
+.. .. $-- newAllDocuments $index >> newDocument
+.. .. .. .. $-- -- existingDocument container remove !
+.. .. .. $-- newDocument doc id ~= $-- existingDocument doc id ? 
+.. .. $newDocument ?
+.. .. .. $-- existingDocument container remove !
+.. .. $newDocument ~ ?
+.. << existingDocument index :: -- allDocuments !
+.. $newAllDocuments >> -- allDocuments
 << dir >> openDocument
 
 # open document on hash navigation event

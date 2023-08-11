@@ -16,7 +16,11 @@
 .. << id >> control get
 ..
 .. .. $viewId @ -- control get ! >> viewDocument
-.. .. '$viewDocument\ view $path' @ -- control get !
+.. .. .. 'View "$--\ viewId " not found' @ -- -- -- console warn !
+.. .. $viewDocument ~ ?
+.. .. .. '$--\ viewDocument\ view $--\ path' @ -- -- control get ! >> -- output
+.. .. $viewDocument ?
+.. .. $output
 .. << viewId path >> control getFromView
 ..
 .. .. documents , readwrite @ -- database transaction ! >> transaction

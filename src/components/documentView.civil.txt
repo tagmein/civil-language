@@ -2,53 +2,14 @@
 
 .document-view {
  background-color: #404040;
- border-bottom: none;
+ border-bottom: 1px solid #606060;
  box-shadow: 0 0 20px #80808080;
  display: flex;
  flex-direction: row;
- flex-grow: 1;
  margin: 0;
-}
-
-body.editor-enabled .document-view {
- margin: 19px 19px 0 19px;
-}
-
-.document-view > .editor {
- display: none;
- height: calc(100vh - 57px);
- width: 50%;
-}
-
-.document-view > .editor-simple {
- border: 1px solid #606060;
- border-right: none;
- display: none;
- height: calc(100vh - 57px);
- position: relative;
- top: -1px;
- width: 50%;
-}
-
-body.editor-enabled[data-editor-size="1"] .document-view > .editor,
-body.editor-enabled[data-editor-size="1"] .document-view > .editor-simple {
- width: 25%;
-}
-
-body.editor-enabled[data-editor-size="3"] .document-view > .editor,
-body.editor-enabled[data-editor-size="3"] .document-view > .editor-simple {
- width: 75%;
-}
-
-body.editor-enabled[data-editor-size="4"] .document-view > .editor,
-body.editor-enabled[data-editor-size="4"] .document-view > .editor-simple {
- border-right: 1px solid #606060;
+ height: 720px;
+ max-height: 100vh;
  width: 100%;
-}
-
-body.editor-enabled .document-view > .editor,
-body.editor-enabled .document-view > .editor-simple {
- display: block;
 }
 
 .document-view-preview {
@@ -57,26 +18,8 @@ body.editor-enabled .document-view > .editor-simple {
  box-shadow: inset 0 0 40px #00000060;
  box-sizing: border-box;
  overflow: hidden;
- height: calc(100vh - 38px);
+ height: 100%;
  width: 100%;
-}
-
-body.editor-enabled .document-view-preview {
- border: 1px solid #606060;
- height: calc(100vh - 57px);
- width: 50%;
-}
-
-body.editor-enabled[data-editor-size="1"] .document-view-preview {
- width: 75%;
-}
-
-body.editor-enabled[data-editor-size="3"] .document-view-preview {
- width: 25%;
-}
-
-body.editor-enabled[data-editor-size="4"] .document-view-preview {
- display: none;
 }
 
 ' @ addStyle !
@@ -267,26 +210,13 @@ body.editor-enabled[data-editor-size="4"] .document-view-preview {
  </body>
 </html>' >> -- preview srcdoc
 .. << >> renderPreview
-.. .. $-- activeDocument value >> preSaveValue
-.. .. .. $-- newValue >> -- -- activeDocument value
-.. .. .. $-- -- activeDocument id , $-- -- activeDocument value \
-          @ -- -- saveDocument !
-.. .. .. $-- -- renderPreview !
-.. .. $newValue ~= $preSaveValue ?
-.. .. .. .. $-- -- -- activeDocument name @ -- -- -- -- decodeURIComponent ! >> decodedName
-.. .. .. .. 'No changes to save for \'$decodedName \'' @ -- -- -- -- newsFeed news !~
-.. .. .. $-- newValue = $-- preSaveValue ?
-.. .. $manualSave = 1 ?
-.. << newValue manualSave >> onUpdateActiveValue
-.. $activeDocument value , $onUpdateActiveValue , $components \
-    @ components editorSimple ! >> code
-.. $code container @ view appendChild !
 .. $preview @ view appendChild !
 .. $view @ area appendChild !
-.. $code container focus !
 .. $renderPreview !
 .. $-- Object ! >> control
-.. $renderPreview >> control reset
+.. .. $newActiveDocument >> -- activeDocument
+.. .. $-- renderPreview !
+.. << newActiveDocument >> control update
 .. $control
 << path area Documents saveDocument renameDocument components
 

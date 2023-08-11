@@ -2,9 +2,13 @@
 .news-flash {
  color: #e0e0e0;
  flex-grow: 1;
- min-width: 120px;
  overflow: hidden;
- position: relative;
+ position: absolute;
+ top: 0;
+ left: 0;
+ right: 0;
+ height: 40px;
+ pointer-events: none;
 }
 
 .news-flash > div {
