@@ -45,19 +45,16 @@
   <script src="./civil.js"></script>
   <style>
    body {
-    box-sizing: border-box;
-    margin: 0;
-    min-height: 100vh;
-    padding: 0 10px;
-    overflow: auto;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    padding: 10px 20px;
    }
    h1, h2, h3, h4, h5, h6, p {
     margin: 10px 0;
+   }
+   body > *:first-child {
+    margin-top: 0;
+   }
+   body > *:last-child {
+    margin-bottom: 0;
    }
    html {
     height: 100vh;
@@ -90,7 +87,8 @@
   </style>
  </head>
  <body>
-  <script>
+  <script id="script-main">
+   document.head.appendChild(document.getElementById("script-main"))
    window.addEventListener(\'click\', function (event) {
     if (event.target.tagName === \'A\') {
      event.preventDefault()

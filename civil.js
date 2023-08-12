@@ -768,6 +768,7 @@ civil.states = {
    }
    const func = me.data.focus
    const applyMultiple = me.data.applyMultiple.splice(0)
+    .map(word => civil.resolve(scope, word))
    me.data.focus = async function () {
     await Promise.all(applyMultiple.map((word) => func(word)))
    }

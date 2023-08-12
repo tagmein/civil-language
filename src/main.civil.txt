@@ -63,8 +63,13 @@ $civilDatabase @ components documentsStore ! >> Documents
 .. .. $-- documentObject name @ -- -- decodeURIComponent ! >> -- decodedName
 .. $id ~= '/' ?
 .. 'Saved \'$decodedName \'' @ -- newsFeed news !~
-.. .. .. .. $-- -- document view update !
-.. .. .. $-- document view ?
+.. ..
+.. .. .. .. .. $-- -- -- document view update !
+.. .. .. .. $-- -- document view ?
+.. .. .. $-- document doc id ~= $-- -- id ?
+.. .. .. .. .. $-- -- -- -- documentObject @ -- -- -- document view update !
+.. .. .. .. $-- -- document view ?
+.. .. .. $-- document doc id = $-- -- id ?
 .. .. $document doc id @ -- id startsWith ! ?
 .. << document :: -- allDocuments !
 << id value additionalProperties >> saveDocument

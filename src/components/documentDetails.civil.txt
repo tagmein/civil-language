@@ -10,6 +10,24 @@
  min-height: 37px;
 }
 
+.document-details-title > .button {
+ border-top: none;
+ border-bottom: none;
+ border-right: none;
+ background-color: transparent;
+ color: #a0a0a0;
+}
+
+.document-details-title > .button:hover {
+ background-color: #606060;
+}
+
+.document-details-title > .close-button {
+ font-size: 18px;
+ padding-top: 4px;
+ padding-bottom: 0;
+}
+
 .document-details-title > span {
  display: inline-block;
  padding: 8px 12px;
@@ -88,6 +106,15 @@
 .. $doc name @ -- decodeURIComponent ! >> title-label textContent
 .. .. Home >> -- title-label textContent
 .. $id = '/' ?
+.. .. '/' @ -- id lastIndexOf ! >> lastSegment
+.. .. 0 , $lastSegment @ -- id substring ! >> href
+.. .. a @ -- -- document createElement ! >> close-button
+.. .. href , '#$href' @ close-button setAttribute !
+.. .. button @ close-button classList add !
+.. .. close-button @ close-button classList add !
+.. .. &times; >> close-button innerHTML
+.. .. $close-button @ -- title appendChild !
+.. $id ~= '/' ?
 .. $title @ control container appendChild !
 .. div @ -- document createElement ! >> content
 .. document-details-content @ content classList add !
