@@ -7,9 +7,34 @@
  overflow: hidden;
 }
 
+.document-details[data-fill="true"] {
+ position: fixed;
+ top: 0;
+ left: 0;
+ right: 0;
+ bottom: 0;
+ z-index: 1;
+}
+
+.document-details[data-fill="true"] .document-details-title > button:last-child {
+ background-color: #808080;
+ color: #ffffff;
+}
+
+.document-details[data-fill="true"] .document-details-content,
+.document-details[data-fill="true"] .document-details-preview {
+ height: 100%;
+ max-height: unset;
+}
+
 .document-details[data-active="true"],
 .document-details[data-expanded="true"] {
  border-bottom: 1px solid #606060;
+}
+
+.document-details[data-active="true"][data-fill="true"],
+.document-details[data-expanded="true"][data-fill="true"] {
+ border-bottom: none;
 }
 
 .document-details[data-expanded="true"] .document-details-explore {
@@ -30,7 +55,8 @@
  min-height: 37px;
 }
 
-.document-details-title > .button {
+.document-details-title > .button,
+.document-details-title > button {
  border-top: none;
  border-bottom: none;
  background-color: transparent;
@@ -38,6 +64,7 @@
  padding-left: 0;
  padding-right: 0;
  text-align: center;
+ width: 37px;
 }
 
 .document-details-title > .button:hover {
@@ -49,7 +76,6 @@
  font-size: 18px;
  padding-top: 4px;
  padding-bottom: 0;
- width: 37px;
 }
 
 .document-details-title > span {
@@ -172,6 +198,14 @@
 .. $doc name @ -- decodeURIComponent ! >> title-label textContent
 .. .. Home >> -- title-label textContent
 .. $id = '/' ?
+.. $components spacer ! @ title appendChild !
+.. button @ -- document createElement ! >> fill-screen
+.. ⛶ >> fill-screen textContent
+.. .. $-- fill ~ >> -- fill
+.. .. data-fill , $-- fill @ -- control container setAttribute !
+.. << >> toggleFillScreen
+.. click , $toggleFillScreen @ fill-screen addEventListener !
+.. $fill-screen @ title appendChild !
 .. $title @ control container appendChild !
 .. div @ -- document createElement ! >> content
 .. document-details-content @ content classList add !

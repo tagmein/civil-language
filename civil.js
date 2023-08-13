@@ -483,7 +483,7 @@ civil.states = {
   complete(me, scope) {
    const hand = me.data.hand.splice(0)
    if (hand.length > 0) {
-    me.data.value = !hand.some((x) => x)
+    me.data.focus = me.data.value = !hand.some((x) => x)
    }
    else {
     me.data.focus = !me.data.focus
