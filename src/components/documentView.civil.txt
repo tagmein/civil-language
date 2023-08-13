@@ -2,12 +2,11 @@
 
 .document-view {
  background-color: #404040;
- border-bottom: 1px solid #606060;
  box-shadow: 0 0 20px #80808080;
  display: flex;
  flex-direction: row;
+ height: 100%;
  margin: 0;
- height: 360px;
  max-height: 100vh;
  width: 100%;
 }
@@ -205,8 +204,14 @@
      })
     },
    }
+   const scrollStorageKey = `scrollTop:\${basePath}`
+   addEventListener(\'scroll\', function () {
+    localStorage.setItem(scrollStorageKey, scrollY)
+   })
    globalThis.main = civil.scope(globalThis)
-   main.run($previewCode )
+   main.run($previewCode ).then(function () {
+    scrollTo(0, parseInt(localStorage.getItem(scrollStorageKey), 10))
+   })
   </script>
  </body>
 </html>' >> -- preview srcdoc

@@ -69,6 +69,13 @@
 .. $label >> control label-text textContent
 .. $control input @ control container appendChild !
 .. $control label-text @ control container appendChild !
+.. .. $-- control input checked >> wasChecked
+.. .. .. 1 @ -- -- -- Boolean ! >> -- -- control input checked
+.. .. $wasChecked ~ ?
+.. .. .. 0 @ -- -- -- Boolean ! >> -- -- control input checked
+.. .. $wasChecked ?
+.. .. $-- handleChange !
+.. << >> control toggle
 .. $control
 << label initialActive onSetActive
 

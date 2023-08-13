@@ -51,6 +51,7 @@ $civilDatabase @ components documentsStore ! >> Documents
 .. .. .. $-- -- -- Date now ! >> -- -- documentObject created
 .. .. $-- existingDocument created ~ ?
 .. .. $-- existingDocument active >> -- documentObject active
+.. .. $-- existingDocument expanded >> -- documentObject expanded
 .. .. $-- existingDocument view >> -- documentObject view
 .. $existingDocument ?
 .. .. $-- documentObject , $-- additionalProperties @ -- -- Object assign !
@@ -119,6 +120,7 @@ $Array ! >> allDocuments
 .. .. $newDocument ~ ?
 .. << existingDocument index :: -- allDocuments !
 .. $newAllDocuments >> -- allDocuments
+.. $-- allDocuments $--\ allDocuments\ length\ -1 show !
 << dir >> openDocument
 
 # open document on hash navigation event
