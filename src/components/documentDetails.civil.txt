@@ -1,4 +1,17 @@
 '
+.document-details {
+ background-color: #303030;
+ display: flex;
+ flex-direction: column;
+ flex-shrink: 0;
+ overflow: hidden;
+}
+
+.document-details[data-active="true"],
+.document-details[data-expanded="true"] {
+ border-bottom: 1px solid #606060;
+}
+
 .document-details[data-expanded="true"] .document-details-explore {
  display: flex;
 }
@@ -108,6 +121,7 @@
 .. div @ -- document createElement ! >> control container
 .. document-details @ control container classList add !
 .. data-expanded , $doc expanded @ control container setAttribute !
+.. data-active , $doc active @ control container setAttribute !
 .. $control container @ area appendChild !
 .. h1 @ -- document createElement ! >> title
 .. .. '/' @ -- id lastIndexOf ! >> lastSegment
@@ -148,6 +162,7 @@
        @ -- saveDocument !
 .. .. $-- doc , $extraProperties @ -- -- Object assign !
 .. .. $-- renderViewIfActive !
+.. .. data-active , $newActive @ -- control container setAttribute !
 .. << newActive >> onSetActive
 .. Active , $doc active , $onSetActive @ -- components toggle ! >> active-toggle
 .. $active-toggle container @ title appendChild !
