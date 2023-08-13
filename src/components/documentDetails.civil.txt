@@ -1,6 +1,10 @@
 '
-.document-details[data-expanded="true"] .document-details-content {
+.document-details[data-expanded="true"] .document-details-explore {
  display: flex;
+}
+
+.document-details[data-expanded="true"] .document-details-editor {
+ display: block;
 }
 
 .document-details-title {
@@ -46,7 +50,7 @@
 
 .document-details-content {
  border-top: 1px solid #606060;
- display: none;
+ display: flex;
  flex-grow: 1;
  flex-direction: row;
  max-height: 900px;
@@ -54,7 +58,7 @@
 
 .document-details-explore {
  border-right: 1px solid #606060;
- display: flex;
+ display: none;
  flex-direction: column;
  flex-shrink: 0;
  width: 240px;
@@ -77,6 +81,7 @@
  background-color: #202020;
  border: none;
  box-sizing: border-box;
+ display: none;
  line-height: 2;
  flex-shrink: 1;
  font-family: monospace;
@@ -135,7 +140,7 @@
 .. .. .. $-- -- expanded-toggle toggle !
 .. .. 1 @ -- -- Boolean ! ~= $-- doc expanded ?
 .. << >> control show
-.. Show , $doc expanded , $onSetExpanded @ -- components toggle ! >> expanded-toggle
+.. Open , $doc expanded , $onSetExpanded @ -- components toggle ! >> expanded-toggle
 .. $expanded-toggle container @ title appendChild !
 .. .. $-- -- Object ! >> extraProperties
 .. .. $newActive >> extraProperties active
