@@ -35,8 +35,9 @@
 
 ' @ addStyle !
 
-.. div @ -- document createElement ! >> menuContainer
-.. menu @ menuContainer classList add !
+.. $-- Object ! >> control
+.. div @ -- document createElement ! >> control container
+.. menu @ control container classList add !
 .. .. div @ -- -- document createElement ! >> itemContainer
 .. .. item @ itemContainer classList add !
 .. .. a @ -- -- document createElement ! >> linkContainer
@@ -54,8 +55,11 @@
 .. .. .. click , $-- link more @ linkMoreButton addEventListener !
 .. .. .. $linkMoreButton @ -- itemContainer appendChild !
 .. .. $link more ?
-.. .. $itemContainer @ -- menuContainer appendChild !
+.. .. $itemContainer @ -- control container appendChild !
 .. << link :: links !
-.. $menuContainer @ container appendChild !
+.. $control container @ container appendChild !
+.. .. $-- control container remove !
+.. << >> control close
+.. $control
 << container links
 

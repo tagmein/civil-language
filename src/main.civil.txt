@@ -121,6 +121,8 @@ $Array ! >> allDocuments
 .. << existingDocument index :: -- allDocuments !
 .. $newAllDocuments >> -- allDocuments
 .. $-- allDocuments $--\ allDocuments\ length\ -1 show !
+.. .. $document tree reload !
+.. << document :: -- allDocuments !
 << dir >> openDocument
 
 # open document on hash navigation event

@@ -30,16 +30,12 @@
  
 ' @ addStyle !
 
+.. $-- Object ! >> control
 .. div @ -- document createElement ! >> docListToolContainer
 .. document-list-tools @ docListToolContainer classList add !
 .. span @ -- document createElement ! >> docListCount
 .. $docListCount @ docListToolContainer appendChild !
 .. $docListToolContainer @ directoryContainer appendChild !
-.. .. document >> -- pluralized
-.. $docs length = 1 ?
-.. .. documents >> -- pluralized
-.. $docs length ~= 1 ?
-.. '$docs\ length  $pluralized' >> docListCount textContent
 ..
 .. # manage current document
 .. .. $-- path @ -- Documents get ! >> doc
@@ -64,15 +60,25 @@
 .. << >> openCreateDialog
 .. click , $openCreateDialog @ docListCreate addEventListener !
 ..
-.. # list contained documents
-.. .. $-- -- Object ! >> docListMenuItem
-.. .. $doc name @ -- -- decodeURIComponent ! >> docListMenuItem name
-.. .. '#$doc\ id' >> docListMenuItem href
-.. .. .. $-- doc , $-- -- Documents , $-- -- renameDocument , $-- -- components \
-       @ -- -- components documentManageDialog !
-.. .. << >> docListMenuItem more
-.. .. $docListMenuItem
-.. << doc :: docs ! >> docListMenuItems
-.. $directoryContainer , $docListMenuItems @ components menu !
-<< directoryContainer path Documents docs saveDocument renameDocument components
+.. .. # list contained documents
+.. .. .. $-- -- control documents-list-menu close !
+.. .. $-- control documents-list-menu ?
+.. .. '$--\ path /' @ -- Documents getByDir ! >> docs
+.. .. .. document >> -- pluralized
+.. .. $docs length = 1 ?
+.. .. .. documents >> -- pluralized
+.. .. $docs length ~= 1 ?
+.. .. '$docs\ length  $pluralized' >> -- docListCount textContent
+.. .. .. $-- -- -- Object ! >> docListMenuItem
+.. .. .. $doc name @ -- -- -- decodeURIComponent ! >> docListMenuItem name
+.. .. .. '#$doc\ id' >> docListMenuItem href
+.. .. .. .. $-- doc , $-- -- -- Documents , $-- -- -- renameDocument , $-- -- -- components \
+       @ -- -- -- components documentManageDialog !
+.. .. .. << >> docListMenuItem more
+.. .. .. $docListMenuItem
+.. .. << doc :: docs ! >> docListMenuItems
+.. .. $-- directoryContainer , $docListMenuItems @ -- components menu ! >> -- control documents-list-menu
+.. << >> control reload
+.. $control
+<< directoryContainer path Documents saveDocument renameDocument components
 

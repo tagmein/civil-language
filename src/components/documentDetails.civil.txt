@@ -246,9 +246,8 @@
 .. << >> renderViewIfActive
 .. $renderViewIfActive !
 .. document-details-editor @ editor classList add !
-.. '$path /' @ Documents getByDir ! >> docs
-.. $explore , $path , $Documents , $docs , $saveDocument , $renameDocument , \
-    $components @ components documentsList !
+.. $explore , $path , $Documents , $saveDocument , $renameDocument , \
+    $components @ components documentsList ! >> control tree
 .. $control container scrollIntoView !
 .. $control
 << path area Documents saveDocument renameDocument components
