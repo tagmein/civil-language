@@ -100,7 +100,7 @@
  display: none;
  flex-direction: column;
  flex-shrink: 0;
- width: 240px;
+ width: 217px;
 }
 
 .document-details-right {
