@@ -181,6 +181,7 @@
 .. << newExpanded >> onSetExpanded
 .. .. .. $-- -- expanded-toggle toggle !
 .. .. 1 @ -- -- Boolean ! ~= $-- doc expanded ?
+.. .. $-- control editor focus !
 .. << >> control show
 .. Open , $doc expanded , $onSetExpanded @ -- components toggle ! >> expanded-toggle
 .. $expanded-toggle container @ title appendChild !
@@ -218,8 +219,8 @@
 .. div @ -- document createElement ! >> control right
 .. document-details-right @ control right classList add !
 .. $control right @ content appendChild !
-.. textarea @ -- document createElement ! >> editor
-.. $doc value >> editor value
+.. textarea @ -- document createElement ! >> control editor
+.. $doc value >> control editor value
 .. .. $-- doc value >> preSaveValue
 .. .. .. $-- newValue >> -- -- doc value
 .. .. .. $-- -- doc id , $-- -- doc value \
@@ -233,21 +234,21 @@
 .. .. $event target value @ -- control updateActiveValue !
 .. << event >> handeEditorChange
 .. $handeEditorChange , 1500 @ components debounce ! >> debouncedUpdate
-.. keyup , $debouncedUpdate @ editor addEventListener !
-.. change , $debouncedUpdate @ editor addEventListener !
-.. $editor @ control right appendChild !
+.. keyup , $debouncedUpdate @ control editor addEventListener !
+.. change , $debouncedUpdate @ control editor addEventListener !
+.. $control editor @ control right appendChild !
 .. div @ -- document createElement ! >> preview
 .. document-details-preview @ preview classList add !
 .. .. .. .. $-- -- -- path , $-- -- -- preview , $-- -- -- Documents , $-- -- -- saveDocument , $-- -- -- renameDocument , \
        $-- -- -- components @ -- -- -- components documentView ! >> -- -- -- control view
 .. .. .. $-- -- control view ~ ?
-.. .. .. $-- -- preview , $-- -- editor @ -- -- control right insertBefore !
+.. .. .. $-- -- preview , $-- -- control editor @ -- -- control right insertBefore !
 .. .. $-- doc active ?
 .. .. .. $-- -- preview remove !
 .. .. $-- doc active ~ ?
 .. << >> renderViewIfActive
 .. $renderViewIfActive !
-.. document-details-editor @ editor classList add !
+.. document-details-editor @ control editor classList add !
 .. $explore , $path , $Documents , $saveDocument , $renameDocument , \
     $components @ components documentsList ! >> control tree
 .. $control container scrollIntoView !
