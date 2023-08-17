@@ -178,10 +178,13 @@
        @ -- saveDocument !
 .. .. $-- doc , $extraProperties @ -- -- Object assign !
 .. .. data-expanded , $newExpanded @ -- control container setAttribute !
+.. .. .. $-- -- control editor focus !
+.. .. $newExpanded ?
 .. << newExpanded >> onSetExpanded
 .. .. .. $-- -- expanded-toggle toggle !
 .. .. 1 @ -- -- Boolean ! ~= $-- doc expanded ?
-.. .. $-- control editor focus !
+.. .. .. $-- -- control editor focus !
+.. .. 1 @ -- -- Boolean ! = $-- doc expanded ?
 .. << >> control show
 .. Open , $doc expanded , $onSetExpanded @ -- components toggle ! >> expanded-toggle
 .. $expanded-toggle container @ title appendChild !
