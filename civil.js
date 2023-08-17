@@ -37,7 +37,9 @@ Array.prototype.sortByProperty = function (propertyName) {
 
 const civil = (globalThis.civil = {})
 
-civil.code = Symbol('civil.code')
+civil.arrayArgument =  Symbol('civil.arrayArgument')
+civil.code =           Symbol('civil.code')
+civil.initialState =   Symbol('civil.initialState')
 civil.namedArguments = Symbol('civil.namedArguments')
 
 civil.wordType = {
@@ -425,8 +427,6 @@ civil.scope = function civilScope(scope) {
  return me
 }
 
-civil.initialState = Symbol('initialState')
-
 civil.states = {
  [civil.initialState]: {
   '': 'initial',
@@ -464,6 +464,41 @@ civil.states = {
   '': '.',
   complete(me, scope) {
    me.data.pendingHand.push(me.data.focus)
+  },
+  immediate: true,
+ },
+
+ '&': {
+  '': '&',
+  apply(me, scope, word) {
+   me.data.arrayArgumentPath.push(word)
+  },
+  begin(me, scope) {
+   const latestHand = me.data.hand[me.data.hand.length - 1]
+   if (Array.isArray(latestHand) && existingStack[civil.arrayArgument]) {
+    me.data.arrayArgument = latestHand
+   }
+   else {
+    me.data.arrayArgument = [ latestHand ]
+    me.data.arrayArgument[civil.arrayArgument] = true
+    me.data.hand[me.data.hand.length - 1] = me.data.arrayArgument
+   }
+   me.data.arrayArgumentPath = []
+  },
+  complete(me, scope) {
+   me.data.arrayArgument.push(
+    civil.get(scope, scope, me.data.arrayArgumentPath)
+   )
+  },
+ },
+
+ ',,': {
+  '': ',,',
+  complete(me, scope) {
+   const latestHand = me.data.hand[me.data.hand.length - 1]
+   if (Array.isArray(latestHand) && latestHand[civil.arrayArgument]) {
+    me.data.hand.splice(me.data.hand.length - 1, 1, ...latestHand)
+   }
   },
   immediate: true,
  },

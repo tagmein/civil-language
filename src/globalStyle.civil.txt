@@ -86,7 +86,7 @@ button:hover::before, .button:hover::before, .link:hover > span::before {
  opacity: 1;
 }
 
-button:active::before, .button:active::before {
+button:active::before, .button:active::before, .link:active > span::before {
  background-color: #606060;
 }
 

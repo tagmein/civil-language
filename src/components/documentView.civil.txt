@@ -73,12 +73,6 @@
    button, .button {
     cursor: pointer;
    }
-   button:hover, .button:hover {
-    background-color: #505050;
-   }
-   button:active, .button:active {
-    background-color: #303030;
-   }
    *::selection {
     background-color: #a0a0a0;
     color: #ffffff;
