@@ -1,0 +1,40 @@
+'
+.editor {
+ flex-shrink: 1;
+ height: 100%;
+ width: 100%;
+ position: relative;
+}
+
+.editor textarea {
+ background-color: #202020;
+ border: none;
+ box-sizing: border-box;
+ line-height: 2;
+ font-family: monospace;
+ font-size: 13px;
+ height: 100%;
+ overflow: auto;
+ padding: 8px 12px;
+ resize: none;
+ width: 100%;
+}
+' @ addStyle !
+
+.. $-- Object ! >> control
+.. div @ -- document createElement ! >> control container
+.. editor @ control container classList add !
+.. textarea @ -- document createElement ! >> control textarea
+.. $control textarea @ control container appendChild !
+.. .. $-- control textarea value @ -- onChange !
+.. << event >> handleChange
+.. .. change , $-- handleChange @ -- control textarea addEventListener !
+.. .. keyup  , $-- handleChange @ -- control textarea addEventListener !
+.. $onChange ?
+.. .. $-- initialValue >> -- control textarea value
+.. $initialValue ?
+.. .. $-- control textarea focus !
+.. << >> control focus
+.. $control
+<< initialValue onChange
+

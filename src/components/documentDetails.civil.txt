@@ -46,8 +46,8 @@ div.document-details[data-fill="true"] {
  display: flex;
 }
 
-.document-details[data-expanded="true"] .document-details-editor {
- display: block;
+.document-details[data-expanded="false"] .document-details-right > .editor {
+ display: none;
 }
 
 .document-details-title {
@@ -113,31 +113,20 @@ div.document-details[data-fill="true"] {
  flex-grow: 1;
  padding-bottom: 1px;
  padding-right: 1px;
+ margin-top: -1px;
 }
 
 .document-details-preview {
  border-right: 1px solid #606060;
  flex-shrink: 1;
- min-height: 362px;
+ min-height: 360px;
+ margin-top: 1px;
  height: 100%;
  width: 100%;
 }
 
-.document-details-editor {
- background-color: #202020;
- border: none;
- box-sizing: border-box;
- display: none;
- line-height: 2;
- flex-shrink: 1;
- font-family: monospace;
- font-size: 13px;
- height: 100%;
+.document-details-right > .editor {
  min-height: 360px;
- overflow: auto;
- padding: 8px 12px;
- resize: none;
- width: 100%;
 }
 
 ' @ addStyle !
@@ -237,8 +226,6 @@ div.document-details[data-fill="true"] {
 .. div @ -- document createElement ! >> control right
 .. document-details-right @ control right classList add !
 .. $control right @ content appendChild !
-.. textarea @ -- document createElement ! >> control editor
-.. $doc value >> control editor value
 .. .. $-- doc value >> preSaveValue
 .. .. .. $-- newValue >> -- -- doc value
 .. .. .. $-- -- doc id , $-- -- doc value \
@@ -252,21 +239,19 @@ div.document-details[data-fill="true"] {
 .. .. $event target value @ -- control updateActiveValue !
 .. << event >> handeEditorChange
 .. $handeEditorChange , 1500 @ components debounce ! >> debouncedUpdate
-.. keyup , $debouncedUpdate @ control editor addEventListener !
-.. change , $debouncedUpdate @ control editor addEventListener !
-.. $control editor @ control right appendChild !
+.. $doc value , $debouncedUpdate @ components editor ! >> control editor
+.. $control editor container @ control right appendChild !
 .. div @ -- document createElement ! >> preview
 .. document-details-preview @ preview classList add !
 .. .. .. .. $-- -- -- path , $-- -- -- preview , $-- -- -- Documents , $-- -- -- saveDocument , $-- -- -- renameDocument , \
        $-- -- -- components @ -- -- -- components documentView ! >> -- -- -- control view
 .. .. .. $-- -- control view ~ ?
-.. .. .. $-- -- preview , $-- -- control editor @ -- -- control right insertBefore !
+.. .. .. $-- -- preview , $-- -- control editor container @ -- -- control right insertBefore !
 .. .. $-- doc active ?
 .. .. .. $-- -- preview remove !
 .. .. $-- doc active ~ ?
 .. << >> renderViewIfActive
 .. $renderViewIfActive !
-.. document-details-editor @ control editor classList add !
 .. $explore , $path , $Documents , $saveDocument , $renameDocument , \
     $components @ components documentsList ! >> control tree
 .. $control container scrollIntoView !
