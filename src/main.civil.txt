@@ -52,6 +52,7 @@ $civilDatabase @ components documentsStore ! >> Documents
 .. .. $-- existingDocument created ~ ?
 .. .. $-- existingDocument active >> -- documentObject active
 .. .. $-- existingDocument expanded >> -- documentObject expanded
+.. .. $-- existingDocument large >> -- documentObject large
 .. .. $-- existingDocument view >> -- documentObject view
 .. $existingDocument ?
 .. .. $-- documentObject , $-- additionalProperties @ -- -- Object assign !
@@ -64,16 +65,20 @@ $civilDatabase @ components documentsStore ! >> Documents
 .. .. $-- documentObject name @ -- -- decodeURIComponent ! >> -- decodedName
 .. $id ~= '/' ?
 .. 'Saved \'$decodedName \'' @ -- newsFeed news !~
-.. ..
+.. $documentObject
+<< id value additionalProperties >> saveDocument
+
+# function to save a document and reload all relevant document views
+.. $id , $value , $additionalProperties @ -- saveDocument ! >> updatedDocument
 .. .. .. .. .. $-- -- -- document view update !
 .. .. .. .. $-- -- document view ?
 .. .. .. $-- document doc id ~= $-- -- id ?
-.. .. .. .. .. $-- -- -- -- documentObject @ -- -- -- document view update !
+.. .. .. .. .. $-- -- -- -- updatedDocument @ -- -- -- document view update !
 .. .. .. .. $-- -- document view ?
 .. .. .. $-- document doc id = $-- -- id ?
 .. .. $document doc id @ -- id startsWith ! ?
 .. << document :: -- allDocuments !
-<< id value additionalProperties >> saveDocument
+<< id value additionalProperties >> saveDocumentAndUpdate
 
 # function to rename a document
 .. '$dir $oldName' >> oldId
@@ -103,11 +108,11 @@ $Array ! >> allDocuments
 .. .. $segmentFullPath = '' ?
 .. .. .. .. $-- -- existingDocument >> -- -- document
 .. .. .. $-- existingDocument doc id = $-- documentId ?
-.. .. .. .. $-- -- segmentFullPath , $-- -- -- -- explorer , $-- -- -- -- Documents , $-- -- -- -- saveDocument , $-- -- -- -- renameDocument , \
+.. .. .. .. $-- -- segmentFullPath , $-- -- -- -- explorer , $-- -- -- -- Documents , $-- -- -- -- saveDocument , $-- -- -- -- saveDocumentAndUpdate , $-- -- -- -- renameDocument , \
              $-- -- -- -- components @ -- -- -- -- components documentDetails ! >> -- -- document
 .. .. .. $-- existingDocument doc id ~= $-- documentId ?
 .. .. $existingDocument ?
-.. .. .. $-- segmentFullPath , $-- -- -- explorer , $-- -- -- Documents , $-- -- -- saveDocument , $-- -- -- renameDocument , \
+.. .. .. $-- segmentFullPath , $-- -- -- explorer , $-- -- -- Documents , $-- -- -- saveDocument , $-- -- -- saveDocumentAndUpdate , $-- -- -- renameDocument , \
           $-- -- -- components @ -- -- -- components documentDetails ! >> -- document
 .. .. $existingDocument ~ ?
 .. .. $document
@@ -137,6 +142,10 @@ $navigator appCodeName toLowerCase ! >> appCodeName
 
 # handle cross-frame messages
 .. # 'Incoming message' , $message @ -- console log !
+.. $message data basePath >> basePath
+.. .. $-- basePath length @ item id substring ! >> item id
+.. .. $-- basePath length @ item dir substring ! >> item dir
+.. << item >> stripBasePath
 .. $-- Object ! >> response
 .. .. $-- message data data href >> newHash
 .. .. '/#' @ newHash startsWith ! >> isAbsolute
@@ -146,20 +155,15 @@ $navigator appCodeName toLowerCase ! >> appCodeName
 .. .. $isAbsolute ~ ?
 .. $message data type = navigate ?
 .. $message data requestId >> response requestId
-.. .. $-- message data basePath >> basePath
-.. .. '$basePath $--\ message\ data\ data\ path' @ -- -- Documents get ! >> -- reply
+.. .. '$--\ basePath $--\ message\ data\ data\ path' , $-- stripBasePath @ -- -- Documents get ! >> -- reply
 .. $message data type = read ?
-.. .. $-- message data basePath >> basePath
-.. .. '$basePath $--\ message\ data\ data\ path' , $-- message data data viewPath @ -- -- Documents getFromView ! >> -- reply
+.. .. '$--\ basePath $--\ message\ data\ data\ path' , $-- message data data viewPath @ -- -- Documents getFromView ! >> -- reply
 .. $message data type = readView ?
-.. .. $-- message data basePath >> basePath
-.. .. '$basePath $--\ message\ data\ data\ path' @ -- -- Documents getByDir ! >> -- reply
+.. .. '$--\ basePath $--\ message\ data\ data\ path' , $-- stripBasePath @ -- -- Documents getByDir ! >> -- reply
 .. $message data type = readDir ?
-.. .. $-- message data basePath >> basePath
-.. .. '$basePath $--\ message\ data\ data\ path' @ -- -- Documents getNamesByDir ! >> -- reply
+.. .. '$--\ basePath $--\ message\ data\ data\ path' @ -- -- Documents getNamesByDir ! >> -- reply
 .. $message data type = readDirNames ?
-.. .. $-- message data basePath >> basePath
-.. .. '$basePath $--\ message\ data\ data\ path' , $-- message data data value , \
+.. .. '$--\ basePath $--\ message\ data\ data\ path' , $-- message data data value , $-- stripBasePath , \
        $-- message data data additionalProperties @ -- -- saveDocument ! >> -- reply
 .. $message data type = write ?
 .. $reply >> response data

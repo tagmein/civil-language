@@ -275,7 +275,7 @@ civil.scope = function civilScope(scope) {
   async apply(_word) {
    const type = _word[0]
    const word = _word.substring(1)
-   // console.log('::::', type, word)
+   // console.log(type, word)
    if (type === civil.wordType.NORMAL &&
     !me.state.capture && (civil.states.hasOwnProperty(word) || me.data.isAtBreak)
    ) {
@@ -316,7 +316,7 @@ civil.scope = function civilScope(scope) {
    me.previousLineState = me.lineState
    me.data.isAtBreak = true
    me.state = me.lineState = civil.states[civil.initialState]
-   // console.log(':::: --- break ---')
+   // console.log('break')
   },
   data: {
    isAtBreak: true,
@@ -861,6 +861,70 @@ civil.states = {
       output.push(await func(value[i], i))
      }
      return output
+    }
+   }
+  },
+ },
+
+ ':::': {
+  '': ':::',
+  apply(me, scope, word) {
+   me.data.fastRange.push(word)
+  },
+  begin(me, scope) {
+   if (me.data.hand.length > 0) {
+    me.data.focus = me.data.hand[0]
+    me.data.hand.length = 0
+   }
+   me.data.fastRange = []
+  },
+  async complete(me, scope) {
+   const recording = me.data.focus
+   if (!Array.isArray(recording)) {
+    throw new Error('::: must immediately follow a recording')
+   }
+   const [ variableName , _start , _end ] = me.data.fastRange
+   const start = civil.get(scope, scope, _start.split(' '))
+   const end = civil.get(scope, scope, _end.split(' '))
+   me.data.focus = async function () {
+    for (let i = start ; i <= end ; i++) {
+     scope[variableName] = i
+     await me.run(recording)
+    }
+   }
+  },
+ },
+
+ '::::::': {
+  '': '::::::',
+  apply(me, scope, word) {
+   me.data.fastRange.push(word)
+  },
+  begin(me, scope) {
+   if (me.data.hand.length > 0) {
+    me.data.focus = me.data.hand[0]
+    me.data.hand.length = 0
+   }
+   me.data.fastRange = []
+  },
+  async complete(me, scope) {
+   const recording = me.data.focus
+   if (!Array.isArray(recording)) {
+    throw new Error(':::::: must immediately follow a recording')
+   }
+   const [ variableName1 , _start1 , _end1,
+           variableName2 , _start2 , _end2 ] = me.data.fastRange
+   const start1 = civil.get(scope, scope, _start1.split(' '))
+   const end1 = civil.get(scope, scope, _end1.split(' '))
+   const start2 = civil.get(scope, scope, _start2.split(' '))
+   const end2 = civil.get(scope, scope, _end2.split(' '))
+   me.data.focus = async function () {
+    for (let i = start1 ; i <= end1 ; i++) {
+     scope[variableName1] = i
+     for (let j = start2 ; j <= end2 ; j++) {
+      scope[variableName2] = j
+      await me.run(recording)
+     }
     }
    }
   },

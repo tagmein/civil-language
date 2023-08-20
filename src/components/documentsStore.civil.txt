@@ -62,9 +62,11 @@
 .. .. $-- -- Array ! >> searchResults
 .. .. $store openCursor ! >> searchCursorOperation
 .. .. .. .. $event target result >> searchCursor
-.. .. .. .. .. $-- searchCursor value >> currentDocument
-.. .. .. .. .. .. $-- currentDocument @ -- -- -- -- searchResults push !
-.. .. .. .. .. '$--\ --\ --\ dir' @ currentDocument id startsWith ! ?
+.. .. .. .. .. $-- searchCursor value >> candidateDocument
+.. .. .. .. .. .. .. $-- -- candidateDocument @ -- -- -- -- -- itemProcessor !
+.. .. .. .. .. .. $-- -- -- -- itemProcessor ?
+.. .. .. .. .. .. $-- candidateDocument @ -- -- -- -- searchResults push !
+.. .. .. .. .. '$--\ --\ --\ dir' @ candidateDocument id startsWith ! ?
 .. .. .. .. .. $-- searchCursor continue !
 .. .. .. .. $searchCursor ?
 .. .. .. .. .. $-- -- resolve !
@@ -72,7 +74,7 @@
 .. .. .. << event >> -- searchCursorOperation onsuccess
 .. .. << resolve reject @ -- -- promise !
 .. .. $searchResults
-.. << dir >> control getAllByDir
+.. << dir itemProcessor >> control getAllByDir
 ..
 .. .. documents , readonly @ -- database transaction ! >> transaction
 .. .. documents @ transaction objectStore ! >> store
@@ -81,6 +83,8 @@
 .. .. .. $-- dir @ -- dirIndex openCursor ! >> getByDirRequest
 .. .. .. .. $-- getByDirRequest result >> searchCursor
 .. .. .. .. .. $-- searchCursor value >> candidateDocument
+.. .. .. .. .. .. .. $-- -- candidateDocument @ -- -- -- -- -- itemProcessor !
+.. .. .. .. .. .. $-- -- -- -- itemProcessor ?
 .. .. .. .. .. .. $-- candidateDocument @ -- -- -- -- searchResults push !
 .. .. .. .. .. $candidateDocument id ~= '/' ?
 .. .. .. .. .. $-- searchCursor continue !
@@ -92,7 +96,7 @@
 .. .. .. << >> getByDirRequest onerror
 .. .. << resolve reject @ -- -- promise !
 .. .. name @ searchResults sortByProperty !
-.. << dir >> control getByDir
+.. << dir itemProcessor >> control getByDir
 ..
 .. .. documents , readonly @ -- database transaction ! >> transaction
 .. .. documents @ transaction objectStore ! >> store

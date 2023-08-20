@@ -7,8 +7,13 @@
  overflow: hidden;
 }
 
-.document-details[data-fill="true"] {
+.document-details[data-large="true"] {
+ height: 100vh;
+}
+
+div.document-details[data-fill="true"] {
  position: fixed;
+ height: auto;
  top: 0;
  left: 0;
  right: 0;
@@ -92,7 +97,6 @@
  display: flex;
  flex-grow: 1;
  flex-direction: row;
- max-height: 900px;
 }
 
 .document-details-explore {
@@ -100,7 +104,7 @@
  display: none;
  flex-direction: column;
  flex-shrink: 0;
- width: 217px;
+ width: 307px;
 }
 
 .document-details-right {
@@ -114,7 +118,8 @@
 .document-details-preview {
  border-right: 1px solid #606060;
  flex-shrink: 1;
- height: 540px;
+ min-height: 362px;
+ height: 100%;
  width: 100%;
 }
 
@@ -142,13 +147,14 @@
 .. .. '/' >> -- id
 .. $id = '' ?
 .. $id @ Documents get ! >> doc
-.. .. $-- id , '' @ -- saveDocument !
+.. .. $-- id , '' @ -- saveDocumentAndUpdate !
 .. .. $-- id @ -- Documents get ! >> -- doc
 .. $doc ~ ?
 .. $doc >> control doc
 .. div @ -- document createElement ! >> control container
 .. document-details @ control container classList add !
 .. data-expanded , $doc expanded @ control container setAttribute !
+.. data-large , $doc large @ control container setAttribute !
 .. data-active , $doc active @ control container setAttribute !
 .. $control container @ area appendChild !
 .. h1 @ -- document createElement ! >> title
@@ -189,6 +195,15 @@
 .. Open , $doc expanded , $onSetExpanded @ -- components toggle ! >> expanded-toggle
 .. $expanded-toggle container @ title appendChild !
 .. .. $-- -- Object ! >> extraProperties
+.. .. $newLarge >> extraProperties large
+.. .. $-- doc id , $-- doc value , $extraProperties \
+       @ -- saveDocument !
+.. .. $-- doc , $extraProperties @ -- -- Object assign !
+.. .. data-large , $newLarge @ -- control container setAttribute !
+.. << newLarge >> onSetLarge
+.. Large , $doc large , $onSetLarge @ -- components toggle ! >> large-toggle
+.. $large-toggle container @ title appendChild !
+.. .. $-- -- Object ! >> extraProperties
 .. .. $newActive >> extraProperties active
 .. .. $-- doc id , $-- doc value , $extraProperties \
        @ -- saveDocument !
@@ -227,7 +242,7 @@
 .. .. $-- doc value >> preSaveValue
 .. .. .. $-- newValue >> -- -- doc value
 .. .. .. $-- -- doc id , $-- -- doc value \
-          @ -- -- saveDocument !
+          @ -- -- saveDocumentAndUpdate !
 .. .. $newValue ~= $preSaveValue ?
 .. .. .. .. $-- -- -- doc name @ -- -- -- -- decodeURIComponent ! >> decodedName
 .. .. .. .. 'No changes to save for \'$decodedName \'' @ -- -- -- -- newsFeed news !~
@@ -256,5 +271,5 @@
     $components @ components documentsList ! >> control tree
 .. $control container scrollIntoView !
 .. $control
-<< path area Documents saveDocument renameDocument components
+<< path area Documents saveDocument saveDocumentAndUpdate renameDocument components
 
