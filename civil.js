@@ -43,8 +43,11 @@ civil.initialState =   Symbol('civil.initialState')
 civil.namedArguments = Symbol('civil.namedArguments')
 
 civil.wordType = {
- NORMAL: '0',
- LITERAL: '1'
+ NORMAL:  '0',
+ LITERAL: '1',
+ QUOTE:   '2',
+ SPACE:   '3',
+ ESCAPE:  '4',
 }
 
 civil.formatString = function (string) {
@@ -109,7 +112,7 @@ civil.get = function (scope, initialTrace, _path, read = false) {
  return trace
 }
 
-civil.parse = function (source) {
+civil.parse = function (source, exact) {
  const BREAK = '\n'
  const ESCAPE = '\\'
  const QUOTE = "'"
@@ -121,25 +124,43 @@ civil.parse = function (source) {
   inEscape: false,
   inString: false,
  }
- function pushWord() {
+ function pushWord(type, char) {
   if (word.length || state.inString) {
    const prefix = state.inString
     ? civil.wordType.LITERAL
     : civil.wordType.NORMAL
    line.push(prefix + word)
   }
+  if (exact && type && char) {
+   const lastWord = line[line.length - 1]
+   const lastType = lastWord?.[0]
+   if (lastType === type) {
+    line[line.length - 1] = lastWord + char
+   }
+   else {
+    line.push(type + char)
+   }
+  }
   word = ''
  }
- function pushLine() {
-  pushWord()
-  if (line.length > 0) {
+ function pushLine(char) {
+  pushWord(char)
+  if (line.length > 0 || exact) {
    code.push(line.splice(0))
   }
  }
  for (let i = 0; i < source.length; i++) {
   const char = source[i]
   if (state.inEscape) {
-   if (char !== '\n') {
+   if (char === '\n') {
+    if (exact) {
+     pushWord(civil.wordType.SPACE , '\\\n')
+    }
+   }
+   else if (exact) {
+    word += ESCAPE + char
+   }
+   else {
     word += char === 'n' ? '\n' : ESCAPE + char
    }
    state.inEscape = false
@@ -149,21 +170,21 @@ civil.parse = function (source) {
      if (state.inString) {
       word += char
      } else {
-      pushLine()
+      pushLine(civil.wordType.SPACE, char)
      }
      break
     case ESCAPE:
      state.inEscape = true
      break
     case QUOTE:
-     pushWord()
+     pushWord(civil.wordType.QUOTE, char)
      state.inString = !state.inString
      break
     case SPACE:
      if (state.inString) {
       word += char
      } else {
-      pushWord()
+      pushWord(civil.wordType.SPACE, char)
      }
      break
     default:
@@ -461,6 +482,7 @@ civil.states = {
  },
 
  '.': {
+  title: 'Pick up result (access property of focus)\nUsage: <code>$some-function ! . path to property',
   '': '.',
   complete(me, scope) {
    me.data.pendingHand.push(me.data.focus)
@@ -469,6 +491,7 @@ civil.states = {
  },
 
  '&': {
+  title: 'Stack arguments\nUsage: <code>arg1 & arg2 & arg3 @ some-function !',
   '': '&',
   apply(me, scope, word) {
    me.data.arrayArgumentPath.push(word)
@@ -493,6 +516,7 @@ civil.states = {
  },
 
  ',,': {
+  title: 'Spread stacked arguments\nUsage: <code>foo , $stack ,, , bar @ some-function !',
   '': ',,',
   complete(me, scope) {
    const latestHand = me.data.hand[me.data.hand.length - 1]
@@ -504,6 +528,7 @@ civil.states = {
  },
 
  ',': {
+  title: 'Queue argument for binding\nUsage: <code>arg1 , arg2 @ some-function !',
   '': ',',
   complete(me, scope) {
    if (me.data.hand.length === 0) {
@@ -514,6 +539,7 @@ civil.states = {
  },
 
  '~': {
+  title: 'Boolean not\nUsage: <code>$foo ~',
   '': '~',
   complete(me, scope) {
    const hand = me.data.hand.splice(0)
@@ -528,6 +554,7 @@ civil.states = {
  },
 
  '?': {
+  title: 'Conditionally evaluate recording\nUsage:\n<code>.. $-- some-function !\n$condition ?',
   '': '?',
   async complete(me, scope) {
    if (!Array.isArray(me.data.focus)) {
@@ -567,6 +594,7 @@ civil.states = {
  },
 
  '@': {
+  title: 'Bind queued arguments to function at path\nUsage: <code>arg1 , arg2 @ some-function !',
   '': '@',
   apply(me, scope, word) {
    me.data.functionPath.push(word)
@@ -592,6 +620,7 @@ civil.states = {
  },
 
  '!': {
+  title: 'Run function immediately\nUsage: <code>$some-function !',
   '': '!',
   async complete(me, scope) {
    if (me.data.hand.length > 0) {
@@ -614,6 +643,7 @@ civil.states = {
  },
 
  '!-': {
+  title: 'Run function immediately, returning but not waiting for any returned promise\nUsage: <code>$some-function !-',
   '': '!-',
   async complete(me, scope) {
    if (me.data.hand.length > 0) {
@@ -636,6 +666,7 @@ civil.states = {
  },
 
  '!~': {
+  title: 'Run function immediately, discarding any returned promise\nUsage: <code>$some-function !~',
   '': '!~',
   async complete(me, scope) {
    if (me.data.hand.length > 0) {
@@ -659,6 +690,7 @@ civil.states = {
  },
 
  '!new': {
+  title: 'Create new class instance (not recommended)\nUsage: <code>$Date !new',
   '': '!new',
   async complete(me, scope) {
    if (me.data.hand.length > 0) {
@@ -681,11 +713,13 @@ civil.states = {
  },
 
  '#': {
+  title: 'Comment\nUsage: <code># this is a comment',
   '': '#',
   capture: true,
  },
 
  '..': {
+  title: 'Record code for later use\nUsage: <code>.. $-- some-function !',
   '': '..',
   apply(me, scope, word, wordRaw) {
    me.data.recordingLine.push(wordRaw)
@@ -709,6 +743,7 @@ civil.states = {
  },
 
  '<<': {
+  title: 'Convert recording to function with named arguments\nUsage: <code>.. $first , $last @ -- console log !\n<< first last',
   '': '<<',
   apply(me, scope, word) {
    me.data.argumentNames.push(word)
@@ -738,6 +773,7 @@ civil.states = {
  },
 
  '>>': {
+  title: 'Store value into variable or property\nUsage: <code>#808080 >> body style backgroundColor',
   '': '>>',
   apply(me, scope, word) {
    me.data.destinationPath.push(word)
@@ -755,6 +791,7 @@ civil.states = {
  },
 
  '@>': {
+  title: 'Bind recording with context to function\nUsage: <code>.. #808080 >> backgroundColor\n.. pointer >> cursor\n@> body style !',
   '': '@>',
   apply(me, scope, word) {
    me.data.scopeName.push(word)
@@ -787,6 +824,7 @@ civil.states = {
  },
 
  ':': {
+  title: 'Bind function to map over each word\nUsage: <code>.. $word @ -- console log !\n<< word : foo bar !',
   '': ':',
   apply(me, scope, word) {
    me.data.applyMultiple.push(word)
@@ -811,6 +849,7 @@ civil.states = {
  },
 
  '::': {
+  title: 'Bind function to map over array\nUsage: <code>.. $item @ -- console log !\n<< item :: items !',
   '': '::',
   apply(me, scope, word) {
    me.data.applyPath.push(word)
@@ -867,6 +906,7 @@ civil.states = {
  },
 
  ':::': {
+  title: 'Optimized loop (work in progress, still slow)\nUsage: <code>.. $i @ -- console log !\n::: i 0 10',
   '': ':::',
   apply(me, scope, word) {
    me.data.fastRange.push(word)
@@ -896,6 +936,7 @@ civil.states = {
  },
 
  '::::::': {
+  title: 'Optimized double loop (work in progress, still slow)\nUsage: <code>.. $i , $j @ -- console log !\n:::::: i 0 10 j 0 10',
   '': '::::::',
   apply(me, scope, word) {
    me.data.fastRange.push(word)
@@ -931,6 +972,7 @@ civil.states = {
  },
 
  '~=': {
+  title: 'Not equal to\nUsage: <code>4 ~= 3',
   '': '~=',
   apply(me, scope, word) {
    me.data.compareToPath.push(word)
@@ -950,6 +992,7 @@ civil.states = {
  },
 
  '=': {
+  title: 'Equal to\nUsage: <code>4 = 4',
   '': '=',
   apply(me, scope, word) {
    me.data.compareToPath.push(word)
@@ -969,6 +1012,7 @@ civil.states = {
  },
 
  '<': {
+  title: 'Less than\nUsage: <code>3 < 4',
   '': '<',
   apply(me, scope, word) {
    me.data.compareToPath.push(word)
@@ -988,6 +1032,7 @@ civil.states = {
  },
 
  '>': {
+  title: 'Greater than\nUsage: <code>4 > 3',
   '': '>',
   apply(me, scope, word) {
    me.data.compareToPath.push(word)
@@ -1007,6 +1052,7 @@ civil.states = {
  },
 
  '<=': {
+  title: 'Less than or equal to\nUsage: <code>3 <= 4',
   '': '<=',
   apply(me, scope, word) {
    me.data.compareToPath.push(word)
@@ -1026,6 +1072,7 @@ civil.states = {
  },
 
  '>=': {
+  title: 'Greater than or equal to\nUsage: <code>4 >= 3',
   '': '>=',
   apply(me, scope, word) {
    me.data.compareToPath.push(word)
@@ -1045,6 +1092,7 @@ civil.states = {
  },
 
  '*': {
+  title: 'Multiply\nUsage: <code>4 * 3',
   '': '*',
   apply(me, scope, word) {
    me.data.basePath.push(word)
@@ -1064,6 +1112,7 @@ civil.states = {
  },
 
  '/': {
+  title: 'Divide\nUsage: <code>4 / 3',
   '': '/',
   apply(me, scope, word) {
    me.data.basePath.push(word)
@@ -1083,6 +1132,7 @@ civil.states = {
  },
 
  '//': {
+  title: 'Integer divide\nUsage: <code>4 // 3',
   '': '//',
   apply(me, scope, word) {
    me.data.basePath.push(word)
@@ -1102,6 +1152,7 @@ civil.states = {
  },
 
  '+': {
+  title: 'Add\nUsage: <code>4 + 3',
   '': '+',
   apply(me, scope, word) {
    me.data.basePath.push(word)
@@ -1121,6 +1172,7 @@ civil.states = {
  },
 
  '-': {
+  title: 'Subtract\nUsage: <code>4 - 3',
   '': '-',
   apply(me, scope, word) {
    me.data.basePath.push(word)
@@ -1140,6 +1192,7 @@ civil.states = {
  },
 
  '%': {
+  title: 'Modulus\nUsage: <code>4 % 3',
   '': '%',
   apply(me, scope, word) {
    me.data.basePath.push(word)

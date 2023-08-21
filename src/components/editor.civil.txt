@@ -8,6 +8,12 @@
 
 .editor textarea {
  background-color: #202020;
+ color: #d0d0d0;
+ white-space: pre;
+}
+
+.editor textarea, .editor .highlight {
+ background-color: transparent;
  border: none;
  box-sizing: border-box;
  line-height: 2;
@@ -19,22 +25,160 @@
  resize: none;
  width: 100%;
 }
+
+.editor .highlight {
+ position: absolute;
+ top: 1px;
+ left: 0;
+ right: 0;
+ bottom: 0;
+ pointer-events: none;
+ white-space: pre-wrap;
+ word-wrap: break-word;
+ overflow: hidden;
+}
+
+.editor .highlight > div {
+ box-sizing: border-box;
+ padding: 8px 8px 8px 12px;
+ opacity: 0;
+ position: absolute;
+ transition: opacity 0.6s ease;
+ top: 0;
+ left: 0;
+ width: 100%;
+ white-space: pre;
+}
+
+.editor .highlight span {
+ color: transparent;
+ position: relative;
+}
+
+.editor .highlight span[title] {
+ border: 4px solid transparent;
+ margin: -4px;
+ z-index: 1;
+}
+
+.editor .highlight span[data-type="0"] {
+ color: #ffffff80;
+}
+.editor .highlight span[data-type="1"] {
+ color: #f0c000;
+}
+.editor .highlight span[data-type="2"] {
+ color: #c08000;
+}
+.editor .highlight span[data-type="3"] {
+ color: #808080;
+}
+.editor .highlight span[data-civil="symbol"] {
+ color: #20c0c0;
+}
+.editor .highlight span[data-civil="symbol"].hover {
+ background-color: #20c0c040;
+}
+.editor .highlight span[data-civil="comment"] {
+ color: #808080;
+}
+.editor .highlight span[data-civil="integer"] {
+ color: #f02000;
+}
+.editor .highlight span[data-civil="float"] {
+ color: #f02000;
+}
 ' @ addStyle !
 
 .. $-- Object ! >> control
 .. div @ -- document createElement ! >> control container
 .. editor @ control container classList add !
+.. .. all >> -- control highlight-wrap style pointer-events
+.. .. $event pageX , $event pageY @ -- -- document elementFromPoint ! >> hoverElement
+.. .. .. $-- hoverElement @ -- -- components tooltip !
+.. .. title @ hoverElement hasAttribute ! ?
+.. .. .. $-- -- components tooltip !
+.. .. title @ hoverElement hasAttribute ! ~ ?
+.. .. none >> -- control highlight-wrap style pointer-events
+.. << event >> on-mouse-move
+.. mousemove , $on-mouse-move @ control container addEventListener !
 .. textarea @ -- document createElement ! >> control textarea
 .. $control textarea @ control container appendChild !
-.. .. $-- control textarea value @ -- onChange !
-.. << event >> handleChange
-.. .. change , $-- handleChange @ -- control textarea addEventListener !
-.. .. keyup  , $-- handleChange @ -- control textarea addEventListener !
-.. $onChange ?
-.. .. $-- initialValue >> -- control textarea value
+.. div @ -- document createElement ! >> control highlight-wrap
+.. highlight @ control highlight-wrap classList add !
+.. $control highlight-wrap @ control container appendChild !
+.. .. '' >> -- control highlight-wrap textContent
+.. << >> stop-highlight
+.. .. 1 >> stop
+.. .. .. 0 >> -- stop
+.. .. $event key = Control ?
+.. .. .. 0 >> -- stop
+.. .. $event key = Shift ?
+.. .. .. 0 >> -- stop
+.. .. $event key = Alt ?
+.. .. .. 0 >> -- stop
+.. .. $event key = Home ?
+.. .. .. 0 >> -- stop
+.. .. $event key = End ?
+.. .. .. 0 >> -- stop
+.. .. Arrow @ event key startsWith ! ?
+.. .. .. $-- -- stop-highlight !
+.. .. .. $-- -- highlight !
+.. .. $stop = 1 ?
+.. << event >> stop-highlight-event
+.. .. $-- stop-highlight !
+.. .. div @ -- -- document createElement ! >> -- control highlight
+.. .. $-- control highlight @ -- control highlight-wrap appendChild !
+.. .. .. 1 >> -- -- control highlight style opacity
+.. .. << , 10 @ -- -- setTimeout !
+.. .. $-- control textarea value , 1 @ -- -- civil parse ! >> lines
+.. .. .. # $line @ -- -- -- console log !
+.. .. .. .. span @ -- -- -- -- document createElement ! >> span
+.. .. .. .. 1 @ token substring ! >> token-value >> span textContent
+.. .. .. .. data-type , $token 0 @ span setAttribute !
+.. .. .. .. .. data-civil , symbol @ -- span setAttribute !
+.. .. .. .. .. title , $-- -- -- -- -- civil states $--\ token-value title @ -- span setAttribute !
+.. .. .. .. $token-value @ -- -- -- -- civil states hasOwnProperty ! ?
+.. .. .. .. $token-value , 10 @ -- -- -- -- parseInt ! >> token-int
+.. .. .. .. .. data-civil , integer @ -- span setAttribute !
+.. .. .. .. 10 @ token-int toString ! = $token-value ?
+.. .. .. .. $token-value , 10 @ -- -- -- -- parseFloat ! >> token-float
+.. .. .. .. .. data-civil , float @ -- span setAttribute !
+.. .. .. .. 10 @ token-float toString ! = $token-value ?
+.. .. .. .. .. data-civil , comment @ -- span setAttribute !
+.. .. .. .. $-- is-comment ?
+.. .. .. .. .. 1 >> -- -- is-comment
+.. .. .. .. $token-value = '#' ?
+.. .. .. .. $span @ -- -- -- control highlight appendChild ! 
+.. .. .. << token :: line !
+.. .. .. br @ -- -- -- document createElement ! >> br
+.. .. .. $br @ -- -- control highlight appendChild ! 
+.. .. << line :: lines !
+.. .. $-- sync-highlight-scroll !
+.. << >> highlight-now
+.. .. $-- reveal-highlight-timeout @ -- -- clearTimeout !
+.. .. $-- highlight-now , 200 @ -- -- setTimeout ! >> -- reveal-highlight-timeout
+.. << >> highlight
+.. .. $-- control textarea scrollTop >> scroll-top
+.. .. $-- control textarea scrollLeft >> scroll-left
+.. .. .. 'translate(-$--\ scroll-left px, -$--\ scroll-top px)' >> -- -- control highlight style transform
+.. .. $-- control highlight ?
+.. << >> sync-highlight-scroll
+.. .. .. $-- -- control textarea value @ -- -- onChange !
+.. .. .. $-- -- highlight !
+.. .. .. $-- -- control textarea value >> -- -- knownValue
+.. .. $-- control textarea value ~= $-- knownValue ?
+.. << event >> handle-change
+.. change , $handle-change @ control textarea addEventListener !
+.. keyup  , $handle-change @ control textarea addEventListener !
+.. keydown , $stop-highlight-event @ control textarea addEventListener !
+.. .. $-- initialValue >> -- control textarea value >> -- knownValue
 .. $initialValue ?
+.. $highlight !
+.. scroll , $sync-highlight-scroll @ control textarea addEventListener !
+.. $sync-highlight-scroll !
 .. .. $-- control textarea focus !
 .. << >> control focus
 .. $control
-<< initialValue onChange
+<< initialValue onChange components
 

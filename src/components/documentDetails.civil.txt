@@ -236,10 +236,9 @@ div.document-details[data-fill="true"] {
 .. .. .. $-- newValue = $-- preSaveValue ?
 .. .. $manualSave = 1 ?
 .. << newValue manualSave >> control updateActiveValue
-.. .. $event target value @ -- control updateActiveValue !
-.. << event >> handeEditorChange
-.. $handeEditorChange , 1500 @ components debounce ! >> debouncedUpdate
-.. $doc value , $debouncedUpdate @ components editor ! >> control editor
+.. .. $newValue @  !
+.. $control updateActiveValue , 1500 @ components debounce ! >> debouncedUpdate
+.. $doc value , $debouncedUpdate , $components @ components editor ! >> control editor
 .. $control editor container @ control right appendChild !
 .. div @ -- document createElement ! >> preview
 .. document-details-preview @ preview classList add !

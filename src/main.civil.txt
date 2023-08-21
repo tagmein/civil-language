@@ -16,7 +16,7 @@ $Object ! >> components
  documentCreateDialog documentDelete documentDetails \
  documentDownload documentManageDialog documentManageDelete \
  documentView documentsList documentsStore \
- editor input menu newsFeed spacer toggle \
+ editor input menu newsFeed spacer toggle tooltip \
 !
 
 # Components , $components @ console log !
