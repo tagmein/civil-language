@@ -15,8 +15,10 @@
 .. .. .. .. $fileString @ -- -- -- -- JSON parse ! >> fileData
 .. .. .. .. $fileData @ -- -- -- -- Object entries ! >> fileEntries
 .. .. .. .. .. $entry 0 >> key
-.. .. .. .. .. $entry 1 >> value
-.. .. .. .. .. '$--\ --\ newDocumentId $key' , $value @ -- -- -- -- saveDocument !
+.. .. .. .. .. $entry 1 value >> value
+.. .. .. .. .. $entry 1 extra >> additionalProperties
+.. .. .. .. .. '$--\ --\ newDocumentId $key' , $value , $additionalProperties \
+                @ -- -- -- -- saveDocument !
 .. .. .. .. << entry :: fileEntries !
 .. .. .. $-- -- newDocumentFile ?
 .. .. .. '$--\ --\ path /$encodedName' >> -- -- -- location hash

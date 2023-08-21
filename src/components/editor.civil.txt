@@ -139,12 +139,12 @@
 .. .. .. .. .. data-civil , symbol @ -- span setAttribute !
 .. .. .. .. .. title , $-- -- -- -- -- civil states $--\ token-value title @ -- span setAttribute !
 .. .. .. .. $token-value @ -- -- -- -- civil states hasOwnProperty ! ?
-.. .. .. .. $token-value , 10 @ -- -- -- -- parseInt ! >> token-int
-.. .. .. .. .. data-civil , integer @ -- span setAttribute !
-.. .. .. .. 10 @ token-int toString ! = $token-value ?
 .. .. .. .. $token-value , 10 @ -- -- -- -- parseFloat ! >> token-float
 .. .. .. .. .. data-civil , float @ -- span setAttribute !
 .. .. .. .. 10 @ token-float toString ! = $token-value ?
+.. .. .. .. $token-value , 10 @ -- -- -- -- parseInt ! >> token-int
+.. .. .. .. .. data-civil , integer @ -- span setAttribute !
+.. .. .. .. 10 @ token-int toString ! = $token-value ?
 .. .. .. .. .. data-civil , comment @ -- span setAttribute !
 .. .. .. .. $-- is-comment ?
 .. .. .. .. .. 1 >> -- -- is-comment

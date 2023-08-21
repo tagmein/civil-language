@@ -1,7 +1,15 @@
 .. $document id @ Documents getAllByDir ! >> allSubDocuments
 .. $-- Object ! >> package
 .. .. $-- document id length @ doc id substring ! >> packedId
-.. .. $doc value >> -- package $packedId
+.. .. $-- -- Object ! >> -- package $packedId
+.. .. $doc value >> -- package $packedId value
+.. .. $-- -- Object ! >> -- package $packedId extra >> extra
+.. .. $doc created >> extra created
+.. .. $doc active >> extra active
+.. .. $doc expanded >> extra expanded
+.. .. $doc large >> extra large
+.. .. $doc created >> extra created
+.. .. $doc view >> extra view
 .. << doc :: allSubDocuments !
 .. $-- Array ! >> blobParts
 .. $package @ -- JSON stringify ! @ blobParts push !

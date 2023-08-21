@@ -170,3 +170,17 @@ $navigator appCodeName toLowerCase ! >> appCodeName
 << message >> handleMessage
 message , $handleMessage @ addEventListener !
 
+# check for the existence of the Guide, and download if missing
+/Guide @ Documents get ! >> civilGuide
+.. /content/Guide.json @ -- fetch ! >> guideResponse
+.. .. $-- guideResponse json ! >> downloadedGuide
+.. .. $downloadedGuide @ -- -- Object entries ! >> guideEntries
+.. .. .. $entry 0 >> key
+.. .. .. $entry 1 value >> value
+.. .. .. $entry 1 extra >> additionalProperties
+.. .. .. '/Guide$key' , $value , $additionalProperties @ -- -- -- saveDocument !
+.. .. << entry :: guideEntries !
+.. .. /Guide >> -- -- location hash
+.. $guideResponse ok ?
+$civilGuide ~ ?
+
