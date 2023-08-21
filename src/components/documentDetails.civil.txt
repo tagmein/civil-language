@@ -237,7 +237,7 @@ div.document-details[data-fill="true"] {
 .. .. $manualSave = 1 ?
 .. << newValue manualSave >> control updateActiveValue
 .. .. $newValue @  !
-.. $control updateActiveValue , 1500 @ components debounce ! >> debouncedUpdate
+.. $control updateActiveValue , 2500 @ components debounce ! >> debouncedUpdate
 .. $doc value , $debouncedUpdate , $components @ components editor ! >> control editor
 .. $control editor container @ control right appendChild !
 .. div @ -- document createElement ! >> preview

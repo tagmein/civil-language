@@ -135,6 +135,11 @@ $Array ! >> allDocuments
 hashchange , $route @ addEventListener !
 $route !
 
+# go to function that scrolls to end
+.. $path >> -- location hash
+.. 0 , $-- explorer scrollTopMax @ -- explorer scrollTo !
+<< path >> go
+
 # cross-browser styles
 $navigator appCodeName toLowerCase ! >> appCodeName
 'navigator-$appCodeName' @ document body classList add !
@@ -148,9 +153,9 @@ $navigator appCodeName toLowerCase ! >> appCodeName
 .. $-- Object ! >> response
 .. .. $-- message data data href >> newHash
 .. .. '/#' @ newHash startsWith ! >> isAbsolute
-.. .. .. 2 @ -- newHash substring ! >> -- -- -- location hash
+.. .. .. 2 @ -- newHash substring ! @ -- -- -- go !
 .. .. $isAbsolute ?
-.. .. .. '$--\ --\ --\ location\ hash $--\ newHash' >> -- -- -- location hash
+.. .. .. '$--\ --\ basePath $--\ newHash' @ -- -- -- go !
 .. .. $isAbsolute ~ ?
 .. $message data type = navigate ?
 .. $message data requestId >> response requestId
@@ -170,7 +175,7 @@ $navigator appCodeName toLowerCase ! >> appCodeName
 << message >> handleMessage
 message , $handleMessage @ addEventListener !
 
-# check for the existence of the Guide, and download if missing
+# check for the existence of the Guide, and download if missing or outdated
 /Guide @ Documents get ! >> civilGuide
 .. /content/Guide.json @ -- fetch ! >> guideResponse
 .. .. $-- guideResponse json ! >> downloadedGuide
@@ -180,7 +185,13 @@ message , $handleMessage @ addEventListener !
 .. .. .. $entry 1 extra >> additionalProperties
 .. .. .. '/Guide$key' , $value , $additionalProperties @ -- -- -- saveDocument !
 .. .. << entry :: guideEntries !
-.. .. /Guide >> -- -- location hash
+.. .. /Guide @ -- -- go !
 .. $guideResponse ok ?
+<< >> download-guide
+.. $-- download-guide !
 $civilGuide ~ ?
+.. '\n# guide-version ' @ -- civilGuide value split ! . 1 >> current-guide-version
+.. .. $-- -- download-guide !
+.. 2023-08-21 ~= $current-guide-version ?
+$civilGuide ?
 

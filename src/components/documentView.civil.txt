@@ -87,7 +87,10 @@
      event.preventDefault()
      const href = event.target.getAttribute(\'href\')
      top.postMessage({
-      data: { href },
+      basePath,
+      data: {  
+       href
+      },
       type: \'navigate\'
      })
     }
@@ -111,7 +114,7 @@
      }
     }
    })
-   globalThis.civilApi = {
+   globalThis.civil.api = {
     makeApiRequest: async function namedArguments(message) {
      if (message === civil.namedArguments) {
       return [ \'message\' ]
@@ -138,7 +141,7 @@
      if (path === civil.namedArguments) {
       return [ \'path\' ]
      }
-     return globalThis.civilApi.makeApiRequest({
+     return globalThis.civil.api.makeApiRequest({
       data: { path },
       type: \'read\',
      })
@@ -147,7 +150,7 @@
      if (path === civil.namedArguments) {
       return [ \'path\' ]
      }
-     return globalThis.civilApi.makeApiRequest({
+     return globalThis.civil.api.makeApiRequest({
       data: { path },
       type: \'readDir\',
      })
@@ -156,7 +159,7 @@
      if (path === civil.namedArguments) {
       return [ \'path\' ]
      }
-     return globalThis.civilApi.makeApiRequest({
+     return globalThis.civil.api.makeApiRequest({
       data: { path },
       type: \'readDirNames\',
      })
@@ -166,7 +169,7 @@
       return [ \'path\',  \'viewPath\' ]
      }
 
-     return globalThis.civilApi.makeApiRequest({
+     return globalThis.civil.api.makeApiRequest({
       data: { path, viewPath },
       type: \'readView\',
      })
@@ -176,7 +179,7 @@
       return [ \'path\' ]
      }
 
-     const civilDocument = await globalThis.civilApi.read(path)
+     const civilDocument = await globalThis.civil.api.read(path)
      return await globalThis.main.clone().run(civilDocument.value)
     },
     runView: async function namedArguments(path, viewPath) {
@@ -184,7 +187,7 @@
       return [ \'path\', \'viewPath\' ]
      }
 
-     const viewDocument = await globalThis.civilApi.readView(path, viewPath)
+     const viewDocument = await globalThis.civil.api.readView(path, viewPath)
      return await globalThis.main.run(viewDocument.value)
     },
     write: async function namedArguments(path, value, additionalProperties) {
@@ -192,7 +195,7 @@
       return [ \'path\', \'value\', \'additionalProperties\' ]
      }
 
-     return globalThis.civilApi.makeApiRequest({
+     return globalThis.civil.api.makeApiRequest({
       data: { path, value, additionalProperties },
       type: \'write\',
      })

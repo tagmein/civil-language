@@ -145,10 +145,10 @@
 .. .. .. .. $token-value , 10 @ -- -- -- -- parseInt ! >> token-int
 .. .. .. .. .. data-civil , integer @ -- span setAttribute !
 .. .. .. .. 10 @ token-int toString ! = $token-value ?
-.. .. .. .. .. data-civil , comment @ -- span setAttribute !
-.. .. .. .. $-- is-comment ?
 .. .. .. .. .. 1 >> -- -- is-comment
 .. .. .. .. $token-value = '#' ?
+.. .. .. .. .. data-civil , comment @ -- span setAttribute !
+.. .. .. .. $-- is-comment ?
 .. .. .. .. $span @ -- -- -- control highlight appendChild ! 
 .. .. .. << token :: line !
 .. .. .. br @ -- -- -- document createElement ! >> br
